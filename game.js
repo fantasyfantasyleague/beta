@@ -8040,7 +8040,7 @@ function saveGame() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `${G.players[G.currentPlayer].name.replace(/\s+/g, '_')}_turn-${G.turn}.json`;
+  a.download = `${G.players[G.currentPlayer].name.replace(/\s+/g, '_')}_turn-${G.turn}-BETA.json`;
   a.click();
   URL.revokeObjectURL(url);
 }
