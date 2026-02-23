@@ -1978,6 +1978,10 @@ function startNewGame() {
     }
   }
 
+  // --- Balanced resource distribution ---
+  // Ensure every player has roughly equal access to all 4 resource types near spawn.
+  ensureBalancedResources(board, boardSize, startPositions, numPlayers);
+
   // Spawn Ancient Dragon boss inside the largest contiguous resource chunk on the map
   // Flood-fill to find all contiguous blobs of each resource type
   const visited = Array.from({ length: boardSize }, () => new Array(boardSize).fill(false));
@@ -2261,25 +2265,34 @@ function generateBoard(size, numPlayers) {
   const moisture = makeNoiseMap(size);
   const elevation = makeNoiseMap(size);
 
-  // Water
+  // Water (loosened thresholds for denser coverage)
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
-      if (moisture[y][x] > 0.52 && elevation[y][x] < 0.48) {
+      if (moisture[y][x] > 0.45 && elevation[y][x] < 0.52) {
         board[y][x] = { type: 'water', amount: 3 + Math.floor(Math.random() * 4) };
       }
     }
   }
 
-  // Stone
+  // Stone (loosened threshold for more coverage)
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
-      if (!board[y][x] && elevation[y][x] > 0.50) {
+      if (!board[y][x] && elevation[y][x] > 0.44) {
         board[y][x] = { type: 'stone', amount: 3 + Math.floor(Math.random() * 3) };
       }
     }
   }
 
-  // Gold veins in stone
+  // Scatter extra stone clusters in empty areas
+  const numStoneClusters = Math.floor(size * size / 60);
+  for (let i = 0; i < numStoneClusters; i++) {
+    const sx = Math.floor(Math.random() * size);
+    const sy = Math.floor(Math.random() * size);
+    if (board[sy][sx]) continue;
+    growCluster(board, size, sx, sy, 'stone', 2 + Math.floor(Math.random() * 4));
+  }
+
+  // Gold veins in stone (higher chance + more seeds + standalone clusters)
   const stoneTiles = [];
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
@@ -2287,43 +2300,60 @@ function generateBoard(size, numPlayers) {
     }
   }
   for (const st of stoneTiles) {
-    if (Math.random() < 0.24) {
+    if (Math.random() < 0.30) {
       board[st.y][st.x] = { type: 'gold', amount: 2 + Math.floor(Math.random() * 3) };
     }
   }
-  const goldSeeds = Math.max(3, Math.floor(stoneTiles.length * 0.10));
+  const goldSeeds = Math.max(5, Math.floor(stoneTiles.length * 0.15));
   for (let i = 0; i < goldSeeds; i++) {
     if (stoneTiles.length === 0) break;
     const origin = stoneTiles[Math.floor(Math.random() * stoneTiles.length)];
     const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
     for (const [dx, dy] of dirs) {
       const nx = origin.x + dx, ny = origin.y + dy;
-      if (nx >= 0 && nx < size && ny >= 0 && ny < size && !board[ny][nx] && Math.random() < 0.5) {
-        board[ny][nx] = { type: 'gold', amount: 2 + Math.floor(Math.random() * 2) };
+      if (nx >= 0 && nx < size && ny >= 0 && ny < size && !board[ny][nx] && Math.random() < 0.6) {
+        board[ny][nx] = { type: 'gold', amount: 2 + Math.floor(Math.random() * 3) };
       }
     }
   }
+  // Standalone gold clusters in open areas
+  const numGoldClusters = Math.max(3, Math.floor(size * size / 120));
+  for (let i = 0; i < numGoldClusters; i++) {
+    const gx = Math.floor(Math.random() * size);
+    const gy = Math.floor(Math.random() * size);
+    if (board[gy][gx]) continue;
+    growCluster(board, size, gx, gy, 'gold', 2 + Math.floor(Math.random() * 3));
+  }
 
-  // Wood forests
-  const numForests = Math.floor(size * size / 25);
+  // Wood forests (more forests, slightly larger)
+  const numForests = Math.floor(size * size / 22);
   for (let i = 0; i < numForests; i++) {
     const cx = Math.floor(Math.random() * size);
     const cy = Math.floor(Math.random() * size);
     if (board[cy][cx]) continue;
     if (moisture[cy][cx] > 0.7 && elevation[cy][cx] < 0.35) continue;
     if (elevation[cy][cx] > 0.6) continue;
-    const clusterSize = 4 + Math.floor(Math.random() * 8);
+    const clusterSize = 3 + Math.floor(Math.random() * 7);
     growCluster(board, size, cx, cy, 'wood', clusterSize);
   }
 
-  // Scatter trees
+  // Scatter trees (more individual trees)
   const scatterTrees = Math.floor(size * size * 0.06);
   for (let i = 0; i < scatterTrees; i++) {
     const x = Math.floor(Math.random() * size);
     const y = Math.floor(Math.random() * size);
-    if (!board[y][x] && moisture[y][x] > 0.3 && elevation[y][x] < 0.55) {
+    if (!board[y][x] && moisture[y][x] > 0.25 && elevation[y][x] < 0.58) {
       board[y][x] = { type: 'wood', amount: 2 + Math.floor(Math.random() * 3) };
     }
+  }
+
+  // Scatter extra water ponds in dry areas
+  const numWaterPonds = Math.floor(size * size / 70);
+  for (let i = 0; i < numWaterPonds; i++) {
+    const wx = Math.floor(Math.random() * size);
+    const wy = Math.floor(Math.random() * size);
+    if (board[wy][wx]) continue;
+    growCluster(board, size, wx, wy, 'water', 2 + Math.floor(Math.random() * 3));
   }
 
   return board;
@@ -2375,6 +2405,93 @@ function growCluster(board, size, startX, startY, type, count) {
     const [dx, dy] = dirs[Math.floor(Math.random() * dirs.length)];
     x = Math.max(0, Math.min(size - 1, x + dx));
     y = Math.max(0, Math.min(size - 1, y + dy));
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Balanced resource distribution – guarantees every player has access to all
+// four resource types in an accessible ring around their starting corner.
+// If a resource type is missing and there are no empty tiles, excess tiles of
+// the most-abundant type are converted.
+// ---------------------------------------------------------------------------
+function ensureBalancedResources(board, size, startPositions, numPlayers) {
+  const INNER = 2;   // inner radius (tiles right next to the cleared spawn)
+  const OUTER = 8;   // outer radius – resource ring we care about
+  const MIN_PER_TYPE = 3;           // absolute minimum tiles of each type per player
+
+  function shuffle(arr) {
+    for (let j = arr.length - 1; j > 0; j--) {
+      const k = Math.floor(Math.random() * (j + 1));
+      [arr[j], arr[k]] = [arr[k], arr[j]];
+    }
+  }
+
+  // Scan the area around each player and collect tile info
+  for (let i = 0; i < numPlayers; i++) {
+    const pos = startPositions[i];
+    const cx = pos.hx, cy = pos.hy;
+    const counts = { wood: 0, stone: 0, gold: 0, water: 0 };
+    const tilesByType = { wood: [], stone: [], gold: [], water: [] };
+    const empties = [];
+
+    for (let y = Math.max(0, cy - OUTER); y <= Math.min(size - 1, cy + OUTER); y++) {
+      for (let x = Math.max(0, cx - OUTER); x <= Math.min(size - 1, cx + OUTER); x++) {
+        const dist = Math.max(Math.abs(x - cx), Math.abs(y - cy)); // Chebyshev
+        if (dist < INNER || dist > OUTER) continue;
+        if (board[y][x]) {
+          const t = board[y][x].type;
+          if (counts[t] !== undefined) {
+            counts[t]++;
+            tilesByType[t].push({ x, y });
+          }
+        } else {
+          empties.push({ x, y });
+        }
+      }
+    }
+
+    shuffle(empties);
+    // Shuffle each type list so conversions are random
+    for (const rType of RESOURCE_TYPES) shuffle(tilesByType[rType]);
+
+    // For each resource type, ensure at least MIN_PER_TYPE tiles
+    for (const rType of RESOURCE_TYPES) {
+      let deficit = MIN_PER_TYPE - counts[rType];
+      if (deficit <= 0) continue;
+
+      // Phase 1: place on empty tiles
+      while (deficit > 0 && empties.length > 0) {
+        const tile = empties.pop();
+        if (board[tile.y][tile.x]) continue; // occupied by overlap
+        const amount = rType === 'gold' ? 2 + Math.floor(Math.random() * 2)
+                                        : 3 + Math.floor(Math.random() * 3);
+        board[tile.y][tile.x] = { type: rType, amount };
+        counts[rType]++;
+        deficit--;
+      }
+
+      // Phase 2: convert tiles from the most-abundant type
+      while (deficit > 0) {
+        // Find the type with the most tiles (that isn't the one we need)
+        let mostType = null, mostCount = 0;
+        for (const ot of RESOURCE_TYPES) {
+          if (ot === rType) continue;
+          if (tilesByType[ot].length > mostCount) {
+            mostCount = tilesByType[ot].length;
+            mostType = ot;
+          }
+        }
+        if (!mostType || mostCount <= MIN_PER_TYPE) break; // don't cannibalize below minimum
+        const tile = tilesByType[mostType].pop();
+        counts[mostType]--;
+        const amount = rType === 'gold' ? 2 + Math.floor(Math.random() * 2)
+                                        : 3 + Math.floor(Math.random() * 3);
+        board[tile.y][tile.x] = { type: rType, amount };
+        tilesByType[rType].push(tile);
+        counts[rType]++;
+        deficit--;
+      }
+    }
   }
 }
 
