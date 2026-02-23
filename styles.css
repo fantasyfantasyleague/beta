@@ -32,6 +32,21 @@ body {
   gap: 14px;
   position: relative;
 }
+.menu-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 100vh;
+}
+.menu-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
 #menu-screen .btn-load-game {
   font-size: 20px;
   padding: 14px 48px;
@@ -61,6 +76,58 @@ body {
   font-size: 16px;
   font-style: italic;
   margin-bottom: 20px;
+}
+
+.game-history {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(20, 15, 10, 0.92);
+  border: 2px solid #8B7355;
+  border-radius: 6px;
+  padding: 16px 24px;
+  min-width: 420px;
+  max-width: 520px;
+  max-height: 60vh;
+  overflow-y: auto;
+  box-shadow: 0 0 16px rgba(0,0,0,0.6);
+  z-index: 10;
+}
+.game-history h3 {
+  font-family: Papyrus, fantasy;
+  color: #DAA520;
+  font-size: 16px;
+  margin: 0 0 8px 0;
+  text-align: center;
+  letter-spacing: 2px;
+}
+.game-history table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  color: #FFFAF0;
+}
+.game-history th {
+  background: rgba(139, 115, 85, 0.3);
+  color: #DAA520;
+  padding: 4px 8px;
+  text-align: left;
+  border-bottom: 1px solid #8B7355;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.game-history td {
+  padding: 4px 8px;
+  border-bottom: 1px solid rgba(139, 115, 85, 0.2);
+  vertical-align: top;
+}
+.game-history tr:hover td {
+  background: rgba(139, 115, 85, 0.15);
+}
+.game-history .victor {
+  color: #FFD700;
+  font-weight: bold;
 }
 
 /* ===== SETUP SCREEN ===== */
@@ -339,7 +406,17 @@ body {
 .cell:hover { outline: 2px solid #DAA520; z-index: 1; }
 .cell.highlight-move { background: #E6E6FA !important; }
 .cell.highlight-attack { background: #FFE4E1 !important; }
-.cell.highlight-gather { background: #F0E68C !important; }
+.cell.highlight-gather {
+  outline: 3px solid #FFD700 !important;
+  outline-offset: -3px;
+  z-index: 1;
+  box-shadow: inset 0 0 8px 2px rgba(255, 215, 0, 0.5), 0 0 6px rgba(255, 215, 0, 0.6);
+  animation: gather-pulse 1s ease-in-out infinite;
+}
+@keyframes gather-pulse {
+  0%, 100% { box-shadow: inset 0 0 8px 2px rgba(255, 215, 0, 0.5), 0 0 6px rgba(255, 215, 0, 0.6); }
+  50% { box-shadow: inset 0 0 12px 4px rgba(255, 215, 0, 0.7), 0 0 10px rgba(255, 215, 0, 0.8); }
+}
 .cell.highlight-place { background: #F5DEB3 !important; }
 .cell.structure-cell { font-weight: bold; }
 .cell.selected { outline: 3px solid #8B0000 !important; z-index: 2; }
@@ -562,6 +639,79 @@ body {
 #combat-log .log-move { border-left-color: #4682B4; }
 #combat-log .log-info { border-left-color: #808080; }
 #combat-log .log-turn { border-left-color: rgba(255,255,255,0.3); font-weight: bold; color: #FFFFFF; padding: 3px 6px; margin: 4px 0; text-align: center; border-left-width: 4px; }
+
+/* ===== PICK UP OVERLAY ===== */
+#pickup-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 100;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#pickup-overlay.active { display: flex; }
+.pickup-box {
+  position: relative;
+  background: #F5DEB3;
+  border: 3px solid #8B4513;
+  border-radius: 8px;
+  padding: 16px 24px;
+  min-width: 280px;
+  max-width: 400px;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow:
+    inset 2px 2px 5px rgba(255,255,255,0.8),
+    inset -2px -2px 5px rgba(0,0,0,0.3),
+    3px 3px 10px rgba(0,0,0,0.5);
+}
+.pickup-close-btn {
+  position: absolute;
+  top: 6px; right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #8B4513;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+}
+.pickup-close-btn:hover { color: #A0522D; }
+.pickup-box h2 {
+  font-family: Papyrus, fantasy;
+  color: #8B4513;
+  font-size: 22px;
+  margin: 0 0 12px 0;
+  text-align: center;
+}
+#pickup-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pickup-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  background: rgba(139,69,19,0.1);
+  border: 1px solid #8B7355;
+  border-radius: 4px;
+}
+.pickup-item-row span {
+  font-size: 13px;
+  color: #2F4F2F;
+  font-weight: bold;
+}
+.pickup-item-row .btn {
+  font-size: 11px;
+  padding: 3px 10px;
+  margin-left: 12px;
+}
+#pickup-all-wrap { margin-top: 10px; text-align: center; }
+#pickup-all-wrap .btn { width: 100%; }
 
 /* ===== END TURN CONFIRM OVERLAY ===== */
 #end-turn-confirm-overlay {

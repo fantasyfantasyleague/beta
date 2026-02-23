@@ -13,6 +13,9 @@ const PLAYER_NAMES = ['Player 1', 'Player 2', 'Player 3', 'Player 4'];
 const NPC_PLAYER_ID = -1;
 const BEAST_COLOR = '#9932CC';
 
+//passive constants:
+const REFLECT_CHANCE = .35; // Chance for reflect passive to trigger (0.35 = 35%)
+
 const FACTIONS = {
   goblins: {
     name: 'Goblins', prefix: 'Goblin',
@@ -20,7 +23,7 @@ const FACTIONS = {
     unitOverrides: {
       worker:  { hp: 3, movement: 4, attack: 1, defense: 0, str: 0, agi: 4, con: 0, int: 2 },
       warrior: { hp: 6, movement: 5, attack: 2, defense: 1, str: 1, agi: 3, con: 0, int: 0, startingEquipment: { mainhand: 'poisoned_dagger' } },
-      elite:   { name: 'Assassin', hp: 10, movement: 6, attack: 3, defense: 1, str: 2, agi: 4, con: 0, int: 1, passives: ['piercing'], startingEquipment: { body: 'leather_vest', mainhand: 'shadow_dagger' } },
+      elite:   { name: 'Assassin', hp: 11, movement: 6, attack: 3, defense: 1, str: 2, agi: 4, con: 0, int: 1, passives: ['piercing'], startingEquipment: { mainhand: 'shadow_dagger' } },
     },
     heroes: {
       goblin_shadowblade: {
@@ -55,7 +58,7 @@ const FACTIONS = {
     unitOverrides: {
       worker:  { hp: 5, movement: 3, attack: 1, defense: 0, str: 1, agi: 1, con: 0, int: 2 },
       warrior: { hp: 9, movement: 4, attack: 2, defense: 2, str: 2, agi: 1, con: 0, int: 0, startingEquipment: { mainhand: 'short_sword', offhand: 'wooden_shield' } },
-      elite:   { name: 'Knight', hp: 14, movement: 5, attack: 3, defense: 3, str: 3, agi: 2, con: 0, int: 0, passives: ['momentum'], startingEquipment: { body: 'chain_mail', mainhand: 'spear', offhand: '_two_handed_' } },
+      elite:   { name: 'Knight', hp: 14, movement: 5, attack: 3, defense: 3, str: 3, agi: 2, con: 0, int: 0, passives: ['momentum'], startingEquipment: { mainhand: 'spear', offhand: '_two_handed_' } },
     },
     heroes: {
       human_wizard: {
@@ -91,7 +94,7 @@ const FACTIONS = {
     unitOverrides: {
       worker:  { hp: 3, movement: 3, attack: 1, defense: 0, str: 0, agi: 3, con: 0, int: 3 },
       warrior: { hp: 7, movement: 5, attack: 2, defense: 1, str: 1, agi: 3, con: 0, int: 1, startingEquipment: { mainhand: 'longbow', offhand: '_two_handed_' } },
-      elite:   { name: 'Druid', hp: 10, movement: 5, attack: 2, defense: 2, str: 1, agi: 3, con: 0, int: 3, passives: ['regeneration'], startingEquipment: { body: 'leather_vest', mainhand: 'short_sword', offhand: 'healing_totem' } },
+      elite:   { name: 'Druid', hp: 11, movement: 5, attack: 2, defense: 2, str: 1, agi: 3, con: 0, int: 3, passives: ['regeneration'], startingEquipment: { mainhand: 'wooden_stick', offhand: 'healing_totem'} },
     },
     heroes: {
       elf_windwalker: {
@@ -127,14 +130,14 @@ const FACTIONS = {
     unitOverrides: {
       worker:  { hp: 6, movement: 2, attack: 2, defense: 0, str: 2, agi: 0, con: 0, int: 1 },
       warrior: { hp: 12, movement: 3, attack: 3, defense: 2, str: 3, agi: 0, con: 0, int: 0, startingEquipment: { mainhand: 'hand_axe' } },
-      elite:   { name: 'Berserker', hp: 15, movement: 3, attack: 4, defense: 1, str: 4, agi: 1, con: 0, int: 0, passives: ['executioner'], startingEquipment: { head: 'wolf_pelt_hood', mainhand: 'broad_sword', offhand: '_two_handed_' } },
+      elite:   { name: 'Berserker', hp: 15, movement: 3, attack: 4, defense: 1, str: 4, agi: 1, con: 0, int: 0, passives: ['executioner'], startingEquipment: { mainhand: 'broad_sword', offhand: '_two_handed_' } },
     },
     heroes: {
       orc_warchief: {
         name: 'Warchief', char: '☠',
         hp: 21, movement: 4, attack: 4, defense: 3, str: 4, agi: 1, con: 0, int: 0,
         passives: ['sanguine_feast'],
-        startingEquipment: { head: 'iron_helm', mainhand: 'battleaxe', offhand: '_two_handed_' },
+        startingEquipment: { head: 'iron_helm', mainhand: 'broad_sword', offhand: '_two_handed_' },
         ability: { id: 'bloodrend', name: 'Bloodrend', desc: 'Deal 5 damage to an adjacent bleeding enemy (no normal attack damage)' },
         description: 'Feeds on the blood of his foes. Grows stronger as enemies bleed.'
       },
@@ -163,7 +166,7 @@ const FACTIONS = {
     unitOverrides: {
       worker:  { hp: 7, movement: 2, attack: 1, defense: 0, str: 1, agi: 0, con: 0, int: 2 },
       warrior: { hp: 12, movement: 3, attack: 2, defense: 3, str: 2, agi: 0, con: 0, int: 0, startingEquipment: { mainhand: 'mace', offhand: 'buckler' } },
-      elite:   { name: 'Runeguard', hp: 17, movement: 3, attack: 2, defense: 4, str: 2, agi: 0, con: 0, int: 1, passives: ['bulwark'], startingEquipment: { head: 'iron_helm', body: 'chain_mail', mainhand: 'war_pick', offhand: 'iron_shield' } },
+      elite:   { name: 'Runeguard', hp: 15, movement: 3, attack: 2, defense: 4, str: 2, agi: 0, con: 0, int: 1, passives: ['bulwark'], startingEquipment: { mainhand: 'mace', offhand: 'buckler' } },
     },
     heroes: {
       dwarf_forgemaster: {
@@ -199,7 +202,7 @@ const FACTIONS = {
     unitOverrides: {
       worker:  { hp: 2, movement: 3, attack: 1, defense: 0, str: 0, agi: 2, con: 0, int: 2, cost: { wood: 1, stone: 0, gold: 0, water: 0 } },
       warrior: { hp: 6, movement: 4, attack: 3, defense: 1, str: 2, agi: 2, con: 0, int: 0, cost: { wood: 1, stone: 1, gold: 0, water: 0 }, startingEquipment: { mainhand: 'short_sword', offhand: 'buckler' } },
-      elite:   { name: 'Revenant', hp: 10, movement: 4, attack: 3, defense: 2, str: 3, agi: 1, con: 0, int: 1, passives: ['retaliate'], cost: { wood: 3, stone: 2, gold: 1, water: 0 }, startingEquipment: { head: 'leather_cap', mainhand: 'broad_sword', offhand: '_two_handed_' } },
+      elite:   { name: 'Revenant', hp: 11, movement: 4, attack: 3, defense: 2, str: 3, agi: 1, con: 0, int: 1, passives: ['retaliate'], cost: { wood: 3, stone: 2, gold: 1, water: 0 }, startingEquipment: { mainhand: 'broad_sword', offhand: '_two_handed_' } },
     },
     heroes: {
       skeleton_bonelord: {
@@ -235,7 +238,7 @@ const FACTIONS = {
     unitOverrides: {
       worker:  { hp: 8, movement: 2, attack: 2, defense: 0, str: 2, agi: 0, con: 0, int: 0 },
       warrior: { hp: 15, movement: 2, attack: 3, defense: 2, str: 3, agi: 0, con: 0, int: 0, startingEquipment: { mainhand: 'hand_axe' } },
-      elite:   { name: 'Brute', hp: 20, movement: 2, attack: 4, defense: 3, str: 4, agi: 0, con: 0, int: 0, passives: ['extended_reach'], startingEquipment: { head: 'iron_helm', mainhand: 'warhammer', offhand: '_two_handed_' } },
+      elite:   { name: 'Brute', hp: 15, movement: 2, attack: 4, defense: 3, str: 4, agi: 0, con: 0, int: 0, passives: ['extended_reach'], startingEquipment: { mainhand: 'warhammer', offhand: '_two_handed_' } },
     },
     heroes: {
       troll_warlord: {
@@ -271,7 +274,7 @@ const FACTIONS = {
     unitOverrides: {
       worker:  { hp: 3, movement: 3, attack: 1, defense: 0, str: 0, agi: 2, con: 0, int: 3 },
       warrior: { hp: 6, movement: 4, attack: 1, defense: 1, str: 0, agi: 2, con: 0, int: 2, startingEquipment: { mainhand: 'crossbow', offhand: '_two_handed_' } },
-      elite:   { name: 'Virtuoso', hp: 11, movement: 5, attack: 2, defense: 1, str: 1, agi: 3, con: 0, int: 3, passives: ['bardic_wisdom'], startingEquipment: { body: 'leather_vest', mainhand: 'flintlock_rifle', offhand: '_two_handed_' } },
+      elite:   { name: 'Virtuoso', hp: 11, movement: 5, attack: 2, defense: 1, str: 1, agi: 3, con: 0, int: 3, passives: ['bardic_wisdom'], startingEquipment: { mainhand: 'throwing_knives', offhand: 'main_gauche' } },
     },
     heroes: {
       bard_maestro: {
@@ -307,7 +310,7 @@ const FACTIONS = {
     unitOverrides: {
       worker:  { hp: 3, movement: 4, attack: 1, defense: 0, str: 0, agi: 3, con: 0, int: 3 },
       warrior: { hp: 5, movement: 4, attack: 2, defense: 1, str: 1, agi: 3, con: 0, int: 1, startingEquipment: { mainhand: 'poisoned_dagger', offhand: 'buckler' } },
-      elite:   { name: 'Sapper', hp: 9, movement: 5, attack: 3, defense: 1, str: 2, agi: 4, con: 0, int: 1, passives: ['climbing'], startingEquipment: { body: 'leather_vest', mainhand: 'poisoned_dagger', offhand: 'buckler' } },
+      elite:   { name: 'Sapper', hp: 11, movement: 5, attack: 3, defense: 1, str: 2, agi: 4, con: 0, int: 1, passives: ['climbing'], startingEquipment: { body: 'leather_vest', mainhand: 'poisoned_dagger', offhand: 'buckler' } },
     },
     heroes: {
       kobold_saboteur: {
@@ -337,11 +340,173 @@ const FACTIONS = {
       }
     },
     forgeBonusItems: []
+  },
+  nomads: {
+    name: 'Nomads', prefix: 'Nomad',
+    chars: { worker: 'n', warrior: 'ñ', elite: 'Ñ', hero: '🏇' },
+    unitOverrides: {
+      worker:  { hp: 4, movement: 4, attack: 1, defense: 0, str: 0, agi: 3, con: 0, int: 2 },
+      warrior: { hp: 8, movement: 5, attack: 2, defense: 1, str: 1, agi: 2, con: 0, int: 0, startingEquipment: { mainhand: 'scimitar', offhand: 'buckler' } },
+      elite:   { name: 'Horseman', hp: 12, movement: 6, attack: 4, defense: 2, str: 2, agi: 3, con: 0, int: 0, passives: ['sundering_blows'], startingEquipment: { mainhand: 'spear', offhand: '_two_handed_'} },
+    },
+    heroes: {
+      nomad_steppe_lord: {
+        name: 'Steppe Lord', char: '✹',
+        hp: 15, movement: 6, attack: 4, defense: 3, str: 3, agi: 3, con: 1, int: 0,
+        passives: ['mounted'],
+        startingEquipment: { head: 'wolf_pelt_hood', body: 'leather_vest', mainhand: 'scimitar', offhand: 'buckler' },
+        ability: { id: 'forge_barrel', name: 'Craft Explosive Barrel', desc: 'Generate an Explosive Barrel in your inventory. Use the barrel to place it on an adjacent tile. It explodes when attacked, dealing 8 damage in a 2-tile radius.' },
+        description: 'A warlord of the open plains. Crafts explosive barrels to devastate foes.'
+      },
+      nomad_bandit_king: {
+        name: 'Bandit King', char: '🗡',
+        hp: 13, movement: 5, attack: 3, defense: 2, str: 2, agi: 4, con: 0, int: 1,
+        passives: ['potent_formula'],
+        startingEquipment: { mainhand: 'poisoned_dagger', offhand: 'parrying_dagger', accessory: 'scouts_compass' },
+        ability: { id: 'poisonous_shiv', name: 'Poisonous Shiv', desc: 'Instantly inflict 5 stacks of Poison on an adjacent enemy' },
+        description: 'A ruthless brigand lord. One strike from his venom-laced blade seals your fate.'
+      },
+      nomad_seer: {
+        name: 'Seer', char: '👁',
+        hp: 10, movement: 5, attack: 1, defense: 1, str: 0, agi: 2, con: 1, int: 4,
+        passives: ['magic_resistance'],
+        startingEquipment: { mainhand: 'staff_of_wisdom', accessory: 'ring_of_regeneration' },
+        ability: { id: 'rescue', name: 'Rescue', desc: 'Teleport to any ally on the map and heal them for 10 HP' },
+        description: 'A mystic who sees through space itself. No ally is ever truly alone.'
+      }
+    },
+    forgeBonusItems: []
+  },
+  trade_guild: {
+    name: 'Trade Guild', prefix: 'Guild',
+    chars: { worker: 't', warrior: '₸', elite: '₲', hero: '💰' },
+    unitOverrides: {
+      worker:  { hp: 4, movement: 3, attack: 1, defense: 0, str: 0, agi: 2, con: 0, int: 3 },
+      warrior: { hp: 8, movement: 4, attack: 2, defense: 2, str: 1, agi: 2, con: 0, int: 1, startingEquipment: { mainhand: 'short_sword', offhand: 'buckler' } },
+      elite:   { name: 'Hired Guard', hp: 12, movement: 4, attack: 3, defense: 3, str: 2, agi: 2, con: 0, int: 1, passives: ['overwatch'], startingEquipment: { mainhand: 'shortbow', offhand: '_two_handed_' } },
+    },
+    heroes: {
+      guild_magnate: {
+        name: 'Bejeweled Magnate', char: '◈',
+        hp: 12, movement: 4, attack: 1, defense: 1, str: 0, agi: 2, con: 1, int: 3,
+        passives: ['midas_touch', 'multi_action'],
+        startingEquipment: { accessory: 'lucky_charm' },
+        extraSlots: { offhand: 1, accessory: 4 },
+        blockedSlots: ['head', 'body', 'legs', 'feet', 'hands'],
+        description: 'Dripping in jewels and trinkets. No ability, but 5 accessory slots and 2 offhand slots. Cannot wear armor.'
+      },
+      guild_appraiser: {
+        name: 'Resident Appraiser', char: '⌕',
+        hp: 11, movement: 4, attack: 2, defense: 2, str: 1, agi: 2, con: 0, int: 4,
+        passives: [],
+        startingEquipment: { mainhand: 'enchanted_scepter', body: 'simple_robe' },
+        ability: { id: 'appraise_destroy', name: 'Absorb Item', desc: 'Destroy an equipped or inventory item to permanently absorb all of its passives.' },
+        description: 'Sees the true value in everything — and consumes it.'
+      },
+      guild_bounty_hunter: {
+        name: 'Bounty Hunter', char: '◎',
+        hp: 14, movement: 5, attack: 3, defense: 2, str: 2, agi: 3, con: 0, int: 1,
+        passives: ['piercing'],
+        startingEquipment: { mainhand: 'crossbow', offhand: '_two_handed_', accessory: 'scouts_compass' },
+        ability: { id: 'bounty_mark', name: 'Bounty Mark', desc: 'Mark any visible enemy on the map for death. Marked targets take +3 damage from all sources and grant 3 gold to the killer.' },
+        description: 'No one escapes his mark. Every kill fills the coffers.'
+      }
+    },
+    forgeBonusItems: []
+  },
+  ogres: {
+    name: 'Ogres', prefix: 'Ogre',
+    chars: { worker: 'o', warrior: 'ö', elite: 'Ö', hero: '👹' },
+    unitOverrides: {
+      worker:  { hp: 5, movement: 3, attack: 2, defense: 0, str: 2, agi: 0, con: 1, int: 0 },
+      warrior: { hp: 10, movement: 3, attack: 4, defense: 2, str: 3, agi: 0, con: 0, int: 0,
+                 startingEquipment: { mainhand: 'war_pick', body: 'chain_mail' } },
+      elite:   { name: 'Ruffian', hp: 15, movement: 3, attack: 5, defense: 3, str: 4, agi: 0, con: 0, int: 0,
+                 passives: ['sweeping_strikes'],
+                 startingEquipment: { mainhand: 'hand_axe' } }
+    },
+    heroes: {
+      ogre_big_hoss: {
+        name: 'Big Hoss', char: '⊠',
+        hp: 22, movement: 4, attack: 5, defense: 3, str: 5, agi: 0, con: 0, int: 0,
+        passives: [],
+        startingEquipment: { mainhand: 'crude_axe', offhand: '_two_handed_' },
+        ability: { id: 'ogre_throw', name: 'Hurl', desc: 'Grab an adjacent unit (enemy or ally) and throw them up to 4 tiles away. Thrown enemies take 4 damage on landing; thrown allies land safely. If a thrown unit lands on an enemy, both take 3 damage.' },
+        description: 'A mountain of muscle. Picks up friends and foes alike and hurls them across the battlefield.'
+      },
+      ogre_magi: {
+        name: 'Magi', char: '⊛',
+        hp: 16, movement: 4, attack: 3, defense: 2, str: 2, agi: 0, con: 0, int: 4,
+        passives: ['static_conduit'],
+        extraSlots: { head: 1 },
+        startingEquipment: { mainhand: 'staff_of_wisdom', offhand: '_two_handed_', body: 'simple_robe' },
+        ability: { id: 'static_discharge', name: 'Static Discharge', desc: 'Consume all Static Charges and deal magic damage equal to the number of charges to a target within 3 tiles. Charges are gained whenever an enemy takes damage within 3 spaces of you.' },
+        description: 'A rare two-headed ogre with an affinity for raw arcane energy. Absorbs ambient pain and channels it as lightning.'
+      }
+    },
+    forgeBonusItems: []
+  },
+  merfolk: {
+    name: 'Merfolk', prefix: 'Merfolk',
+    chars: { worker: 'm', warrior: 'ṃ', elite: 'Ṁ', hero: 'M' },
+    unitOverrides: {
+      worker:  { hp: 4, movement: 4, attack: 1, defense: 0, str: 0, agi: 3, con: 0, int: 2, passives: ['resource_gathering', 'swimming'] },
+      warrior: { hp: 8, movement: 5, attack: 2, defense: 1, str: 1, agi: 2, con: 0, int: 0, passives: ['swimming'], startingEquipment: { mainhand: 'short_sword', offhand: 'buckler' } },
+      elite:   { name: 'Tidecaller', hp: 12, movement: 5, attack: 2, defense: 2, str: 1, agi: 3, con: 0, int: 2, passives: ['swimming', 'weightless'], startingEquipment: { mainhand: 'scimitar', offhand: 'buckler' } },
+    },
+    heroes: {
+      tidewarden: {
+        name: 'Tidewarden', char: '≋',
+        hp: 10, movement: 5, attack: 2, defense: 1, str: 1, agi: 3, con: 1, int: 1,
+        passives: ['swimming', 'run_and_gun'],
+        startingEquipment: { mainhand: 'shortbow' },
+        ability: { id: 'harpoon_shot', name: 'Harpoon Shot', desc: 'Hook an enemy within 5 tiles and drag them when you move (this turn only). 2-turn CD.' },
+        description: 'A skilled Merfolk hunter who strikes from afar, hooking foes with a harpoon to drag them along.'
+      },
+      amorphous_blob: {
+        name: 'Amorphous Blob', char: '◓',
+        hp: 10, movement: 4, attack: 2, defense: 2, str: 2, agi: 2, con: 2, int: 2,
+        passives: ['swimming', 'dual_wield'],
+        blockedSlots: ['head', 'body', 'legs', 'feet', 'hands'],
+        startingEquipment: { mainhand: 'short_sword', offhand: 'poisoned_dagger' },
+        ability: { id: 'morph', name: 'Morph', desc: 'Reallocate base stats freely. Once per turn.' },
+        description: 'A sentient mass of living water. Reshapes its form at will, wielding a weapon in each pseudopod.'
+      }
+    },
+    forgeBonusItems: []
   }
 };
 
 const EQUIP_SLOTS = ['head', 'body', 'legs', 'feet', 'hands', 'mainhand', 'offhand', 'accessory'];
-const SLOT_LABELS = { head: 'Head', body: 'Body', legs: 'Legs', feet: 'Feet', hands: 'Hands', mainhand: 'Main Hand', offhand: 'Off Hand', accessory: 'Accessory' };
+const SLOT_LABELS = { head: 'Head', body: 'Body', legs: 'Legs', feet: 'Feet', hands: 'Hands', mainhand: 'Main Hand', offhand: 'Off Hand', accessory: 'Accessory', head2: 'Head 2', offhand2: 'Off Hand 2', accessory2: 'Accessory 2', accessory3: 'Accessory 3', accessory4: 'Accessory 4', accessory5: 'Accessory 5' };
+
+// Get the equipment slots a unit actually uses (extra slots for Magnate, etc.)
+function getUnitEquipSlots(unit) {
+  const heroData = (unit.type === 'hero' && unit.faction) ? (() => {
+    const f = FACTIONS[unit.faction];
+    if (!f || !f.heroes) return null;
+    return (unit.heroChoice && f.heroes[unit.heroChoice]) ? f.heroes[unit.heroChoice] : Object.values(f.heroes)[0];
+  })() : null;
+  if (!heroData || !heroData.extraSlots) return EQUIP_SLOTS;
+  const slots = [...EQUIP_SLOTS];
+  for (const [baseSlot, count] of Object.entries(heroData.extraSlots)) {
+    for (let i = 2; i <= count + 1; i++) {
+      slots.push(baseSlot + i);
+    }
+  }
+  return slots;
+}
+
+// Check if a unit is blocked from equipping into a slot
+function isSlotBlocked(unit, slotName) {
+  const heroData = (unit.type === 'hero' && unit.faction) ? (() => {
+    const f = FACTIONS[unit.faction];
+    if (!f || !f.heroes) return null;
+    return (unit.heroChoice && f.heroes[unit.heroChoice]) ? f.heroes[unit.heroChoice] : Object.values(f.heroes)[0];
+  })() : null;
+  if (!heroData || !heroData.blockedSlots) return false;
+  return heroData.blockedSlots.includes(slotName);
+}
 
 // ============================================================
 // ITEMS DATABASE
@@ -367,6 +532,7 @@ const ITEMS = {
   mountaineers_cap:      { id: 'mountaineers_cap',      name: "Mountaineer's Cap",    slot: 'head',     stats: { con: 1, agi: 1 },                  weight: 1, shopCost: 5, passives: ['climbing'], description: '+1 CON, +1 AGI. Hardy headgear for rough terrain. Grants Climbing.' },
   visored_sallet:        { id: 'visored_sallet',        name: 'Visored Sallet',       slot: 'head',     stats: { defense: 3 },                      weight: 3, shopCost: 6, description: 'Full-face steel helm. Maximum head protection.' },
   crit_goggles:          { id: 'crit_goggles',          name: 'Crit Goggles',         slot: 'head',     stats: { int: 1 },                          weight: 0, shopCost: 8, critBonus: 10, description: '+1 INT. Enchanted lenses that reveal weak points. +10% crit chance.' },
+  bouncy_helmet:         { id: 'bouncy_helmet',         name: 'Bouncy Helmet',        slot: 'head',     stats: { agi: 1 },                          weight: 1, shopCost: 7, passives: ['reflect'], description: '+1 AGI. Springy enchanted helm that deflects projectiles. Grants Reflect.' },
 
   // --- Body ---
   simple_robe:            { id: 'simple_robe',            name: 'Simple Robe',           slot: 'body',    stats: { defense: 1 },                      weight: 0, shopCost: 2, description: 'A plain robe. Minimal protection.' },
@@ -441,19 +607,22 @@ const ITEMS = {
   war_pick:              { id: 'war_pick',              name: 'War Pick',              slot: 'mainhand', stats: { attack: 3, str: 1 },              weight: 2, shopCost: 5, description: '+1 STR. Pierces armor effectively.' },
   enchanted_scepter:     { id: 'enchanted_scepter',     name: 'Enchanted Scepter',     slot: 'mainhand', stats: { attack: 1, int: 3 },              weight: 1, shopCost: 9, onHit: { effect: 'cursed', chance: 55 }, description: '+3 INT. A conduit for dark magic. 55% chance to inflict Cursed.' },
   scimitar:              { id: 'scimitar',              name: 'Scimitar',              slot: 'mainhand', stats: { attack: 2, agi: 2 },              weight: 1, shopCost: 6, description: '+2 AGI. Curved and swift.' },
-  serrated_cleaver:      { id: 'serrated_cleaver',      name: 'Serrated Cleaver',      slot: 'mainhand', stats: { attack: 3, str: 1 },              weight: 2, shopCost: 7, onHit: { effect: 'bleeding', chance: 100 }, description: '+1 STR. Jagged edge. 100% chance to inflict Bleeding.' },
+  serrated_cleaver:      { id: 'serrated_cleaver',      name: 'Serrated Cleaver',      slot: 'mainhand', stats: { attack: 2, str: 1 },              weight: 2, shopCost: 7, onHit: { effect: 'bleeding', chance: 100 }, description: '+1 STR. Jagged edge. 100% chance to inflict Bleeding.' },
   thundermace:           { id: 'thundermace',           name: 'Thundermace',           slot: 'mainhand', stats: { attack: 3, str: 2 },              weight: 2, shopCost: 9, onHit: { effect: 'slowed', chance: 75 }, description: '+2 STR. Crackling strikes. 75% chance to Slow.' },
   venom_fang:            { id: 'venom_fang',            name: 'Venom Fang',            slot: 'mainhand', stats: { attack: 2, agi: 3 },              weight: 1, shopCost: 9, onHit: { effect: 'poison', chance: 60 }, passives: ['piercing'], description: '+3 AGI. Razor fang dripping venom. 60% Poison. Grants Piercing.' },
   holy_mace:             { id: 'holy_mace',             name: 'Holy Mace',             slot: 'mainhand', stats: { attack: 2, int: 2, con: 1 },      weight: 2, shopCost: 8, description: '+2 INT, +1 CON. Blessed by the temple.' },
   shadow_dagger:         { id: 'shadow_dagger',         name: 'Shadow Dagger',         slot: 'mainhand', stats: { attack: 2, agi: 4 },              weight: 0, shopCost: 10, passives: ['evasion'], description: '+4 AGI. Strikes from nowhere. Grants Evasion (+10% dodge).' },
   morning_star:          { id: 'morning_star',          name: 'Morning Star',          slot: 'mainhand', stats: { attack: 3, str: 1 },              weight: 2, shopCost: 7, onHit: { effect: 'weakened', chance: 50 }, description: '+1 STR. Flanged head crushes muscle. 50% chance to Weaken.' },
   coral_blade:           { id: 'coral_blade',           name: 'Coral Blade',           slot: 'mainhand', stats: { attack: 2, agi: 2 },              weight: 1, shopCost: 7, onHit: { effect: 'slowed', chance: 70 }, description: '+2 AGI. Sea-forged edge. 70% chance to Slow.' },
-  cursed_wand:           { id: 'cursed_wand',           name: 'Cursed Wand',           slot: 'mainhand', stats: { attack: 1, int: 2 },              weight: 1, shopCost: 8, range: 2, onHit: { effect: 'cursed', chance: 70 }, description: '+2 INT. Dark channeling wand. Ranged (2). 70% chance to Curse.' },
+  cursed_wand:           { id: 'cursed_wand',           name: 'Cursed Wand',           slot: 'mainhand', stats: { attack: 1, int: 2 },              weight: 1, shopCost: 8, range: 2, magicDamage: true, onHit: { effect: 'cursed', chance: 70 }, description: '+2 INT. Dark channeling wand. Ranged (2). 70% chance to Curse.' },
+  stormstrike_mace:      { id: 'stormstrike_mace',      name: 'Stormstrike Mace',      slot: 'mainhand', stats: { attack: 3, int: 2 },              weight: 2, shopCost: 11, chainLightning: { chance: 75, damage: 2 }, description: '+2 INT. Crackling with storm energy. 75% chance to chain lightning — 2 damage to all enemies adjacent to target.' },
+  elemental_glaive:      { id: 'elemental_glaive',      name: 'Elemental Glaive',      slot: 'mainhand', stats: { attack: 4, str: 1, int: 1 },      weight: 3, shopCost: 14, twoHanded: true, elementalCycle: true, description: '+1 STR, +1 INT. Channels the elements. Each turn cycles between Freeze (80%), Burning (100%), and Chain Lightning (2 dmg). Two-handed.' },
 
   // --- Main Hand (Two-Handed) ---
-  broad_sword:          { id: 'broad_sword',          name: 'Broad Sword',           slot: 'mainhand', stats: { attack: 4 },                      weight: 3, shopCost: 5, twoHanded: true, description: 'A heavy, wide blade. Requires both hands.' },
+  crude_axe:            { id: 'crude_axe',            name: 'Crude Axe',             slot: 'mainhand', stats: { attack: 3 },                      weight: 3, shopCost: 3, twoHanded: true, combatLockBonus: 10, description: 'A rough-hewn axe. +10% combat lock chance. Two-handed.' },
+  broad_sword:          { id: 'broad_sword',          name: 'Broad Sword',           slot: 'mainhand', stats: { attack: 3 },                      weight: 3, shopCost: 5, twoHanded: true, description: 'A heavy, wide blade. Requires both hands.' },
   staff_of_wisdom:      { id: 'staff_of_wisdom',      name: 'Staff of Wisdom',       slot: 'mainhand', stats: { attack: 1, int: 4, con: 1 },     weight: 2, shopCost: 10, twoHanded: true, description: '+4 INT, +1 CON. A scholar\'s weapon. Two-handed.' },
-  battleaxe:            { id: 'battleaxe',            name: 'Battleaxe',             slot: 'mainhand', stats: { attack: 5, str: 2 },              weight: 4, shopCost: 11, twoHanded: true, description: '+2 STR. Devastating cleave. Two-handed.' },
+  battleaxe:            { id: 'battleaxe',            name: 'Battleaxe',             slot: 'mainhand', stats: { attack: 3, str: 2 },              weight: 4, shopCost: 11, twoHanded: true, description: '+2 STR. Devastating cleave. Two-handed.' },
   greatsword:           { id: 'greatsword',           name: 'Greatsword',            slot: 'mainhand', stats: { attack: 5, str: 1 },              weight: 4, shopCost: 9, twoHanded: true, description: '+1 STR. Massive blade. Two-handed.' },
   warhammer:            { id: 'warhammer',            name: 'Warhammer',             slot: 'mainhand', stats: { attack: 4, str: 2, con: 1 },     weight: 5, shopCost: 12, twoHanded: true, onHit: { effect: 'weakened', chance: 25 }, description: '+2 STR, +1 CON. Crushes armor. 25% chance to Weaken. Two-handed.' },
   shortbow:             { id: 'shortbow',             name: 'Shortbow',              slot: 'mainhand', stats: { attack: 2 },                      weight: 1, shopCost: 3, twoHanded: true, range: 3, description: 'A simple bow. Ranged (3). Two-handed.' },
@@ -482,19 +651,19 @@ const ITEMS = {
   barbed_shortbow:       { id: 'barbed_shortbow',       name: 'Barbed Shortbow',       slot: 'mainhand', stats: { attack: 2, agi: 1 },              weight: 1, shopCost: 5, twoHanded: true, range: 3, onHit: { effect: 'bleeding', chance: 100 }, description: '+1 AGI. Barbed arrows. Ranged (3). 100% Bleeding. Two-handed.' },
   razorwind_glaive:      { id: 'razorwind_glaive',      name: 'Razorwind Glaive',      slot: 'mainhand', stats: { attack: 5, str: 1, agi: 2 },     weight: 3, shopCost: 14, twoHanded: true, onHit: { effect: 'bleeding', chance: 100 }, passives: [], description: '+1 STR, +2 AGI. Whirlwind of blades. 100% Bleeding. Two-handed.' },
   // Ranged Magic Weapons
-  staff_of_fire:         { id: 'staff_of_fire',         name: 'Staff of Fire',         slot: 'mainhand', stats: { attack: 2, int: 3 },              weight: 2, shopCost: 13, twoHanded: true, range: 3, description: '+3 INT. Ranged (3). Grants Fireball: 4 dmg + Burning in AoE. Two-handed.', action: 'fireball' },
-  staff_of_frost:        { id: 'staff_of_frost',        name: 'Staff of Frost',        slot: 'mainhand', stats: { attack: 2, int: 3 },              weight: 2, shopCost: 13, twoHanded: true, range: 3, passives: ['frost_resistance'], description: '+3 INT. Ranged (3). Grants Frost Ray: 3 dmg + Freeze. Frost Resistance. Two-handed.', action: 'frost_ray' },
-  scepter_of_lightning:  { id: 'scepter_of_lightning',  name: 'Scepter of Lightning',  slot: 'mainhand', stats: { attack: 2, int: 4 },              weight: 1, shopCost: 14, range: 4, description: '+4 INT. Ranged (4). Grants Lightning Bolt: 5 dmg + Slow. One-handed.', action: 'lightning_bolt' },
-  wand_of_draining:      { id: 'wand_of_draining',      name: 'Wand of Draining',      slot: 'mainhand', stats: { attack: 1, int: 3 },              weight: 1, shopCost: 11, range: 2, description: '+3 INT. Ranged (2). Grants Life Drain: 3 dmg + heal self. One-handed.', action: 'life_drain' },
-  orb_of_venom:          { id: 'orb_of_venom',          name: 'Orb of Venom',          slot: 'mainhand', stats: { attack: 1, int: 2 },              weight: 1, shopCost: 10, range: 3, description: '+2 INT. Ranged (3). Grants Poison Cloud: AoE poison. One-handed.', action: 'poison_cloud' },
-  fire_wand:             { id: 'fire_wand',             name: 'Fire Wand',             slot: 'mainhand', stats: { attack: 2, int: 1 },              weight: 1, shopCost: 5, range: 3, description: '+1 INT. Ranged (3). A simple wand crackling with flame. One-handed.' },
+  staff_of_fire:         { id: 'staff_of_fire',         name: 'Staff of Fire',         slot: 'mainhand', stats: { attack: 2, int: 3 },              weight: 2, shopCost: 13, twoHanded: true, range: 3, magicDamage: true, description: '+3 INT. Ranged (3). Grants Fireball: 4 dmg + Burning in AoE. Two-handed.', action: 'fireball' },
+  staff_of_frost:        { id: 'staff_of_frost',        name: 'Staff of Frost',        slot: 'mainhand', stats: { attack: 2, int: 3 },              weight: 2, shopCost: 13, twoHanded: true, range: 3, magicDamage: true, passives: ['frost_resistance'], description: '+3 INT. Ranged (3). Grants Frost Ray: 3 dmg + Freeze. Frost Resistance. Two-handed.', action: 'frost_ray' },
+  scepter_of_lightning:  { id: 'scepter_of_lightning',  name: 'Scepter of Lightning',  slot: 'mainhand', stats: { attack: 2, int: 4 },              weight: 1, shopCost: 14, range: 4, magicDamage: true, description: '+4 INT. Ranged (4). Grants Lightning Bolt: 5 dmg + Slow. One-handed.', action: 'lightning_bolt' },
+  wand_of_draining:      { id: 'wand_of_draining',      name: 'Wand of Draining',      slot: 'mainhand', stats: { attack: 1, int: 3 },              weight: 1, shopCost: 11, range: 2, magicDamage: true, description: '+3 INT. Ranged (2). Grants Life Drain: 3 dmg + heal self. One-handed.', action: 'life_drain' },
+  orb_of_venom:          { id: 'orb_of_venom',          name: 'Orb of Venom',          slot: 'mainhand', stats: { attack: 1, int: 2 },              weight: 1, shopCost: 10, range: 3, magicDamage: true, description: '+2 INT. Ranged (3). Grants Poison Cloud: AoE poison. One-handed.', action: 'poison_cloud' },
+  fire_wand:             { id: 'fire_wand',             name: 'Fire Wand',             slot: 'mainhand', stats: { attack: 2, int: 1 },              weight: 1, shopCost: 5, range: 3, magicDamage: true, description: '+1 INT. Ranged (3). A simple wand crackling with flame. One-handed.' },
   // Utility Magic Weapons (no-damage actions)
-  haunted_bell:          { id: 'haunted_bell',          name: 'Haunted Bell',          slot: 'mainhand', stats: { attack: 1, int: 2 },              weight: 1, shopCost: 8, range: 2, action: 'curse_hex', description: '+2 INT. Ranged (2). Grants Curse Hex: curse a target (no damage). 2 turn CD. One-handed.' },
-  wand_of_lethargy:      { id: 'wand_of_lethargy',      name: 'Wand of Lethargy',      slot: 'mainhand', stats: { attack: 1, int: 2 },              weight: 1, shopCost: 8, range: 2, action: 'lethargy', description: '+2 INT. Ranged (2). Grants Lethargy: slow a target (no damage). 2 turn CD. One-handed.' },
-  frozen_sigil:          { id: 'frozen_sigil',          name: 'Frozen Sigil',          slot: 'mainhand', stats: { attack: 1, int: 2 },              weight: 1, shopCost: 9, range: 2, action: 'flash_freeze', description: '+2 INT. Ranged (2). Grants Flash Freeze: freeze a target (no damage). 2 turn CD. One-handed.' },
-  fang_tipped_wand:      { id: 'fang_tipped_wand',      name: 'Fang-Tipped Wand',      slot: 'mainhand', stats: { attack: 2, int: 2 },              weight: 1, shopCost: 9, range: 2, passives: ['vampirism'], description: '+2 INT. Ranged (2). Drains life on hit. Grants Vampirism. One-handed.' },
-  anemic_rod:            { id: 'anemic_rod',            name: 'Anemic Rod',            slot: 'mainhand', stats: { attack: 1, int: 3 },              weight: 2, shopCost: 9, twoHanded: true, range: 3, action: 'enfeeble', description: '+3 INT. Ranged (3). Grants Enfeeble: weaken a target (no damage). 2 turn CD. Two-handed.' },
-  grimoire_of_gore:      { id: 'grimoire_of_gore',      name: 'Grimoire of Gore',      slot: 'mainhand', stats: { attack: 1, int: 3 },              weight: 2, shopCost: 9, twoHanded: true, range: 3, action: 'gore_curse', description: '+3 INT. Ranged (3). Grants Gore Curse: inflict bleeding on a target (no damage). 2 turn CD. Two-handed.' },
+  haunted_bell:          { id: 'haunted_bell',          name: 'Haunted Bell',          slot: 'mainhand', stats: { attack: 1, int: 2 },              weight: 1, shopCost: 8, range: 2, magicDamage: true, action: 'curse_hex', description: '+2 INT. Ranged (2). Grants Curse Hex: curse a target (no damage). 2 turn CD. One-handed.' },
+  wand_of_lethargy:      { id: 'wand_of_lethargy',      name: 'Wand of Lethargy',      slot: 'mainhand', stats: { attack: 1, int: 2 },              weight: 1, shopCost: 8, range: 2, magicDamage: true, action: 'lethargy', description: '+2 INT. Ranged (2). Grants Lethargy: slow a target (no damage). 2 turn CD. One-handed.' },
+  frozen_sigil:          { id: 'frozen_sigil',          name: 'Frozen Sigil',          slot: 'mainhand', stats: { attack: 1, int: 2 },              weight: 1, shopCost: 9, range: 2, magicDamage: true, action: 'flash_freeze', description: '+2 INT. Ranged (2). Grants Flash Freeze: freeze a target (no damage). 2 turn CD. One-handed.' },
+  fang_tipped_wand:      { id: 'fang_tipped_wand',      name: 'Fang-Tipped Wand',      slot: 'mainhand', stats: { attack: 2, int: 2 },              weight: 1, shopCost: 9, range: 2, magicDamage: true, passives: ['vampirism'], description: '+2 INT. Ranged (2). Drains life on hit. Grants Vampirism. One-handed.' },
+  anemic_rod:            { id: 'anemic_rod',            name: 'Anemic Rod',            slot: 'mainhand', stats: { attack: 1, int: 3 },              weight: 2, shopCost: 9, twoHanded: true, range: 3, magicDamage: true, action: 'enfeeble', description: '+3 INT. Ranged (3). Grants Enfeeble: weaken a target (no damage). 2 turn CD. Two-handed.' },
+  grimoire_of_gore:      { id: 'grimoire_of_gore',      name: 'Grimoire of Gore',      slot: 'mainhand', stats: { attack: 1, int: 3 },              weight: 2, shopCost: 9, twoHanded: true, range: 3, magicDamage: true, action: 'gore_curse', description: '+3 INT. Ranged (3). Grants Gore Curse: inflict bleeding on a target (no damage). 2 turn CD. Two-handed.' },
 
   // --- Off Hand ---
   scrappy_shield:       { id: 'scrappy_shield',       name: 'Scrappy Shield',        slot: 'offhand',  stats: { defense: 1 },                     weight: 1, shopCost: 1, description: 'A crude shield cobbled together from scraps. +1 DEF.' },
@@ -509,7 +678,7 @@ const ITEMS = {
   healing_totem:         { id: 'healing_totem',         name: 'Healing Totem',         slot: 'offhand',  stats: { con: 2, int: 1 },                 weight: 1, shopCost: 10, description: 'Grants Heal Allies: restore 3 HP to adjacent allies.', action: 'heal_allies' },
   frost_ward:            { id: 'frost_ward',            name: 'Frost Ward',            slot: 'offhand',  stats: { defense: 2, int: 1 },              weight: 1, shopCost: 7, passives: ['frost_resistance'], description: '+1 INT. Icy protective ward. Grants Frost Resistance.' },
   living_shield:         { id: 'living_shield',         name: 'Living Shield',         slot: 'offhand',  stats: { defense: 3, con: 1 },              weight: 2, shopCost: 8, passives: ['regeneration', 'thorns'], combatLockBonus: 10, description: '+1 CON. Grows and mends. +10% combat lock chance. Grants Regeneration & Thorns.' },
-  mirror_shield:         { id: 'mirror_shield',         name: 'Mirror Shield',         slot: 'offhand',  stats: { defense: 2, agi: 1 },              weight: 2, shopCost: 9, passives: ['reflect', 'magic_resistance'], combatLockBonus: 10, description: '+1 AGI. Reflects spells and projectiles. +10% combat lock chance. Grants Reflect & Magic Resistance.' },
+  mirror_shield:         { id: 'mirror_shield',         name: 'Mirror Shield',         slot: 'offhand',  stats: { defense: 2, agi: 1 },              weight: 2, shopCost: 9, passives: ['reflect', 'magic_resistance'], combatLockBonus: 10, description: '+1 AGI. Deflects projectiles and resists magic. +10% combat lock chance. Grants Reflect & Magic Resistance.' },
   warhorn:               { id: 'warhorn',               name: 'Warhorn',               slot: 'offhand',  stats: { str: 1, con: 1 },                  weight: 1, shopCost: 9, description: 'Grants Battle Cry: +2 ATK to all adjacent allies for 2 turns.', action: 'battle_cry' },
   lantern_of_souls:      { id: 'lantern_of_souls',      name: 'Lantern of Souls',      slot: 'offhand',  stats: { int: 3 },                          weight: 1, shopCost: 10, passives: ['vampirism'], description: '+3 INT. Feeds on fallen spirits. Grants Vampirism.' },
   orb_of_fire:           { id: 'orb_of_fire',           name: 'Orb of Fire',           slot: 'offhand',  stats: {},                                  weight: 1, shopCost: 9, onHit: { effect: 'burning', chance: 100 }, description: 'Wreathed in flame. Attacks inflict Burning.' },
@@ -517,11 +686,12 @@ const ITEMS = {
   orb_of_poison:         { id: 'orb_of_poison',         name: 'Orb of Poison',         slot: 'offhand',  stats: {},                                  weight: 1, shopCost: 8, onHit: { effect: 'poison', chance: 100 }, description: 'Drips with venom. Attacks inflict Poison.' },
   orb_of_lightning:      { id: 'orb_of_lightning',      name: 'Orb of Lightning',      slot: 'offhand',  stats: {},                                  weight: 1, shopCost: 10, chainLightning: { chance: 100, damage: 2 }, description: 'Crackling energy. Attacks chain lightning to adjacent enemies for 2 damage.' },
   orb_of_vampirism:      { id: 'orb_of_vampirism',      name: 'Orb of Vampirism',      slot: 'offhand',  stats: {},                                  weight: 1, shopCost: 9, passives: ['vampirism'], description: 'Pulses with dark hunger. Attacks drain life (heal on hit).' },
-  tome_of_curses:        { id: 'tome_of_curses',        name: 'Tome of Curses',        slot: 'offhand',  stats: { int: 2 },                          weight: 1, shopCost: 7, onHit: { effect: 'cursed', chance: 35 }, description: '+2 INT. Whispers dark hexes. 35% chance to Curse on hit.' },
-  shrunken_head:         { id: 'shrunken_head',         name: 'Shrunken Head',         slot: 'offhand',  stats: { int: 1, con: 1 },                  weight: 0, shopCost: 6, passives: ['poison_resistance'], onHit: { effect: 'weakened', chance: 25 }, description: '+1 INT, +1 CON. Macabre talisman. 25% chance to Weaken. Grants Poison Resistance.' },
+  tome_of_curses:        { id: 'tome_of_curses',        name: 'Tome of Curses',        slot: 'offhand',  stats: { int: 2 },                          weight: 1, shopCost: 7, onHit: { effect: 'cursed', chance: 100 }, description: '+2 INT. Whispers dark hexes. 100% chance to Curse on hit.' },
+  shrunken_head:         { id: 'shrunken_head',         name: 'Shrunken Head',         slot: 'offhand',  stats: { int: 1, con: 1 },                  weight: 0, shopCost: 6, passives: ['poison_resistance'], onHit: { effect: 'weakened', chance: 100 }, description: '+1 INT, +1 CON. Macabre talisman. 100% chance to Weaken. Grants Poison Resistance.' },
   // Wave 10 — bleeding offhand
   serrated_buckler:      { id: 'serrated_buckler',      name: 'Serrated Buckler',      slot: 'offhand',  stats: { defense: 1 },                       weight: 1, shopCost: 4, onHit: { effect: 'bleeding', chance: 100 }, combatLockBonus: 5, description: '+1 DEF. Jagged rim cuts on contact. 100% Bleeding. +5% combat lock.' },
   carrot_on_a_stick:     { id: 'carrot_on_a_stick',     name: 'Personal Carrot on a Stick', slot: 'offhand', stats: {},                              weight: 0, shopCost: 10, moveBonus: 3, description: 'Always just out of reach. +3 movement speed.' },
+  main_gauche:            { id: 'main_gauche',            name: 'Main Gauche',            slot: 'offhand',  stats: { defense: 1, agi: 1 },               weight: 1, shopCost: 7, selfBuffOnHit: { effect: 'deadly_focus', chance: 25 }, description: '+1 AGI. Duelist\'s off-hand blade. 25% chance on hit to gain Deadly Focus (guaranteed crit on next attack).' },
   bucket_of_water:       { id: 'bucket_of_water',       name: 'Bucket of Water',       slot: 'offhand',  stats: { defense: 1 },                      weight: 1, shopCost: 4, passives: ['fire_resistance'], description: '+1 DEF. A sloshing bucket. Immune to Burning. Grants Fire Resistance.' },
   pot_of_boiling_water:  { id: 'pot_of_boiling_water',  name: 'Pot of Boiling Water',  slot: 'offhand',  stats: { defense: 1 },                      weight: 1, shopCost: 3, passives: ['fire_resistance'], boilingWater: true, description: '+1 DEF. Scalding hot. Immune to Burning, but take 1 damage each time fire is extinguished. Grants Fire Resistance.' },
 
@@ -531,7 +701,7 @@ const ITEMS = {
   lucky_charm:          { id: 'lucky_charm',          name: 'Lucky Charm',           slot: 'accessory', stats: { str: 1, agi: 1, con: 1, int: 1 }, weight: 0, shopCost: 7, description: '+1 to all stats.' },
   cloak_pin_of_shadows: { id: 'cloak_pin_of_shadows', name: 'Cloak Pin of Shadows',  slot: 'accessory', stats: { agi: 3 },                        weight: 0, shopCost: 7, description: '+3 AGI. Blend into darkness.' },
   warrior_pendant:      { id: 'warrior_pendant',      name: "Warrior's Pendant",     slot: 'accessory', stats: { str: 2, con: 1 },                weight: 0, shopCost: 6, description: '+2 STR, +1 CON. A soldier\'s heirloom.' },
-  berserker_torc:        { id: 'berserker_torc',        name: 'Berserker\'s Torc',     slot: 'accessory', stats: { str: 3 },                        weight: 0, shopCost: 11, description: '+3 STR. Grants Berserk: +5 ATK, -3 DEF this turn.', action: 'berserk' },
+  berserker_torc:        { id: 'berserker_torc',        name: 'Berserker\'s Torc',     slot: 'accessory', stats: { str: 3 },                        weight: 0, shopCost: 11, description: '+3 STR. Grants Berserk: +5 ATK, -3 DEF for 2 turns.', action: 'berserk' },
   pendant_of_warding:    { id: 'pendant_of_warding',    name: 'Pendant of Warding',    slot: 'accessory', stats: { defense: 2, int: 1 },             weight: 0, shopCost: 6, passives: ['reflect'], description: '+1 INT. Wards against physical harm. Grants Reflect.' },
   scouts_compass:        { id: 'scouts_compass',        name: 'Scout\'s Compass',      slot: 'accessory', stats: { agi: 2, int: 1 },                weight: 0, shopCost: 6, description: '+2 AGI, +1 INT. Always find the way.' },
   band_of_resilience:    { id: 'band_of_resilience',    name: 'Band of Resilience',    slot: 'accessory', stats: { con: 3 },                        weight: 0, shopCost: 7, passives: ['regeneration'], description: '+3 CON. Unyielding endurance. Grants Regeneration.' },
@@ -545,6 +715,11 @@ const ITEMS = {
   amulet_of_frost_ward:  { id: 'amulet_of_frost_ward',  name: 'Amulet of Frost Ward',  slot: 'accessory', stats: { con: 1, int: 1 },                weight: 0, shopCost: 5, passives: ['frost_resistance'], description: '+1 CON, +1 INT. Cold-warding charm. Grants Frost Resistance.' },
   amulet_of_evasion:     { id: 'amulet_of_evasion',     name: 'Amulet of Evasion',     slot: 'accessory', stats: { },                        weight: 0, shopCost: 8, passives: ['evasion'], description: '+1 AGI. Shimmers when danger approaches. +10% dodge chance. Grants Evasion.' },
   atlas_charm:           { id: 'atlas_charm',           name: "Atlas' Charm",          slot: 'accessory', stats: { str: 1 },                     weight: 0, shopCost: 12, passives: ['weightless'], description: '+1 STR. A titan\'s gift — equipment feels light as air. Grants Weightless (ignore weight penalties).' },
+  // --- Wave 21: New Accessories ---
+  fighting_ring:         { id: 'fighting_ring',         name: 'Fighting Ring',           slot: 'accessory', stats: { str: 1 },                     weight: 0, shopCost: 10, action: 'double_strike', description: '+1 STR. Grants Double Strike action. 2 turn CD.' },
+  blinking_amulet:       { id: 'blinking_amulet',       name: 'Blinking Amulet',         slot: 'accessory', stats: { agi: 2 },                     weight: 0, shopCost: 12, action: 'blink', description: '+2 AGI. Grants Blink: teleport up to 3 tiles in any direction, ignoring walls and combat lock. 3 turn CD.' },
+  smoke_bomb:            { id: 'smoke_bomb',            name: 'Smoke Bomb',              slot: 'accessory', stats: {},                              weight: 0, shopCost: 10, action: 'smoke_bomb', description: 'Grants Smoke Bomb action: Deploy smoke for 3 turns. You and adjacent allies cannot be targeted by ranged attacks.' },
+  corrupted_chalice:     { id: 'corrupted_chalice',     name: 'Corrupted Chalice',       slot: 'accessory', stats: { int: 1 },                     weight: 0, shopCost: 9, action: 'corrupted_chalice', description: '+1 INT. Sacrifice 5 HP to heal an adjacent ally for 5 HP. 2 turn CD.' },
 
   // --- Wave 3: Special Items ---
   mechanical_arm:       { id: 'mechanical_arm',       name: 'Mechanical Arm Extender', slot: 'accessory', stats: {},                               weight: 1, shopCost: 10, passives: ['extended_reach'], description: 'Extends melee weapon reach by 1 tile. Grants Extended Reach.' },
@@ -617,10 +792,19 @@ const ITEMS = {
   martyrs_vestments:         { id: 'martyrs_vestments',         name: "Martyr's Vestments",        slot: 'body',     stats: { defense: 2, con: 3 },              weight: 1, shopCost: 9, passives: ['martyr'], description: '+2 DEF, +3 CON. When you fall, adjacent allies heal 10 HP. Destroyed on death. Grants Martyr.' },
   sacrificial_scarf:         { id: 'sacrificial_scarf',         name: 'Sacrificial Scarf',         slot: 'head',     stats: { defense: 1, con: 2, int: 1 },      weight: 0, shopCost: 9, passives: ['martyr'], description: '+1 DEF, +2 CON, +1 INT. Woven from blessed threads. When you fall, adjacent allies heal 10 HP. Destroyed on death. Grants Martyr.' },
   // Wave 13 — jinx items
-  voodoo_fiddle:             { id: 'voodoo_fiddle',             name: 'Voodoo Fiddle',             slot: 'mainhand', stats: { attack: 0, int: 3 },               weight: 2, shopCost: 11, twoHanded: true, noAttack: true, passives: ['jinx'], description: '+3 INT. Cannot attack. Eerie melodies hex nearby foes. Adjacent enemies have -15% crit chance. Grants Jinx. Two-handed.' },
+  voodoo_fiddle:             { id: 'voodoo_fiddle',             name: 'Voodoo Fiddle',             slot: 'mainhand', stats: { attack: 0, int: 3 },               weight: 2, shopCost: 11, twoHanded: true, noAttack: true, passives: ['jinx'], description: '+3 INT. Cannot attack. Eerie melodies hex nearby foes. Enemies within 3 tiles have -15% crit chance. Grants Jinx. Two-handed.' },
   // Wave 13 — momentum items
   boots_of_momentum:         { id: 'boots_of_momentum',         name: 'Boots of Momentum',         slot: 'feet',     stats: { agi: 2, str: 1 },                  weight: 1, shopCost: 9, passives: ['momentum'], description: '+2 AGI, +1 STR. Build speed into power. Every 3 tiles moved grants +1 ATK. Grants Momentum.' },
   charging_lance:            { id: 'charging_lance',            name: 'Charging Lance',            slot: 'mainhand', stats: { attack: 4, agi: 2 },              weight: 3, shopCost: 11, twoHanded: true, passives: ['momentum'], description: '+2 AGI. Build up devastating impact. Every 3 tiles moved grants +1 ATK. Grants Momentum. Two-handed.' },
+  // Wave 16 — new items
+  midas_gloves:              { id: 'midas_gloves',              name: 'Midas Gloves',              slot: 'hands',    stats: { str: 1 },                          weight: 1, shopCost: 10, passives: ['midas_touch'], description: '+1 STR. 40% chance when killing an enemy to turn their tile into a gold deposit. Grants Midas Touch.' },
+  twinshot_arrow:            { id: 'twinshot_arrow',            name: 'Twinshot Arrow',            slot: 'accessory', stats: {},                                 weight: 0, shopCost: 11, passives: ['twinshot'], description: 'When attacking with a bow, fire a second arrow at the same target. Grants Twinshot.' },
+  duellists_pistol:          { id: 'duellists_pistol',          name: "Duellist's Pistol",         slot: 'offhand',  stats: {},                                  weight: 1, shopCost: 9, action: 'pistol_shot', description: 'Grants Pistol Shot: fire at an enemy within 3 tiles for 3 damage. No cooldown.' },
+  sweeping_glaive:           { id: 'sweeping_glaive',           name: 'Sweeping Glaive',           slot: 'mainhand', stats: { attack: 5, str: 2, agi: 1 },     weight: 4, shopCost: 13, twoHanded: true, passives: ['sweeping_strikes'], description: '+2 STR, +1 AGI. Sweeping arc. When you hit an enemy, roll an attack against one other adjacent enemy. Grants Sweeping Strikes. Two-handed.' },
+  cleaving_hatchet:           { id: 'cleaving_hatchet',           name: 'Cleaving Hatchet',          slot: 'mainhand', stats: { attack: 1 },                      weight: 1, shopCost: 6, passives: ['sweeping_strikes'], description: 'Wide-headed axe. When you hit an enemy, roll an attack against one other adjacent enemy. Grants Sweeping Strikes.' },
+  bow_of_giants:             { id: 'bow_of_giants',             name: 'Bow of Giants',             slot: 'mainhand', stats: { attack: 0, str: 4 },              weight: 4, shopCost: 14, twoHanded: true, range: 4, noAttack: true, action: 'giant_shot', description: '+4 STR. Grants Giant Shot: fire a massive arrow at an enemy within range, dealing STR damage. Two-handed.' },
+  // Wave 20 — necromancy weapon
+  gravecallers_scythe:       { id: 'gravecallers_scythe',       name: "Gravecaller's Scythe",       slot: 'mainhand', stats: { attack: 5, str: 2, int: 1 },     weight: 3, shopCost: 13, twoHanded: true, passives: ['gravecall'], description: "+2 STR, +1 INT. A cursed scythe that reaps souls. On kill, raise a lesser zombie from the fallen enemy. Grants Gravecall. Two-handed." },
   // Excalibur — granted by consumable
   excalibur:                 { id: 'excalibur',                 name: 'Excalibur',                 slot: 'mainhand', stats: { attack: 7, str: 3, con: 2 },     weight: 3, shopCost: 20, twoHanded: true, passives: ['piercing'], onHit: { effect: 'weakened', chance: 50 }, description: '+3 STR, +2 CON. The legendary blade of kings. 50% chance to Weaken. Grants Vampirism & Piercing. Two-handed.' },
 };
@@ -637,7 +821,7 @@ const CONSUMABLES = {
   lumber_pile:      { id: 'lumber_pile',      name: 'Lumber Pile',      icon: '🪵', consumable: true, shopCost: 3, spawnIn: ['ground', 'beast'], description: 'Collect for 3–5 wood.' },
   stone_pile:       { id: 'stone_pile',       name: 'Stone Pile',       icon: '🧱', consumable: true, shopCost: 3, spawnIn: ['ground', 'beast'], description: 'Collect for 3–5 stone.' },
   water_pouch:      { id: 'water_pouch',      name: 'Water Pouch',      icon: '💧', consumable: true, shopCost: 3, spawnIn: ['ground', 'beast'], description: 'Drink for 3–5 water.' },
-  potion_pouch:     { id: 'potion_pouch',     name: 'Potion Pouch',     icon: '🎒', consumable: true, passive: true, shopCost: 5, spawnIn: ['beast', 'vendor'], description: 'Generates a Healing Potion every 2 turns.' },
+  potion_pouch:     { id: 'potion_pouch',     name: 'Potion Pouch',     icon: '🎒', consumable: true, passive: true, shopCost: 5, spawnIn: ['beast', 'vendor'], description: 'Generates a Healing Potion every 4 turns.' },
   fresh_fish:       { id: 'fresh_fish',       name: 'Fresh Fish',       icon: '🐟', consumable: true, shopCost: 2, spawnIn: ['beast'], description: 'Restores 4 HP.' },
   petroleum_jelly:  { id: 'petroleum_jelly',  name: 'Petroleum Jelly',  icon: '🫧', consumable: true, shopCost: 5, spawnIn: ['beast', 'vendor'], description: '100% dodge chance for 2 turns.' },
   seed_of_god:      { id: 'seed_of_god',      name: 'Seed of God',      icon: '🌱', consumable: true, shopCost: 4, spawnIn: ['beast', 'vendor'], description: 'Grow a grove of trees around you.' },
@@ -656,6 +840,10 @@ const CONSUMABLES = {
   treasure_map:        { id: 'treasure_map',        name: 'Treasure Map',        icon: '🗺️', consumable: true, shopCost: 6, spawnIn: ['ground', 'beast', 'vendor'], description: 'Reveals the location of buried treasure — spawns a high-value item somewhere on the map.' },
   excalibur_stone:     { id: 'excalibur_stone',     name: 'Embedded Excalibur', icon: '⚔️', consumable: true, shopCost: 0, spawnIn: ['ground'], description: 'A legendary sword lodged in stone. Requires 5+ STR to pull free. Grants Excalibur on use.' },
   asbestos_applicator: { id: 'asbestos_applicator', name: 'Asbestos Applicator', icon: '🧯', consumable: true, shopCost: 8, spawnIn: ['vendor'], description: 'Permanently grants Fire Resistance (immune to Burning).' },
+  loaded_die:          { id: 'loaded_die',          name: 'Loaded Die',          icon: '🎲', consumable: true, shopCost: 5, spawnIn: ['ground', 'beast', 'vendor'], description: 'Grants Deadly Focus — your next attack is a guaranteed critical hit.' },
+  scroll_of_retrieve:  { id: 'scroll_of_retrieve',  name: 'Scroll of Retrieve',  icon: '📜', consumable: true, shopCost: 7, spawnIn: ['ground', 'beast', 'vendor'], description: 'Select one of your units anywhere on the map — teleport them to an adjacent tile.' },
+  scroll_of_swap:      { id: 'scroll_of_swap',      name: 'Scroll of Swap',      icon: '📜', consumable: true, shopCost: 7, spawnIn: ['ground', 'beast', 'vendor'], description: 'Switch places with any unit on the map (ally or enemy).' },
+  explosive_barrel:    { id: 'explosive_barrel',    name: 'Explosive Barrel',    icon: '🛢', consumable: true, shopCost: 0, spawnIn: [], description: 'Place on an adjacent tile. Explodes when attacked or shot, dealing 8 damage to all units within 2 tiles.' },
 };
 
 const CONSUMABLE_IDS = Object.keys(CONSUMABLES);
@@ -663,6 +851,19 @@ const GROUND_CONSUMABLES = CONSUMABLE_IDS.filter(id => CONSUMABLES[id].spawnIn.i
 const BEAST_CONSUMABLES = CONSUMABLE_IDS.filter(id => CONSUMABLES[id].spawnIn.includes('beast'));
 const VENDOR_CONSUMABLES = CONSUMABLE_IDS.filter(id => CONSUMABLES[id].spawnIn.includes('vendor'));
 const NPC_CONSUMABLES = BEAST_CONSUMABLES; // All NPC types can carry beast-pool consumables
+
+// Default forge catalog (these items are forge-only, excluded from ground/beast/shop loot):
+const FORGE_BASE_ITEMS = [
+  'leather_cap',      // head   – DEF+1
+  'simple_robe',      // body   – DEF+1
+  'leather_vest',     // body   – DEF+1, AGI+2
+  'leather_leggings', // legs   – DEF+1
+  'leather_boots',    // feet   – CON+1
+  'short_sword',      // weapon – ATK+2
+  'scrappy_shield',    // shield – DEF+1,
+  'leather_gloves',
+  'shortbow'
+];
 
 const LOOT_ITEMS = [
   'flaming_sword', 'helm_of_constitution', 'boots_of_speed', 'gloves_of_haste',
@@ -737,8 +938,20 @@ const LOOT_ITEMS = [
   // Wave 14 — reactive armor & water offhands
   'inferno_plate', 'venomspine_mail', 'bucket_of_water', 'pot_of_boiling_water',
   // Wave 15 — utility magic weapons
-  'haunted_bell', 'wand_of_lethargy', 'frozen_sigil', 'fang_tipped_wand', 'anemic_rod', 'grimoire_of_gore'
-];
+  'haunted_bell', 'wand_of_lethargy', 'frozen_sigil', 'fang_tipped_wand', 'anemic_rod', 'grimoire_of_gore',
+  // Wave 16 — new items
+  'midas_gloves', 'twinshot_arrow', 'duellists_pistol', 'sweeping_glaive', 'cleaving_hatchet', 'bow_of_giants',
+  // Wave 17
+  'bouncy_helmet',
+  // Wave 18
+  'stormstrike_mace', 'main_gauche',
+  // Wave 19
+  'elemental_glaive',
+  // Wave 20
+  'gravecallers_scythe',
+  // Wave 21 — new accessories
+  'fighting_ring', 'blinking_amulet', 'smoke_bomb', 'corrupted_chalice'
+].filter(id => !FORGE_BASE_ITEMS.includes(id));
 
 // NPC loot tiers based on item shop cost
 const LOW_VALUE_LOOT = LOOT_ITEMS.filter(id => ITEMS[id] && ITEMS[id].shopCost <= 6);
@@ -909,6 +1122,16 @@ const UNIT_DEFS = {
     summon: true,
     startingEquipment: { head: null, body: null, legs: null, feet: null, mainhand: 'short_sword', offhand: 'wooden_shield', accessory: null }
   },
+  lesser_zombie: {
+    name: 'lesser zombie', char: 'ƶ', hp: 8, movement: 2,
+    attack: 5, defense: 1,
+    str: 0, agi: 0, con: 0, int: 0,
+    canGather: false, canFight: true,
+    passives: ['vampirism'],
+    cost: { wood: 0, stone: 0, gold: 0, water: 0 },
+    summon: true,
+    startingEquipment: { head: null, body: null, legs: null, feet: null, mainhand: null, offhand: null, accessory: null }
+  },
   summoned_archer: {
     name: 'Summoned Archer', char: 'a', hp: 5, movement: 3,
     attack: 2, defense: 0,
@@ -981,7 +1204,11 @@ const STRUCTURE_DEFS = {
       skeletons: 'Crypt',
       trolls: 'War Den',
       bards: 'Conservatory',
-      kobolds: 'Warren'
+      kobolds: 'Warren',
+      nomads: 'War Camp',
+      trade_guild: 'Auction House',
+      ogres: 'Smashing Pit',
+      merfolk: 'Tidal Grotto'
     }
   },
   forge: {
@@ -997,18 +1224,6 @@ const STRUCTURE_DEFS = {
 // GAME STATE
 // ============================================================
 
-// Default forge catalog:
-const FORGE_BASE_ITEMS = [
-  'leather_cap',      // head   – DEF+1
-  'simple_robe',      // body   – DEF+1
-  'leather_vest',     // body   – DEF+1, AGI+2
-  'leather_leggings', // legs   – DEF+1
-  'leather_boots',    // feet   – CON+1
-  'short_sword',      // weapon – ATK+2
-  'scrappy_shield',    // shield – DEF+1,
-  'leather_gloves',
-  'shortbow'
-];
 function getForgeItemsForFaction(faction) {
   const fDef = FACTIONS[faction];
   const baseItems = [...FORGE_BASE_ITEMS];
@@ -1024,8 +1239,10 @@ let selectedVendor = null;
 let selectedBazaar = null;
 let selectedStructure = null;
 let selectedTunnel = null;
+let selectedBarrel = null;
 let interactionMode = 'idle';
 let mirrorPending = null;
+let scrollPending = null;
 let placingUnitType = null;
 let placingStructureType = null;
 let reachableTiles = [];
@@ -1085,12 +1302,20 @@ const ABILITY_COOLDOWNS = {
   use_tunnel:       3,  // Travel through tunnel
   scavenge:         5,  // Find random item
   booby_trap:       4,  // Place trap
+  forge_barrel:     4,  // Generate explosive barrel
+  poisonous_shiv:   2,  // Instant max poison
+  rescue:           3,  // Teleport to ally and heal
+  appraise_destroy:  0,  // Destroy item for passives (no CD)
+  bounty_mark:       4,  // Mark enemy for death
   // Item-granted abilities
   teleport_home:    5,  // Very powerful repositioning
   double_strike:    2,  // Extra free attack
   war_stomp:        2,  // AoE knockback
   heal_allies:      2,  // AoE heal
-  berserk:          2,  // Big ATK boost
+  berserk:          3,  // Big ATK boost (lasts 2 turns)
+  blink:            3,  // Teleport up to 3 tiles
+  corrupted_chalice: 2,  // Sacrifice HP to heal ally
+  smoke_bomb:        4,  // Deploy smoke concealment for 3 turns
   // Magic weapon abilities
   runic_conjure:    3,  // Generate random consumable
   curse_hex:        2,  // Curse target (no damage)
@@ -1102,7 +1327,7 @@ const ABILITY_COOLDOWNS = {
   frost_ray:        2,  // Single target freeze + damage
   lightning_bolt:   2,  // Long range damage + slow
   life_drain:       3,  // Damage + self heal
-  poison_cloud:     2,  // AoE poison
+  poison_cloud:     1,  // AoE poison
   battle_cry:       3,  // AoE ally ATK buff
   // Special item abilities
   detonate:         0,  // One-time use (kills wearer)
@@ -1115,6 +1340,15 @@ const ABILITY_COOLDOWNS = {
   fish:             2,  // Fishing rod — catch fresh fish
   summon_pooka:     10,  // Pocket Pooka — summon powerful creature
   summon_zombie:    4,  // Tome — summon zombie warrior
+  // Wave 16 item abilities
+  pistol_shot:      0,  // Duellist's Pistol — no cooldown
+  giant_shot:       3,  // Bow of Giants — STR-based ranged shot
+  // Ogre abilities
+  ogre_throw:       1,  // Hurl adjacent unit
+  static_discharge: 1,  // Consume static charges for damage (no CD, but needs charges)
+  // Merfolk abilities
+  morph:            0,  // Reallocate stats — once per turn (no cooldown)
+  harpoon_shot:     2,  // Hook enemy + drag on move (this turn only)
 };
 
 function getAbilityCooldown(abilityId) {
@@ -1127,7 +1361,9 @@ const ITEM_ACTION_IDS = new Set([
   'berserk', 'fireball', 'frost_ray', 'lightning_bolt', 'life_drain', 'poison_cloud',
   'battle_cry', 'detonate', 'precision_shot', 'grapple', 'ensnare', 'grab', 'divine_barrier',
   'fish', 'summon_pooka', 'summon_zombie', 'boomerang_throw', 'runic_conjure',
-  'curse_hex', 'lethargy', 'flash_freeze', 'enfeeble', 'gore_curse'
+  'curse_hex', 'lethargy', 'flash_freeze', 'enfeeble', 'gore_curse',
+  'pistol_shot', 'giant_shot',
+  'blink', 'corrupted_chalice', 'smoke_bomb'
 ]);
 
 function isAbilityReady(unit, abilityId) {
@@ -1145,8 +1381,8 @@ function getAbilityCooldownRemaining(unit, abilityId) {
 
 function startAbilityCooldown(unit, abilityId) {
   unit.specialActionsUsed.push(abilityId);
-  // Track item action usage (one item action per turn)
-  if (ITEM_ACTION_IDS.has(abilityId)) {
+  // Track item action usage (one item action per turn, unless multi_action passive)
+  if (ITEM_ACTION_IDS.has(abilityId) && !hasPassive(unit, 'multi_action')) {
     unit.hasUsedItemAction = true;
   }
   // Track last ability used per-unit (for Mimic)
@@ -1177,12 +1413,12 @@ function startAbilityCooldown(unit, abilityId) {
 // STATUS EFFECTS
 // ============================================================
 const STATUS_EFFECTS = {
-  poison:   { id: 'poison',   name: 'Poison',   icon: '☠',  color: '#00CC00', dot: 1, duration: 3, desc: '2 damage per turn for 3 turns' },
+  poison:   { id: 'poison',   name: 'Poison',   icon: '☠',  color: '#00CC00', dot: 1, duration: 3, stackable: true, maxStacks: 5, desc: 'Stacks up to 5. 1-2 stacks: 1 dmg/turn, 3-4 stacks: 2 dmg/turn, 5 stacks: 3 dmg/turn. Lasts 3 turns.' },
   burning:  { id: 'burning',  name: 'Burning',  icon: '🔥', color: '#FF4400', dot: 2, duration: 2, desc: '3 damage per turn for 2 turns' },
   bleeding: { id: 'bleeding', name: 'Bleeding', icon: '🩸', color: '#CC0000', dot: 1, duration: 4, desc: '1 damage per turn for 4 turns' },
   weakened: { id: 'weakened', name: 'Weakened', icon: '⬇',  color: '#AA8800', atkMod: -3, duration: 2, desc: '-3 ATK for 2 turns' },
   slowed:   { id: 'slowed',   name: 'Slowed',   icon: '🐌', color: '#6688AA', moveMod: -2, duration: 2, desc: '-2 movement for 2 turns' },
-  frozen:   { id: 'frozen',   name: 'Frozen',   icon: '❄',  color: '#88CCFF', duration: 2, desc: 'Cannot move for 1 turn' },
+  frozen:   { id: 'frozen',   name: 'Frozen',   icon: '❄',  color: '#88CCFF', duration: 2, desc: 'Cannot move for 1 turn. Cannot perform Attacks of Opportunity' },
   cursed:    { id: 'cursed',    name: 'Cursed',    icon: '💀', color: '#8800AA', defMod: -3, duration: 2, desc: '-3 DEF for 2 turns' },
   shattered: { id: 'shattered', name: 'Shattered', icon: '💎', color: '#AA4400', defMod: -4, duration: 2, desc: '-4 DEF for 2 turns (armor cracked)' },
   sundered:  { id: 'sundered',  name: 'Sundered',  icon: '⚒',  color: '#996633', defMod: -2, duration: 2, desc: '-2 DEF for 2 turns (armor weakened)' },
@@ -1195,6 +1431,8 @@ const STATUS_EFFECTS = {
   greased:      { id: 'greased',      name: 'Greased',      icon: '🫧', color: '#EEDD44', duration: 2, desc: '100% dodge chance for 2 turns (Petroleum Jelly)' },
   on_strike:    { id: 'on_strike',    name: 'On Strike',    icon: '✊', color: '#DD2222', duration: 2, desc: 'Refusing to work! Cannot gather resources for 2 turns' },
   hastened:     { id: 'hastened',     name: 'Hastened',     icon: '⚡', color: '#44CCFF', moveMod: 3, duration: 3, desc: '+3 movement for 3 turns' },
+  deadly_focus: { id: 'deadly_focus', name: 'Deadly Focus', icon: '🎯', color: '#FF2266', duration: 99, desc: 'Next attack is a guaranteed critical hit. Removed after attacking.' },
+  bounty_marked: { id: 'bounty_marked', name: 'Bounty Marked', icon: '💰', color: '#DAA520', duration: 99, desc: 'Marked for death! Takes +3 damage from all sources. Grants 3 gold to the killer.' },
 };
 
 // ============================================================
@@ -1206,7 +1444,7 @@ const PASSIVES = {
   water_walking:      { id: 'water_walking',      name: 'Water Walking',      icon: '🌊', desc: 'Can move through water tiles' },
   haste:              { id: 'haste',              name: 'Haste',              icon: '⚡', desc: '+2 movement speed' },
   mounted:            { id: 'mounted',            name: 'Mounted',            icon: '🐴', desc: '+5 movement speed' },
-  reflect:            { id: 'reflect',            name: 'Reflect',            icon: '🔃', desc: '30% chance to reflect ranged/magic damage back at the attacker' },
+  reflect:            { id: 'reflect',            name: 'Reflect',            icon: '🔃', desc: '30% chance to reflect physical projectiles (arrows, bolts, shots) back at the attacker. Does not work against magic.' },
   vampirism:          { id: 'vampirism',          name: 'Vampirism',          icon: '🧛', desc: 'On successful hit, heal 1-3 HP' },
   resource_gathering: { id: 'resource_gathering', name: 'Resource Gathering', icon: '⛏', desc: 'Can gather resources from adjacent tiles' },
   poison_resistance:  { id: 'poison_resistance',  name: 'Poison Resistance',  icon: '🛡', desc: 'Immune to Poison' },
@@ -1215,9 +1453,9 @@ const PASSIVES = {
   magic_resistance:   { id: 'magic_resistance',   name: 'Magic Resistance',   icon: '✨', desc: 'Reduce magic damage by 2' },
   regeneration:       { id: 'regeneration',       name: 'Regeneration',       icon: '💚', desc: 'Heal 2 HP per turn instead of 1 when out of combat' },
   combat_regeneration: { id: 'combat_regeneration', name: 'Combat Regeneration', icon: '❤️‍🔥', desc: 'Heal 2 HP per turn instead of 1, even while adjacent to enemies' },
-  thorns:             { id: 'thorns',             name: 'Thorns',             icon: '🌿', desc: 'Deal 1 damage back to melee attackers when hit' },
+  thorns:             { id: 'thorns',             name: 'Thorns',             icon: '🌿', desc: 'Deal 1 damage per stack back to melee attackers when hit (stacks)' },
   steadfast:          { id: 'steadfast',          name: 'Steadfast',          icon: '🏔', desc: 'Immune to Slowed and movement reduction effects' },
-  piercing:           { id: 'piercing',           name: 'Piercing',           icon: '🗡', desc: 'Attacks ignore 2 points of enemy DEF' },
+  piercing:           { id: 'piercing',           name: 'Piercing',           icon: '🗡', desc: 'Attacks ignore 2 points of enemy DEF per stack (stacks)' },
   evasion:            { id: 'evasion',            name: 'Evasion',            icon: '💨', desc: '+10% bonus dodge chance' },
   bulwark:            { id: 'bulwark',            name: 'Bulwark',            icon: '🛡', desc: 'Take 1 less damage from all sources per stack (min 1). Stacks from multiple items.' },
   extended_reach:     { id: 'extended_reach',     name: 'Extended Reach',     icon: '🦾', desc: '+1 melee weapon range (melee weapons only)' },
@@ -1229,23 +1467,39 @@ const PASSIVES = {
   dual_grip:          { id: 'dual_grip',          name: 'Dual Grip',          icon: '🤲', desc: 'Can equip an offhand item while wielding a two-handed weapon' },
   static_shock:       { id: 'static_shock',       name: 'Static Shock',       icon: '⚡', desc: 'Melee attackers take 2–4 lightning damage when they hit you' },
   unarmored_fury:     { id: 'unarmored_fury',     name: 'Unarmored Fury',     icon: '💢', desc: 'If no armor is worn (head/body/legs/feet/hands/offhand), gain +5 ATK and +3 movement but DEF is set to 0' },
-  sanguine_feast:     { id: 'sanguine_feast',     name: 'Sanguine Feast',     icon: '🩸', desc: 'Whenever an enemy within 5 spaces takes bleeding damage, heal for 1' },
+  sanguine_feast:     { id: 'sanguine_feast',     name: 'Sanguine Feast',     icon: '🩸', desc: 'All attacks inflict Bleeding. Whenever an enemy within 5 spaces takes bleeding damage, heal for 1' },
   weightless:         { id: 'weightless',         name: 'Weightless',         icon: '🪶', desc: 'Equipment weight has no effect on movement' },
   executioner:        { id: 'executioner',        name: 'Executioner',        icon: '🪓', desc: 'Deal double damage to enemies below 25% HP' },
   sundering_blows:    { id: 'sundering_blows',    name: 'Sundering Blows',    icon: '⚒', desc: 'Attacks apply Sundered (-2 DEF for 2 turns)' },
   overwatch:          { id: 'overwatch',          name: 'Overwatch',          icon: '🎯', desc: 'Fire a ranged attack of opportunity when an enemy moves within your weapon range' },
   stone_skin_passive: { id: 'stone_skin_passive', name: 'Stone Skin',         icon: '🗿', desc: 'Immune to Bleeding and Poison' },
   martyr:             { id: 'martyr',             name: 'Martyr',             icon: '✝', desc: 'When this unit dies, all adjacent allies heal 10 HP. Martyr items are destroyed.' },
-  jinx:               { id: 'jinx',               name: 'Jinx',               icon: '🧿', desc: 'Adjacent enemies have -15% crit chance' },
+  jinx:               { id: 'jinx',               name: 'Jinx',               icon: '🧿', desc: 'Enemies within 3 tiles have -15% crit chance' },
   momentum:           { id: 'momentum',           name: 'Momentum',           icon: '🏃', desc: 'Every 3 tiles moved before attacking grants +1 ATK to that attack' },
   inferno_armor:      { id: 'inferno_armor',      name: 'Inferno Armor',      icon: '🔥', desc: 'Melee attackers are set on fire (Burning for 2 turns)' },
   venomous_armor:     { id: 'venomous_armor',     name: 'Venomous Armor',     icon: '☠', desc: 'Melee attackers are poisoned (Poison for 3 turns)' },
-  mirrored:           { id: 'mirrored',           name: 'Mirrored',           icon: '🪞', desc: 'When using a magic weapon ability, your mirror image also casts it' },
+  mirrored:           { id: 'mirrored',           name: 'Mirrored',           icon: '🪞', desc: 'When attacking with a magic weapon or using its ability, your mirror image also casts it' },
   spongey:            { id: 'spongey',            name: 'Spongey',            icon: '🧽', desc: 'Soaks 50% of damage dealt to adjacent allies — that damage is transferred to this unit instead' },
   lucky_rune:         { id: 'lucky_rune',         name: 'Lucky Rune',         icon: '🍀', desc: '50% chance to not consume a consumable when used' },
   demolitionist:      { id: 'demolitionist',      name: 'Demolitionist',      icon: '💣', desc: 'Deal double damage to structures/buildings' },
   bardic_wisdom:      { id: 'bardic_wisdom',      name: 'Bardic Wisdom',      icon: '📖', desc: 'Aura: +1 INT to allies within 3 tiles (stacks)' },
+  midas_touch:        { id: 'midas_touch',        name: 'Midas Touch',        icon: '✨', desc: '40% chance when killing an enemy to turn their tile into a gold deposit' },
+  gravecall:          { id: 'gravecall',          name: 'Gravecall',          icon: '🧟', desc: 'On kill, chance to raise a lesser zombie from the fallen enemy' },
+  twinshot:           { id: 'twinshot',           name: 'Twinshot',           icon: '🏹', desc: 'When attacking with a bow, fire a second arrow at the same target' },
+  sweeping_strikes:   { id: 'sweeping_strikes',   name: 'Sweeping Strikes',   icon: '🌀', desc: 'When you hit an enemy, deal the same damage to one other adjacent enemy' },
+  potent_formula:      { id: 'potent_formula',      name: 'Potent Formula',      icon: '☠', desc: 'When you kill a poisoned enemy, spread their remaining poison stacks to nearby enemies within 2 tiles' },
+  smoke_concealment:   { id: 'smoke_concealment',   name: 'Concealed by Smoke',  icon: '💨', desc: 'Aura: you and adjacent allies cannot be targeted by ranged attacks' },
+  multi_action:        { id: 'multi_action',        name: 'Man of Action',       icon: '💎', desc: 'Can use multiple item actions per turn (no limit)' },
+  static_conduit:      { id: 'static_conduit',      name: 'Static Conduit',      icon: '⚡', desc: 'Whenever an enemy takes damage within 3 spaces, gain a Static Charge (used by Static Discharge)' },
+  swimming:            { id: 'swimming',            name: 'Swimming',            icon: '🏊', desc: 'Can move through water tiles' },
+  dual_wield:          { id: 'dual_wield',          name: 'Dual Wield',          icon: '⚔️', desc: 'Can equip weapons in the offhand slot. When attacking, swing twice — once with each hand.' },
+  run_and_gun:         { id: 'run_and_gun',         name: 'Run and Gun',         icon: '🏃', desc: 'Shooting does not prevent movement. Can move after attacking.' },
 };
+
+// Check if a unit is concealed by smoke (has smoke_concealment or adjacent ally has it)
+function isConcealedBySmoke(unit) {
+  return hasPassive(unit, 'smoke_concealment');
+}
 
 // Get all passives a unit has (innate + from items)
 function getUnitPassives(unit) {
@@ -1266,9 +1520,21 @@ function getUnitPassives(unit) {
   if (unit.combatRegenTurns && unit.combatRegenTurns > 0) {
     passives.add('combat_regeneration');
   }
+  // Smoke Bomb temporary smoke concealment (self + adjacent allies)
+  if (unit.smokeBombTurns && unit.smokeBombTurns > 0) {
+    passives.add('smoke_concealment');
+  } else if (G && G.units) {
+    for (const ally of G.units) {
+      if (ally.hp > 0 && ally.id !== unit.id && ally.playerId === unit.playerId &&
+          isAdjacent(unit.x, unit.y, ally.x, ally.y) && ally.smokeBombTurns && ally.smokeBombTurns > 0) {
+        passives.add('smoke_concealment');
+        break;
+      }
+    }
+  }
   // Passives from equipped items
   if (unit.equipment) {
-    for (const slot of EQUIP_SLOTS) {
+    for (const slot of getUnitEquipSlots(unit)) {
       const item = unit.equipment[slot];
       if (item && item !== '_two_handed_' && item.passives) {
         for (const p of item.passives) passives.add(p);
@@ -1288,7 +1554,7 @@ function countPassive(unit, passiveId) {
     for (const p of unit.passives) if (p === passiveId) count++;
   }
   if (unit.equipment) {
-    for (const slot of EQUIP_SLOTS) {
+    for (const slot of getUnitEquipSlots(unit)) {
       const item = unit.equipment[slot];
       if (item && item !== '_two_handed_' && item.passives) {
         for (const p of item.passives) if (p === passiveId) count++;
@@ -1319,10 +1585,8 @@ function applyStatusEffect(unit, effectId, duration) {
       unit.hp -= 1;
       addLog(`🔥 ${getDisplayName(unit)} resists Burning, but the boiling water scalds for 1 damage! (${unit.hp > 0 ? unit.hp + ' HP' : 'DEFEATED!'})`);
       if (unit.hp <= 0) {
-        unit.hp = 0;
         addLog(`☠ ${getDisplayName(unit)} has been defeated by boiling water!`);
-        G.units = G.units.filter(u => u.hp > 0);
-        checkPlayerElimination(unit.playerId);
+        finalizeUnitDeath(unit);
       }
     } else {
       addLog(`🔥 ${getDisplayName(unit)} resists Burning!`);
@@ -1350,10 +1614,24 @@ function applyStatusEffect(unit, effectId, duration) {
     return;
   }
   const existing = unit.statusEffects.find(se => se.id === effectId);
+  const effectDef = STATUS_EFFECTS[effectId];
   if (existing) {
     existing.turnsLeft = Math.max(existing.turnsLeft, duration); // refresh duration
+    // Stackable effects (e.g. Poison) gain a stack on reapplication
+    if (effectDef && effectDef.stackable) {
+      const maxStacks = effectDef.maxStacks || 1;
+      const oldStacks = existing.stacks || 1;
+      existing.stacks = Math.min(oldStacks + 1, maxStacks);
+      if (existing.stacks > oldStacks) {
+        addLog(`${effectDef.icon} ${getDisplayName(unit)}'s ${effectDef.name} intensifies! (${existing.stacks}/${maxStacks} stacks)`);
+      } else {
+        addLog(`${effectDef.icon} ${getDisplayName(unit)}'s ${effectDef.name} is at max stacks! (${maxStacks}/${maxStacks})`);
+      }
+    }
   } else {
-    unit.statusEffects.push({ id: effectId, turnsLeft: duration });
+    const newEffect = { id: effectId, turnsLeft: duration };
+    if (effectDef && effectDef.stackable) newEffect.stacks = 1;
+    unit.statusEffects.push(newEffect);
   }
 }
 
@@ -1387,8 +1665,15 @@ function processStatusEffects(unit) {
     if (!def) continue;
     // Apply damage over time
     if (def.dot && def.dot > 0) {
-      unit.hp -= def.dot;
-      addLog(`${def.icon} ${getDisplayName(unit)} takes ${def.dot} ${def.name} damage! (${unit.hp > 0 ? unit.hp + ' HP left' : 'DEFEATED!'})`);
+      // Stackable effects use tiered damage (Poison: 1-2 stacks=1, 3-4=2, 5=3)
+      let dotDmg = def.dot;
+      if (def.stackable && se.stacks) {
+        const s = se.stacks;
+        dotDmg = s <= 2 ? 1 : s <= 4 ? 2 : 3;
+      }
+      unit.hp -= dotDmg;
+      const stackInfo = (def.stackable && se.stacks > 1) ? ` (${se.stacks} stacks)` : '';
+      addLog(`${def.icon} ${getDisplayName(unit)} takes ${dotDmg} ${def.name} damage${stackInfo}! (${unit.hp > 0 ? unit.hp + ' HP left' : 'DEFEATED!'})`);
       // Sanguine Feast: if this is bleeding damage, heal nearby units with the passive
       if (se.id === 'bleeding') {
         for (const ally of G.units) {
@@ -1417,6 +1702,51 @@ function processStatusEffects(unit) {
   // Check death from DoT
   if (unit.hp <= 0) {
     unit.hp = 0;
+    // Potent Formula: if dying from poison, spread stacks to nearby enemies
+    const poisonEffect = unit.statusEffects ? unit.statusEffects.find(se => se.id === 'poison') : null;
+    if (poisonEffect && poisonEffect.stacks > 0) {
+      // Find any living unit with potent_formula that is hostile to the dying unit
+      const formulaUser = G.units.find(u => u.hp > 0 && u.playerId !== unit.playerId && hasPassive(u, 'potent_formula'));
+      if (formulaUser) {
+        const totalStacks = poisonEffect.stacks;
+        const nearbyEnemies = G.units.filter(u =>
+          u.hp > 0 && u.id !== unit.id && u.id !== formulaUser.id &&
+          u.playerId !== formulaUser.playerId &&
+          chebyshevDist(unit.x, unit.y, u.x, u.y) <= 2 &&
+          !hasPassive(u, 'poison_resistance') && !hasPassive(u, 'stone_skin_passive')
+        );
+        if (nearbyEnemies.length > 0) {
+          addLog(`☠ ${getDisplayName(formulaUser)}'s Potent Formula spreads ${totalStacks} poison stack${totalStacks > 1 ? 's' : ''} from the fallen ${getDisplayName(unit)}!`);
+          let remaining = totalStacks;
+          let idx = 0;
+          while (remaining > 0 && nearbyEnemies.length > 0) {
+            const target = nearbyEnemies[idx % nearbyEnemies.length];
+            if (!target.statusEffects) target.statusEffects = [];
+            const existing = target.statusEffects.find(se => se.id === 'poison');
+            if (existing) {
+              if (existing.stacks < 5) {
+                existing.stacks = Math.min(5, existing.stacks + 1);
+                existing.turnsLeft = Math.max(existing.turnsLeft, 3);
+                remaining--;
+                idx++;
+              } else {
+                nearbyEnemies.splice(idx % nearbyEnemies.length, 1);
+                if (nearbyEnemies.length === 0) break;
+                if (idx >= nearbyEnemies.length) idx = 0;
+              }
+            } else {
+              target.statusEffects.push({ id: 'poison', turnsLeft: 3, stacks: 1 });
+              remaining--;
+              idx++;
+            }
+          }
+          for (const e of G.units.filter(u => u.hp > 0 && u.statusEffects && u.statusEffects.find(se => se.id === 'poison'))) {
+            const pEff = e.statusEffects.find(se => se.id === 'poison');
+            if (pEff) addLog(`  ☠ ${getDisplayName(e)}: ${pEff.stacks} poison stack${pEff.stacks > 1 ? 's' : ''}`);
+          }
+        }
+      }
+    }
     dropAllItems(unit);
     addLog(`☠ ${getDisplayName(unit)} has been killed by status effects!`);
   }
@@ -1440,7 +1770,7 @@ function getUnitStats(unit) {
   let mainhandItem = null;
   let itemMoveBonus = 0;
 
-  for (const slot of EQUIP_SLOTS) {
+  for (const slot of getUnitEquipSlots(unit)) {
     const item = unit.equipment ? unit.equipment[slot] : null;
     if (!item || item === '_two_handed_') continue;
     totalStr += item.stats.str || 0;
@@ -1457,13 +1787,13 @@ function getUnitStats(unit) {
     if (slot === 'mainhand') mainhandItem = item;
   }
 
-  // Extended Reach: +1 range for melee weapons only (no range property = melee)
-  if (mainhandItem && !mainhandItem.range && getUnitPassives(unit).has('extended_reach')) {
-    attackRange += 1;
+  // Extended Reach: +1 range per stack for melee weapons only (no range property = melee)
+  if (mainhandItem && !mainhandItem.range) {
+    attackRange += countPassive(unit, 'extended_reach');
   }
-  // Scope: +1 range for bows, crossbows, and magic ranged weapons only
-  if (mainhandItem && mainhandItem.range && getUnitPassives(unit).has('scope_range')) {
-    attackRange += 1;
+  // Scope: +1 range per stack for bows, crossbows, and magic ranged weapons only
+  if (mainhandItem && mainhandItem.range) {
+    attackRange += countPassive(unit, 'scope_range');
   }
 
   // Bardic auras: check friendly bard units within 3 tiles
@@ -1506,7 +1836,7 @@ function getUnitStats(unit) {
   let itemCritBonus = 0;
   let itemCombatLockBonus = 0;
   if (unit.equipment) {
-    for (const slot of EQUIP_SLOTS) {
+    for (const slot of getUnitEquipSlots(unit)) {
       const item = unit.equipment[slot];
       if (item && item !== '_two_handed_') {
         if (item.critBonus) itemCritBonus += item.critBonus;
@@ -1527,18 +1857,18 @@ function getUnitStats(unit) {
   const movement = (hasStatusEffect(unit, 'frozen') || hasStatusEffect(unit, 'ensnared') || hasStatusEffect(unit, 'combat_locked')) ? 0 : Math.max(2, unit.movement + agiBonus - weightPenalty + seMods.move + (hasPassive(unit, 'haste') ? 2 : 0) + (hasPassive(unit, 'mounted') ? 5 : 0) + unarmoredMoveBonus + itemMoveBonus);
   const gatherBonus = Math.floor(totalInt / 2);
 
-  // Jinx aura: reduce crit chance of this unit if adjacent enemies have jinx
+  // Jinx aura: reduce crit chance of this unit if enemies within 3 tiles have jinx
   let jinxPenalty = 0;
   for (const enemy of allUnits) {
     if (enemy.hp > 0 && enemy.id !== unit.id && enemy.playerId !== unit.playerId &&
-        isAdjacent(unit.x, unit.y, enemy.x, enemy.y)) {
+        chebyshevDist(unit.x, unit.y, enemy.x, enemy.y) <= 3) {
       if (hasPassive(enemy, 'jinx')) jinxPenalty += 15;
     }
   }
 
   // Combat proc chances (percentage, 0-100)
   const dodgeChance = hasStatusEffect(unit, 'greased') ? 100 : Math.max(0, Math.min(50, totalAgi * 2 + (hasPassive(unit, 'evasion') ? 10 : 0) + bardicDodgeBonus - discordantDodgePenalty)); // AGI × 2%, cap 50%, greased = 100%
-  const critChance = Math.max(0, Math.min(50, totalInt * 5 + itemCritBonus - jinxPenalty)); // INT × 5% + item crit bonus - jinx, cap 50%
+  const critChance = Math.max(0, Math.min(40, totalInt * 5 + itemCritBonus - jinxPenalty)); // INT × 5% + item crit bonus - jinx, cap 40%
   const crushChance = Math.min(30, totalStr * 3);       // STR × 3%, cap 30% — crushing blow
 
   return { str: totalStr, agi: totalAgi, con: totalCon, int: totalInt,
@@ -1815,6 +2145,7 @@ function startNewGame() {
   selectedShop = null;
   selectedVendor = null;
   selectedStructure = null;
+  selectedBarrel = null;
   interactionMode = 'idle';
   showScreen('game-screen');
   renderAll();
@@ -1851,6 +2182,14 @@ function createUnit(type, playerId, x, y, factionPrefix, factionId, heroChoice) 
       equipment[slot] = itemId ? JSON.parse(JSON.stringify(ITEMS[itemId])) : null;
     }
   }
+  // Initialize extra slots for heroes with extraSlots (e.g. Magnate)
+  if (heroData && heroData.extraSlots) {
+    for (const [baseSlot, count] of Object.entries(heroData.extraSlots)) {
+      for (let i = 2; i <= count + 1; i++) {
+        equipment[baseSlot + i] = null;
+      }
+    }
+  }
 
   const overrideName = overrides.name;
   const unitName = heroData ? heroData.name : (factionPrefix ? `${factionPrefix} ${overrideName || def.name}` : (overrideName || def.name));
@@ -1884,9 +2223,11 @@ function createUnit(type, playerId, x, y, factionPrefix, factionId, heroChoice) 
     divineShieldBonus: 0,
     berserkBonus: 0,
     berserkPenalty: 0,
+    berserkTurns: 0,
     battleCryBonus: 0,
     battleCryTurns: 0,
     trollBlessingTurns: 0,
+    staticCharges: 0,
     regenPotionTurns: 0,
     combatRegenTurns: 0,
     consecrateTurns: 0,
@@ -2505,6 +2846,9 @@ function renderBoard() {
         cell.textContent = '⚠';
         cell.style.color = '#AA4444';
         cell.style.opacity = '0.5';
+      } else if (G.barrels && G.barrels.some(b => b.x === x && b.y === y)) {
+        cell.textContent = '🛢';
+        cell.style.color = '#CC6600';
       } else if (G.tunnels && G.tunnels.some(t => t.x === x && t.y === y)) {
         const tun = G.tunnels.find(t => t.x === x && t.y === y);
         cell.textContent = tun.label === 'A' ? 'Ⓐ' : 'Ⓑ';
@@ -2524,11 +2868,19 @@ function renderBoard() {
         if (su) {
           const suStats = getUnitStats(su);
           const range = suStats.attackRange || 1;
-          if (unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
-            cell.classList.add('highlight-attack');
+          const dist = chebyshevDist(su.x, su.y, x, y);
+          if (unit && unit.playerId !== su.playerId && dist <= range && hasLineOfSight(su.x, su.y, x, y)) {
+            // Smoke concealment blocks ranged attacks (distance > 1)
+            if (dist <= 1 || !isConcealedBySmoke(unit)) {
+              cell.classList.add('highlight-attack');
+            }
           }
           // Highlight enemy structures as attackable
-          if (!unit && structure && structure.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+          if (!unit && structure && structure.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
+            cell.classList.add('highlight-attack');
+          }
+          // Highlight explosive barrels as attackable
+          if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
             cell.classList.add('highlight-attack');
           }
         }
@@ -2546,10 +2898,16 @@ function renderBoard() {
           cell.classList.add('highlight-place');
         }
       }
-      if (interactionMode === 'pickup') {
-        const su = getUnit(selectedUnitId);
-        if (su && hasGroundItem && chebyshevDist(su.x, su.y, x, y) <= 1) {
-          cell.classList.add('highlight-gather');
+      if (interactionMode === 'scroll_retrieve' && scrollPending) {
+        const su = getUnit(scrollPending.unitId);
+        if (su && unit && unit.id !== su.id && unit.playerId === su.playerId && unit.hp > 0) {
+          cell.classList.add('highlight-move');
+        }
+      }
+      if (interactionMode === 'scroll_swap' && scrollPending) {
+        const su = getUnit(scrollPending.unitId);
+        if (su && unit && unit.id !== su.id && unit.hp > 0) {
+          cell.classList.add('highlight-move');
         }
       }
       if (interactionMode === 'place' && reachableTiles.some(t => t.x === x && t.y === y)) {
@@ -2564,7 +2922,10 @@ function renderBoard() {
       // Targeted hero abilities
       if ((interactionMode === 'hex_curse' || interactionMode === 'arcane_blast') && selectedUnitId !== null) {
         const su = getUnit(selectedUnitId);
-        if (su && unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3) {
+        if (su && unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3 && hasLineOfSight(su.x, su.y, x, y)) {
+          cell.classList.add('highlight-attack');
+        }
+        if (interactionMode === 'arcane_blast' && su && G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= 3 && hasLineOfSight(su.x, su.y, x, y)) {
           cell.classList.add('highlight-attack');
         }
       }
@@ -2580,9 +2941,19 @@ function renderBoard() {
         if (su) {
           const suStats = getUnitStats(su);
           const range = suStats.attackRange || 1;
-          if (unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+          if (unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y) && !isConcealedBySmoke(unit)) {
             cell.classList.add('highlight-attack');
           }
+          if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
+            cell.classList.add('highlight-attack');
+          }
+        }
+      }
+      // Harpoon Shot: enemies within 5 with LOS
+      if (interactionMode === 'harpoon_shot' && selectedUnitId !== null) {
+        const su = getUnit(selectedUnitId);
+        if (su && unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 5 && hasLineOfSight(su.x, su.y, x, y) && !isConcealedBySmoke(unit)) {
+          cell.classList.add('highlight-attack');
         }
       }
       // Targeted magic weapon abilities
@@ -2591,7 +2962,10 @@ function renderBoard() {
         if (su) {
           const suStats = getUnitStats(su);
           const range = suStats.attackRange || 3;
-          if (unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+          if (unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
+            cell.classList.add('highlight-attack');
+          }
+          if (['fireball', 'frost_ray', 'lightning_bolt'].includes(interactionMode) && G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
             cell.classList.add('highlight-attack');
           }
         }
@@ -2601,7 +2975,7 @@ function renderBoard() {
         const su = getUnit(selectedUnitId);
         if (su && unit && unit.id !== su.id && unit.hp > 0) {
           const dist = chebyshevDist(su.x, su.y, x, y);
-          if (dist >= 2 && dist <= 5) {
+          if (dist >= 2 && dist <= 5 && hasLineOfSight(su.x, su.y, x, y)) {
             cell.classList.add('highlight-attack');
           }
         }
@@ -2609,7 +2983,7 @@ function renderBoard() {
       // Ensnare: enemies within 3 tiles
       if (interactionMode === 'ensnare' && selectedUnitId !== null) {
         const su = getUnit(selectedUnitId);
-        if (su && unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3) {
+        if (su && unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3 && hasLineOfSight(su.x, su.y, x, y)) {
           cell.classList.add('highlight-attack');
         }
       }
@@ -2641,7 +3015,10 @@ function renderBoard() {
         if (su) {
           const suStats = getUnitStats(su);
           const range = suStats.attackRange || 1;
-          if (unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+          if (unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y) && !isConcealedBySmoke(unit)) {
+            cell.classList.add('highlight-attack');
+          }
+          if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
             cell.classList.add('highlight-attack');
           }
         }
@@ -2649,7 +3026,7 @@ function renderBoard() {
       // Soul Siphon: enemies within 3 tiles
       if (interactionMode === 'soul_siphon' && selectedUnitId !== null) {
         const su = getUnit(selectedUnitId);
-        if (su && unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3) {
+        if (su && unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3 && hasLineOfSight(su.x, su.y, x, y)) {
           cell.classList.add('highlight-attack');
         }
       }
@@ -2714,10 +3091,116 @@ function renderBoard() {
           cell.classList.add('highlight-gather');
         }
       }
+      // Poisonous Shiv: adjacent enemies
+      if (interactionMode === 'poisonous_shiv' && selectedUnitId !== null) {
+        const su = getUnit(selectedUnitId);
+        if (su && unit && unit.playerId !== su.playerId && unit.hp > 0 && isAdjacent(su.x, su.y, x, y)) {
+          cell.classList.add('highlight-attack');
+        }
+      }
+      // Rescue: any ally on the map
+      if (interactionMode === 'rescue' && selectedUnitId !== null) {
+        const su = getUnit(selectedUnitId);
+        if (su && unit && unit.id !== su.id && unit.playerId === su.playerId && unit.hp > 0) {
+          cell.classList.add('highlight-gather');
+        }
+      }
+      // Place Barrel: adjacent empty tiles (no existing barrels, traps, tunnels, or structures)
+      if (interactionMode === 'place_barrel' && selectedUnitId !== null) {
+        const su = getUnit(selectedUnitId);
+        const hasBarrelAlready = G.barrels && G.barrels.some(b => b.x === x && b.y === y);
+        if (su && !unit && !resource && isAdjacent(su.x, su.y, x, y) && !hasBarrelAlready) {
+          cell.classList.add('highlight-place');
+        }
+      }
+      // Pistol Shot: enemies within 3 tiles
+      if (interactionMode === 'pistol_shot' && selectedUnitId !== null) {
+        const su = getUnit(selectedUnitId);
+        if (su && unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3 && hasLineOfSight(su.x, su.y, x, y) && !isConcealedBySmoke(unit)) {
+          cell.classList.add('highlight-attack');
+        }
+        if (su && G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= 3 && hasLineOfSight(su.x, su.y, x, y)) {
+          cell.classList.add('highlight-attack');
+        }
+      }
+      // Giant Shot: enemies within weapon range
+      if (interactionMode === 'giant_shot' && selectedUnitId !== null) {
+        const su = getUnit(selectedUnitId);
+        if (su) {
+          const suStats = getUnitStats(su);
+          const range = suStats.attackRange || 4;
+          if (unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y) && !isConcealedBySmoke(unit)) {
+            cell.classList.add('highlight-attack');
+          }
+          if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
+            cell.classList.add('highlight-attack');
+          }
+        }
+      }
       // Boomerang Throw: enemies on a straight line (cardinal/diagonal) within range 4
       if (interactionMode === 'boomerang_throw' && selectedUnitId !== null) {
         const su = getUnit(selectedUnitId);
-        if (su && unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 4 && isOnStraightLine(su.x, su.y, x, y)) {
+        if (su && unit && unit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 4 && isOnStraightLine(su.x, su.y, x, y) && hasLineOfSight(su.x, su.y, x, y)) {
+          cell.classList.add('highlight-attack');
+        }
+      }
+      // Bounty Mark: any enemy on the map (unlimited range, no LoS needed)
+      if (interactionMode === 'bounty_mark' && selectedUnitId !== null) {
+        const su = getUnit(selectedUnitId);
+        if (su && unit && unit.playerId !== su.playerId && unit.hp > 0) {
+          cell.classList.add('highlight-attack');
+        }
+      }
+      // Blink: any empty tile within 3 Chebyshev distance (ignores walls/terrain)
+      if (interactionMode === 'blink' && selectedUnitId !== null) {
+        const su = getUnit(selectedUnitId);
+        if (su && !unit && chebyshevDist(su.x, su.y, x, y) <= 3 && chebyshevDist(su.x, su.y, x, y) >= 1) {
+          // Allow blink onto any empty tile (no wall/terrain check -- blink goes through everything)
+          const isOccupied = G.units.some(o => o.hp > 0 && o.x === x && o.y === y);
+          const hasBarrel = G.barrels && G.barrels.some(b => b.x === x && b.y === y);
+          if (!isOccupied && !hasBarrel) {
+            cell.classList.add('highlight-move');
+          }
+        }
+      }
+      // Corrupted Chalice: adjacent allies
+      if (interactionMode === 'corrupted_chalice' && selectedUnitId !== null) {
+        const su = getUnit(selectedUnitId);
+        if (su && unit && unit.id !== su.id && unit.playerId === su.playerId && unit.hp > 0 && isAdjacent(su.x, su.y, x, y)) {
+          cell.classList.add('highlight-move');
+        }
+      }
+      // Ogre Throw – Phase 1: highlight adjacent units (enemy or ally)
+      if (interactionMode === 'ogre_throw_select' && selectedUnitId !== null) {
+        const su = getUnit(selectedUnitId);
+        if (su && unit && unit.id !== su.id && unit.hp > 0 && isAdjacent(su.x, su.y, x, y)) {
+          cell.classList.add(unit.playerId === su.playerId ? 'highlight-move' : 'highlight-attack');
+        }
+      }
+      // Ogre Throw – Phase 2: highlight valid landing tiles within 4 tiles
+      if (interactionMode === 'ogre_throw_dest' && selectedUnitId !== null && G._throwTarget) {
+        const su = getUnit(selectedUnitId);
+        if (su) {
+          const dist = chebyshevDist(su.x, su.y, x, y);
+          if (dist >= 2 && dist <= 4) {
+            const isOccupiedByOther = G.units.some(o => o.hp > 0 && o.x === x && o.y === y && o.id !== G._throwTarget.id);
+            const hasBarrel = G.barrels && G.barrels.some(b => b.x === x && b.y === y);
+            const hasResource = G.board[y] && G.board[y][x] && G.board[y][x].type && G.board[y][x].amount > 0;
+            const landOnEnemy = G.units.find(o => o.hp > 0 && o.x === x && o.y === y && o.id !== G._throwTarget.id && o.id !== su.id);
+            if (!hasBarrel && !hasResource) {
+              if (!isOccupiedByOther) {
+                cell.classList.add('highlight-move');
+              } else if (landOnEnemy) {
+                cell.classList.add('highlight-attack');
+              }
+            }
+          }
+        }
+      }
+      // Static Discharge: enemies within 3 tiles
+      if (interactionMode === 'static_discharge' && selectedUnitId !== null) {
+        const su = getUnit(selectedUnitId);
+        if (su && unit && unit.playerId !== su.playerId && unit.hp > 0 && chebyshevDist(su.x, su.y, x, y) <= 3) {
           cell.classList.add('highlight-attack');
         }
       }
@@ -2903,6 +3386,28 @@ function renderUnitPanel() {
     return;
   }
 
+  // Barrel inspection
+  if (selectedBarrel) {
+    const barrel = selectedBarrel;
+    // Verify barrel still exists
+    if (!G.barrels || !G.barrels.some(b => b.x === barrel.x && b.y === barrel.y)) {
+      selectedBarrel = null;
+      panel.style.display = 'none';
+      return;
+    }
+    const ownerColor = PLAYER_COLORS[barrel.playerId] || '#CC6600';
+    const ownerName = G.players[barrel.playerId] ? G.players[barrel.playerId].name : 'Unknown';
+    panel.style.display = 'block';
+    let html = `<div class="unit-name" style="color: #CC6600">🛢 Explosive Barrel</div>`;
+    html += `<div style="font-size:11px;color:#aaa;padding:2px 4px;">Owner: <b style="color:${ownerColor}">${ownerName}</b></div>`;
+    html += `<div style="font-size:11px;color:#888;padding:2px 4px;">Position: (${barrel.x}, ${barrel.y})</div>`;
+    html += `<div style="font-size:11px;color:#ff6644;padding:2px 4px;">💥 Damage: <b>${barrel.damage}</b></div>`;
+    html += `<div style="font-size:11px;color:#ff6644;padding:2px 4px;">💢 Blast Radius: <b>${barrel.radius} tiles</b></div>`;
+    html += `<div style="font-size:11px;color:#888;padding:4px 4px;font-style:italic;">Explodes when attacked or shot. Damages ALL units in radius (allies included). Can chain-react with nearby barrels.</div>`;
+    info.innerHTML = html;
+    return;
+  }
+
   // Structure inspection
   if (selectedStructure) {
     const struct = selectedStructure;
@@ -3050,7 +3555,8 @@ function renderUnitPanel() {
     for (const se of u.statusEffects) {
       const eff = STATUS_EFFECTS[se.id];
       if (eff) {
-        html += `<div class="info-row"><span class="label" style="color:${eff.color}" data-tip="${eff.desc}">${eff.icon} ${eff.name}</span><span>${se.turnsLeft} turn${se.turnsLeft > 1 ? 's' : ''}</span></div>`;
+        const stackText = (eff.stackable && se.stacks > 0) ? ` x${se.stacks}` : '';
+        html += `<div class="info-row"><span class="label" style="color:${eff.color}" data-tip="${eff.desc}">${eff.icon} ${eff.name}${stackText}</span><span>${se.turnsLeft} turn${se.turnsLeft > 1 ? 's' : ''}</span></div>`;
       }
     }
     html += `</div>`;
@@ -3113,16 +3619,22 @@ function renderUnitPanel() {
   }
 
   // Equipment section
+  const unitSlots = getUnitEquipSlots(u);
   html += `<div class="equip-section"><div class="equip-header">Equipment</div>`;
-  for (const slot of EQUIP_SLOTS) {
+  for (const slot of unitSlots) {
+    // Skip blocked slots (e.g. Magnate can't wear armor)
+    if (isSlotBlocked(u, slot)) continue;
     const item = u.equipment[slot];
     if (item && item !== '_two_handed_') {
       const statStr = itemStatString(item);
       const twoHandTag = item.twoHanded ? ' <span class="two-hand-tag">[2H]</span>' : '';
+      const elementTag = item.elementalCycle ? (() => { const p = item.elementalPhase || 0; return [' <span style="color:#6cf">(❄️ Freeze)</span>', ' <span style="color:#f84">(🔥 Burning)</span>', ' <span style="color:#ff0">(⚡ Lightning)</span>'][p]; })() : '';
+      const isAppraising = interactionMode === 'appraise_destroy' && isOwned && item.passives && item.passives.length > 0;
       html += `<div class="equip-slot">
         <span class="label">${SLOT_LABELS[slot]}:</span>
-        <span class="item-name" data-tip="${item.description || ''}">${item.name}${twoHandTag}</span>
+        <span class="item-name" data-tip="${item.description || ''}">${item.name}${twoHandTag}${elementTag}</span>
         <span class="item-stats">${statStr}</span>
+        ${isAppraising ? `<button class="btn-tiny" style="background:#a33;" onclick="appraiseDestroyEquip(${u.id}, '${slot}')">Destroy</button>` : ''}
         ${isOwned ? `<button class="btn-tiny" onclick="unequipItem(${u.id}, '${slot}')">✕</button>` : ''}
       </div>`;
     } else if (item === '_two_handed_') {
@@ -3166,7 +3678,11 @@ function renderUnitPanel() {
         const statStr = itemStatString(item);
         let buttons = '';
         if (isOwned) {
-          if (isMirrorActive) {
+          if (interactionMode === 'appraise_destroy' && item.passives && item.passives.length > 0) {
+            buttons = `<button class="btn-tiny" style="background:#a33;" onclick="appraiseDestroyInv(${u.id}, ${i})">Destroy</button>
+            <button class="btn-tiny" onclick="equipItem(${u.id}, ${i})">Equip</button>
+            <button class="btn-tiny" onclick="dropItem(${u.id}, ${i})">Drop</button>`;
+          } else if (isMirrorActive) {
             buttons = `<button class="btn-tiny" style="background:#538;" onclick="mirrorCopyItem(${u.id}, ${i})">Copy</button>`;
           } else {
             buttons = `<button class="btn-tiny" onclick="equipItem(${u.id}, ${i})">Equip</button>
@@ -3183,7 +3699,89 @@ function renderUnitPanel() {
     html += `</div>`;
   }
 
+  // Morph UI: stat reallocation panel
+  if (interactionMode === 'morph' && isOwned && u.type === 'hero') {
+    if (!window._morphState || window._morphState.unitId !== u.id) {
+      window._morphState = {
+        unitId: u.id,
+        stats: { str: u.str, agi: u.agi, con: u.con, int: u.int, movement: u.movement, attack: u.attack, defense: u.defense },
+        original: { str: u.str, agi: u.agi, con: u.con, int: u.int, movement: u.movement, attack: u.attack, defense: u.defense }
+      };
+    }
+    const ms = window._morphState;
+    const totalOrig = ms.original.str + ms.original.agi + ms.original.con + ms.original.int + ms.original.movement + ms.original.attack + ms.original.defense;
+    const totalNow = ms.stats.str + ms.stats.agi + ms.stats.con + ms.stats.int + ms.stats.movement + ms.stats.attack + ms.stats.defense;
+    const pool = totalOrig - totalNow;
+    const statLabels = { str: 'STR', agi: 'AGI', con: 'CON', int: 'INT', movement: 'Move', attack: 'ATK', defense: 'DEF' };
+    html += `<div class="stat-grid" style="margin-top:6px;border:2px solid #48f;padding:6px;border-radius:4px;background:#112;">`;
+    html += `<div class="equip-header" style="color:#48f;">🔄 Morph — Reallocate Stats</div>`;
+    html += `<div class="info-row"><span class="label" style="color:#ff0;">Unspent Points</span><span style="color:#ff0;font-weight:bold;">${pool}</span></div>`;
+    for (const [key, label] of Object.entries(statLabels)) {
+      const val = ms.stats[key];
+      const orig = ms.original[key];
+      const diff = val - orig;
+      const diffStr = diff > 0 ? ` <span style='color:#4f4;'>+${diff}</span>` : diff < 0 ? ` <span style='color:#f44;'>${diff}</span>` : '';
+      html += `<div class="info-row" style="display:flex;align-items:center;justify-content:space-between;">
+        <span class="label">${label}</span>
+        <span style="display:flex;align-items:center;gap:4px;">
+          <button class="btn-tiny" onclick="morphAdjust('${key}', -1)" ${val <= 0 ? 'disabled' : ''}>−</button>
+          <span style="min-width:24px;text-align:center;">${val}${diffStr}</span>
+          <button class="btn-tiny" onclick="morphAdjust('${key}', 1)" ${pool <= 0 ? 'disabled' : ''}>+</button>
+        </span>
+      </div>`;
+    }
+    html += `<div style="display:flex;gap:6px;margin-top:6px;">`;
+    html += `<button class="btn-tiny" onclick="morphConfirm()" ${pool !== 0 ? 'disabled title="Spend all points first"' : ''} style="flex:1;background:#2a6;color:#fff;padding:4px 8px;">✔ Confirm</button>`;
+    html += `<button class="btn-tiny" onclick="morphCancel()" style="flex:1;padding:4px 8px;">✖ Cancel</button>`;
+    html += `</div></div>`;
+  }
+
   info.innerHTML = html;
+}
+
+// --- Morph ability helpers ---
+function morphAdjust(stat, delta) {
+  if (!window._morphState) return;
+  const ms = window._morphState;
+  const totalOrig = ms.original.str + ms.original.agi + ms.original.con + ms.original.int + ms.original.movement + ms.original.attack + ms.original.defense;
+  const totalNow = ms.stats.str + ms.stats.agi + ms.stats.con + ms.stats.int + ms.stats.movement + ms.stats.attack + ms.stats.defense;
+  const pool = totalOrig - totalNow;
+  if (delta > 0 && pool <= 0) return;
+  if (delta < 0 && ms.stats[stat] <= 0) return;
+  ms.stats[stat] += delta;
+  renderUnitPanel();
+}
+
+function morphConfirm() {
+  if (!window._morphState) return;
+  const ms = window._morphState;
+  const u = getUnit(ms.unitId);
+  if (!u) return;
+  const totalOrig = ms.original.str + ms.original.agi + ms.original.con + ms.original.int + ms.original.movement + ms.original.attack + ms.original.defense;
+  const totalNow = ms.stats.str + ms.stats.agi + ms.stats.con + ms.stats.int + ms.stats.movement + ms.stats.attack + ms.stats.defense;
+  if (totalNow !== totalOrig) return; // must spend all points
+  u.str = ms.stats.str;
+  u.agi = ms.stats.agi;
+  u.con = ms.stats.con;
+  u.int = ms.stats.int;
+  u.movement = ms.stats.movement;
+  u.attack = ms.stats.attack;
+  u.defense = ms.stats.defense;
+  // Recalculate HP (CON changes affect maxHp)
+  const stats = getUnitStats(u);
+  if (u.hp > stats.maxHp) u.hp = stats.maxHp;
+  // Mark ability used this turn
+  startAbilityCooldown(u, 'morph');
+  addLog(`🔄 ${getDisplayName(u)} morphs! Stats reallocated.`);
+  window._morphState = null;
+  interactionMode = 'idle';
+  renderAll();
+}
+
+function morphCancel() {
+  window._morphState = null;
+  interactionMode = 'idle';
+  renderAll();
 }
 
 function renderActionsPanel() {
@@ -3276,10 +3874,9 @@ function renderActionsPanel() {
 
   // Pick Up ground items
   if (getAdjacentGroundItems(u).length > 0) {
-    addAction(list, 'Pick Up', 'Select nearby item', () => {
-      interactionMode = 'pickup';
-      renderBoard();
-    }, interactionMode === 'pickup');
+    addAction(list, 'Pick Up', '', () => {
+      openPickupOverlay(u);
+    });
   }
 
   // Use Tunnel (any kobold unit standing on a tunnel entrance)
@@ -3293,7 +3890,8 @@ function renderActionsPanel() {
           addAction(list, 'Use Tunnel', '', null, false, `${tunCdLeft} turn${tunCdLeft > 1 ? 's' : ''} CD`);
         } else {
           const occupied = G.units.some(o => o.hp > 0 && o.x === otherTunnel.x && o.y === otherTunnel.y);
-          if (!occupied) {
+          const barrelBlocked = G.barrels && G.barrels.some(b => b.x === otherTunnel.x && b.y === otherTunnel.y);
+          if (!occupied && !barrelBlocked) {
             addAction(list, 'Use Tunnel', `Travel to Tunnel ${otherTunnel.label}`, () => {
               executeTunnelTravel(u, otherTunnel);
             });
@@ -3313,7 +3911,7 @@ function renderActionsPanel() {
       addAction(list, action.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), '', null, false, '🎵 Beguiled');
       continue;
     }
-    if (u.hasUsedItemAction && ITEM_ACTION_IDS.has(action)) {
+    if (u.hasUsedItemAction && ITEM_ACTION_IDS.has(action) && !hasPassive(u, 'multi_action')) {
       addAction(list, action.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), '', null, false, 'Action Used');
       continue;
     }
@@ -3376,11 +3974,43 @@ function renderActionsPanel() {
     }
     if (action === 'berserk') {
       if (isAbilityReady(u, 'berserk')) {
-        addAction(list, 'Berserk', '+5 ATK, -3 DEF this turn', () => {
+        addAction(list, 'Berserk', '+5 ATK, -3 DEF for 2 turns', () => {
           executeBerserk(u);
         });
       } else if (itemCdLeft > 0) {
         addAction(list, 'Berserk', '', null, false, `${itemCdLeft} turn${itemCdLeft > 1 ? 's' : ''} CD`);
+      }
+    }
+    if (action === 'blink') {
+      if (isAbilityReady(u, 'blink')) {
+        addAction(list, 'Blink', 'Teleport up to 3 tiles (ignores walls & combat lock)', () => {
+          interactionMode = 'blink';
+          renderBoard();
+        }, interactionMode === 'blink');
+      } else if (itemCdLeft > 0) {
+        addAction(list, 'Blink', '', null, false, `${itemCdLeft} turn${itemCdLeft > 1 ? 's' : ''} CD`);
+      }
+    }
+    if (action === 'smoke_bomb') {
+      if (isAbilityReady(u, 'smoke_bomb')) {
+        addAction(list, 'Smoke Bomb', 'Deploy smoke for 3 turns (blocks ranged targeting)', () => {
+          executeSmokeBomb(u);
+        });
+      } else if (itemCdLeft > 0) {
+        addAction(list, 'Smoke Bomb', '', null, false, `${itemCdLeft} turn${itemCdLeft > 1 ? 's' : ''} CD`);
+      }
+    }
+    if (action === 'corrupted_chalice') {
+      const hasAdjAlly = G.units.some(a => a.hp > 0 && a.id !== u.id && a.playerId === u.playerId && isAdjacent(u.x, u.y, a.x, a.y));
+      if (isAbilityReady(u, 'corrupted_chalice') && hasAdjAlly && u.hp > 5) {
+        addAction(list, 'Corrupted Chalice', 'Sacrifice 5 HP to heal adjacent ally for 5 HP', () => {
+          interactionMode = 'corrupted_chalice';
+          renderBoard();
+        }, interactionMode === 'corrupted_chalice');
+      } else if (itemCdLeft > 0) {
+        addAction(list, 'Corrupted Chalice', '', null, false, `${itemCdLeft} turn${itemCdLeft > 1 ? 's' : ''} CD`);
+      } else if (u.hp <= 5) {
+        addAction(list, 'Corrupted Chalice', 'Not enough HP', null, false, 'Low HP');
       }
     }
     if (action === 'fireball') {
@@ -3470,7 +4100,8 @@ function renderActionsPanel() {
         const hasGrappleTarget = G.units.some(t =>
           t.hp > 0 && t.id !== u.id &&
           chebyshevDist(u.x, u.y, t.x, t.y) >= 2 &&
-          chebyshevDist(u.x, u.y, t.x, t.y) <= 5
+          chebyshevDist(u.x, u.y, t.x, t.y) <= 5 &&
+          hasLineOfSight(u.x, u.y, t.x, t.y)
         );
         if (hasGrappleTarget) {
           addAction(list, 'Grapple', 'Pull any unit 2-5 tiles away to you', () => {
@@ -3486,7 +4117,8 @@ function renderActionsPanel() {
       if (isAbilityReady(u, 'ensnare')) {
         const hasEnsnareTarget = G.units.some(t =>
           t.hp > 0 && t.playerId !== u.playerId &&
-          chebyshevDist(u.x, u.y, t.x, t.y) <= 3
+          chebyshevDist(u.x, u.y, t.x, t.y) <= 3 &&
+          hasLineOfSight(u.x, u.y, t.x, t.y)
         );
         if (hasEnsnareTarget) {
           addAction(list, 'Ensnare', 'Immobilize an enemy within 3 tiles for 2 turns', () => {
@@ -3605,8 +4237,31 @@ function renderActionsPanel() {
         addAction(list, 'Gore Curse', '', null, false, `${itemCdLeft} turn${itemCdLeft > 1 ? 's' : ''} CD`);
       }
     }
+    if (action === 'pistol_shot') {
+      const pistolTargets = G.units.some(e => e.hp > 0 && e.playerId !== u.playerId && chebyshevDist(u.x, u.y, e.x, e.y) <= 3 && hasLineOfSight(u.x, u.y, e.x, e.y));
+      if (pistolTargets && u.canFight && !u.hasAttacked) {
+        addAction(list, 'Pistol Shot', 'Fire at an enemy within 3 tiles for 3 damage', () => {
+          interactionMode = 'pistol_shot';
+          renderBoard();
+        }, interactionMode === 'pistol_shot');
+      }
+    }
+    if (action === 'giant_shot') {
+      if (isAbilityReady(u, 'giant_shot') && u.canFight) {
+        const giantRange = stats.attackRange || 4;
+        const giantTargets = G.units.some(e => e.hp > 0 && e.playerId !== u.playerId && chebyshevDist(u.x, u.y, e.x, e.y) <= giantRange && hasLineOfSight(u.x, u.y, e.x, e.y));
+        if (giantTargets) {
+          addAction(list, 'Giant Shot', 'Fire massive arrow dealing STR damage', () => {
+            interactionMode = 'giant_shot';
+            renderBoard();
+          }, interactionMode === 'giant_shot');
+        }
+      } else if (itemCdLeft > 0) {
+        addAction(list, 'Giant Shot', '', null, false, `${itemCdLeft} turn${itemCdLeft > 1 ? 's' : ''} CD`);
+      }
+    }
     if (action === 'boomerang_throw') {
-      if (!u.hasAttacked && G.units.some(e => e.hp > 0 && e.playerId !== u.playerId && chebyshevDist(u.x, u.y, e.x, e.y) <= 4 && isOnStraightLine(u.x, u.y, e.x, e.y))) {
+      if (!u.hasAttacked && G.units.some(e => e.hp > 0 && e.playerId !== u.playerId && chebyshevDist(u.x, u.y, e.x, e.y) <= 4 && isOnStraightLine(u.x, u.y, e.x, e.y) && hasLineOfSight(u.x, u.y, e.x, e.y))) {
         addAction(list, 'Boomerang Throw', 'Hit all enemies in a line (up to 4 tiles)', () => {
           interactionMode = 'boomerang_throw';
           renderBoard();
@@ -3732,6 +4387,12 @@ function renderActionsPanel() {
           interactionMode = 'aimed_shot';
           renderBoard();
         }, interactionMode === 'aimed_shot');
+      }
+      if (ability.id === 'harpoon_shot') {
+        addAction(list, ability.name, ability.desc, () => {
+          interactionMode = 'harpoon_shot';
+          renderBoard();
+        }, interactionMode === 'harpoon_shot');
       }
       if (ability.id === 'arcane_blast') {
         addAction(list, ability.name, ability.desc, () => {
@@ -3866,6 +4527,79 @@ function renderActionsPanel() {
           interactionMode = 'booby_trap';
           renderBoard();
         }, interactionMode === 'booby_trap');
+      }
+      // --- Nomad abilities ---
+      if (ability.id === 'forge_barrel') {
+        addAction(list, ability.name, ability.desc, () => {
+          executeForgeBarrel(u);
+        });
+      }
+      if (ability.id === 'poisonous_shiv') {
+        const hasAdjEnemy = G.units.some(e => e.hp > 0 && e.playerId !== u.playerId && isAdjacent(u.x, u.y, e.x, e.y));
+        if (hasAdjEnemy) {
+          addAction(list, ability.name, ability.desc, () => {
+            interactionMode = 'poisonous_shiv';
+            renderBoard();
+          }, interactionMode === 'poisonous_shiv');
+        }
+      }
+      if (ability.id === 'rescue') {
+        const hasAllyAnywhere = G.units.some(a => a.hp > 0 && a.id !== u.id && a.playerId === u.playerId);
+        if (hasAllyAnywhere) {
+          addAction(list, ability.name, ability.desc, () => {
+            interactionMode = 'rescue';
+            renderBoard();
+          }, interactionMode === 'rescue');
+        }
+      }
+      // --- Trade Guild abilities ---
+      if (ability.id === 'bounty_mark') {
+        const hasVisibleEnemy = G.units.some(e => e.hp > 0 && e.playerId !== u.playerId && hasLineOfSight(u.x, u.y, e.x, e.y));
+        if (hasVisibleEnemy) {
+          addAction(list, ability.name, ability.desc, () => {
+            interactionMode = 'bounty_mark';
+            renderBoard();
+          }, interactionMode === 'bounty_mark');
+        }
+      }
+      if (ability.id === 'appraise_destroy') {
+        addAction(list, ability.name, ability.desc, () => {
+          interactionMode = 'appraise_destroy';
+          renderAll();
+        }, interactionMode === 'appraise_destroy');
+      }
+      // --- Ogre abilities ---
+      if (ability.id === 'ogre_throw') {
+        const hasAdjacentUnit = G.units.some(t => t.hp > 0 && t.id !== u.id && isAdjacent(u.x, u.y, t.x, t.y));
+        if (hasAdjacentUnit) {
+          addAction(list, ability.name, ability.desc, () => {
+            interactionMode = 'ogre_throw_select';
+            renderBoard();
+          }, interactionMode === 'ogre_throw_select' || interactionMode === 'ogre_throw_dest');
+        }
+      }
+      if (ability.id === 'static_discharge') {
+        const charges = u.staticCharges || 0;
+        if (charges > 0) {
+          const hasTarget = G.units.some(e => e.hp > 0 && e.playerId !== u.playerId && chebyshevDist(u.x, u.y, e.x, e.y) <= 3);
+          if (hasTarget) {
+            addAction(list, `${ability.name} (${charges}⚡)`, ability.desc, () => {
+              interactionMode = 'static_discharge';
+              renderBoard();
+            }, interactionMode === 'static_discharge');
+          } else {
+            addAction(list, `${ability.name} (${charges}⚡)`, '', null, false, 'No target');
+          }
+        } else {
+          addAction(list, ability.name, '', null, false, '0 charges');
+        }
+      }
+      // --- Merfolk abilities ---
+      if (ability.id === 'morph') {
+        addAction(list, ability.name, ability.desc, () => {
+          interactionMode = 'morph';
+          renderAll();
+        }, interactionMode === 'morph');
       }
       } // end heroReady
     }
@@ -4155,14 +4889,31 @@ function onCellClick(x, y) {
     const su = getUnit(selectedUnitId);
     const suStats = getUnitStats(su);
     const range = suStats.attackRange || 1;
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+    const dist = chebyshevDist(su.x, su.y, x, y);
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && dist <= range && hasLineOfSight(su.x, su.y, x, y)) {
+      // Smoke concealment blocks ranged attacks (distance > 1)
+      if (dist > 1 && isConcealedBySmoke(clickedUnit)) {
+        addLog(`💨 ${getDisplayName(clickedUnit)} is concealed by smoke! Cannot target with ranged attack.`);
+        interactionMode = 'idle';
+        renderAll();
+        return;
+      }
       resolveAttack(su, clickedUnit);
       return;
     }
     // Attack enemy structure
     const clickedStruct = G.structures && G.structures.find(s => s.x === x && s.y === y);
-    if (clickedStruct && clickedStruct.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+    if (clickedStruct && clickedStruct.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
       resolveAttackStructure(su, clickedStruct);
+      return;
+    }
+    // Attack explosive barrel
+    if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
+      addLog(`🏹 ${getDisplayName(su)} attacks the Explosive Barrel at (${x},${y})!`);
+      triggerBarrelExplosion(x, y);
+      su.hasAttacked = true;
+      interactionMode = 'idle';
+      renderAll();
       return;
     }
     interactionMode = 'idle';
@@ -4173,8 +4924,24 @@ function onCellClick(x, y) {
     const su = getUnit(selectedUnitId);
     const suStats = getUnitStats(su);
     const range = suStats.attackRange || 1;
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+    const dist = chebyshevDist(su.x, su.y, x, y);
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && dist <= range && hasLineOfSight(su.x, su.y, x, y)) {
+      if (dist > 1 && isConcealedBySmoke(clickedUnit)) {
+        addLog(`💨 ${getDisplayName(clickedUnit)} is concealed by smoke! Cannot target with ranged attack.`);
+        interactionMode = 'idle';
+        renderAll();
+        return;
+      }
       resolveDoubleStrike(su, clickedUnit);
+      return;
+    }
+    // Attack explosive barrel with double strike
+    if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
+      addLog(`🏹 ${getDisplayName(su)} attacks the Explosive Barrel at (${x},${y})!`);
+      triggerBarrelExplosion(x, y);
+      su.hasAttacked = true;
+      interactionMode = 'idle';
+      renderAll();
       return;
     }
     interactionMode = 'idle';
@@ -4229,23 +4996,32 @@ function onCellClick(x, y) {
     reachableTiles = [];
   }
 
-  // PICKUP MODE
-  if (interactionMode === 'pickup' && selectedUnitId !== null) {
-    const su = getUnit(selectedUnitId);
-    if (su && chebyshevDist(su.x, su.y, x, y) <= 1) {
-      const idx = (G.groundItems || []).findIndex(gi => gi.x === x && gi.y === y);
-      if (idx !== -1) {
-        pickupGroundItem(su, idx);
-        return;
-      }
+  // SCROLL OF RETRIEVE MODE — click any friendly unit anywhere on map
+  if (interactionMode === 'scroll_retrieve' && scrollPending && scrollPending.type === 'retrieve') {
+    const su = getUnit(scrollPending.unitId);
+    if (su && clickedUnit && clickedUnit.id !== su.id && clickedUnit.playerId === su.playerId && clickedUnit.hp > 0) {
+      executeScrollRetrieve(su, clickedUnit);
+      return;
     }
     interactionMode = 'idle';
+    scrollPending = null;
+  }
+
+  // SCROLL OF SWAP MODE — click any unit anywhere on map
+  if (interactionMode === 'scroll_swap' && scrollPending && scrollPending.type === 'swap') {
+    const su = getUnit(scrollPending.unitId);
+    if (su && clickedUnit && clickedUnit.id !== su.id && clickedUnit.hp > 0) {
+      executeScrollSwap(su, clickedUnit);
+      return;
+    }
+    interactionMode = 'idle';
+    scrollPending = null;
   }
 
   // HEX CURSE MODE (Goblin Hexweaver - target within 3)
   if (interactionMode === 'hex_curse' && selectedUnitId !== null) {
     const su = getUnit(selectedUnitId);
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3) {
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3 && hasLineOfSight(su.x, su.y, x, y)) {
       executeHexCurse(su, clickedUnit);
       return;
     }
@@ -4267,8 +5043,26 @@ function onCellClick(x, y) {
     const su = getUnit(selectedUnitId);
     const suStats = getUnitStats(su);
     const range = suStats.attackRange || 1;
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y) && !isConcealedBySmoke(clickedUnit)) {
       executeAimedShot(su, clickedUnit);
+      return;
+    }
+    if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
+      addLog(`🏹 ${getDisplayName(su)} shoots the Explosive Barrel at (${x},${y})!`);
+      triggerBarrelExplosion(x, y);
+      su.hasAttacked = true;
+      interactionMode = 'idle';
+      renderAll();
+      return;
+    }
+    interactionMode = 'idle';
+  }
+
+  // HARPOON SHOT MODE (Merfolk Tidewarden - hook enemy within 5)
+  if (interactionMode === 'harpoon_shot' && selectedUnitId !== null) {
+    const su = getUnit(selectedUnitId);
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 5 && hasLineOfSight(su.x, su.y, x, y) && !isConcealedBySmoke(clickedUnit)) {
+      executeHarpoonShot(su, clickedUnit);
       return;
     }
     interactionMode = 'idle';
@@ -4277,8 +5071,16 @@ function onCellClick(x, y) {
   // ARCANE BLAST MODE (Elf Duskweaver - target within 3)
   if (interactionMode === 'arcane_blast' && selectedUnitId !== null) {
     const su = getUnit(selectedUnitId);
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3) {
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3 && hasLineOfSight(su.x, su.y, x, y)) {
       executeArcaneBlast(su, clickedUnit);
+      return;
+    }
+    if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= 3 && hasLineOfSight(su.x, su.y, x, y)) {
+      addLog(`✨ ${getDisplayName(su)} blasts the Explosive Barrel at (${x},${y})!`);
+      triggerBarrelExplosion(x, y);
+      su.hasAttacked = true;
+      interactionMode = 'idle';
+      renderAll();
       return;
     }
     interactionMode = 'idle';
@@ -4289,7 +5091,7 @@ function onCellClick(x, y) {
     const su = getUnit(selectedUnitId);
     const suStats = getUnitStats(su);
     const range = suStats.attackRange || 2;
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
       executeUtilityHex(su, clickedUnit, interactionMode);
       return;
     }
@@ -4301,8 +5103,16 @@ function onCellClick(x, y) {
     const su = getUnit(selectedUnitId);
     const suStats = getUnitStats(su);
     const range = suStats.attackRange || 3;
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
       executeFireball(su, clickedUnit);
+      return;
+    }
+    if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
+      addLog(`🔥 ${getDisplayName(su)} hurls a fireball at the Explosive Barrel at (${x},${y})!`);
+      triggerBarrelExplosion(x, y);
+      su.hasAttacked = true;
+      interactionMode = 'idle';
+      renderAll();
       return;
     }
     interactionMode = 'idle';
@@ -4313,8 +5123,16 @@ function onCellClick(x, y) {
     const su = getUnit(selectedUnitId);
     const suStats = getUnitStats(su);
     const range = suStats.attackRange || 3;
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
       executeFrostRay(su, clickedUnit);
+      return;
+    }
+    if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
+      addLog(`❄ ${getDisplayName(su)} fires a frost ray at the Explosive Barrel at (${x},${y})!`);
+      triggerBarrelExplosion(x, y);
+      su.hasAttacked = true;
+      interactionMode = 'idle';
+      renderAll();
       return;
     }
     interactionMode = 'idle';
@@ -4325,8 +5143,16 @@ function onCellClick(x, y) {
     const su = getUnit(selectedUnitId);
     const suStats = getUnitStats(su);
     const range = suStats.attackRange || 4;
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
       executeLightningBolt(su, clickedUnit);
+      return;
+    }
+    if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
+      addLog(`⚡ ${getDisplayName(su)} strikes the Explosive Barrel at (${x},${y}) with lightning!`);
+      triggerBarrelExplosion(x, y);
+      su.hasAttacked = true;
+      interactionMode = 'idle';
+      renderAll();
       return;
     }
     interactionMode = 'idle';
@@ -4337,7 +5163,7 @@ function onCellClick(x, y) {
     const su = getUnit(selectedUnitId);
     const suStats = getUnitStats(su);
     const range = suStats.attackRange || 2;
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
       executeLifeDrain(su, clickedUnit);
       return;
     }
@@ -4349,8 +5175,16 @@ function onCellClick(x, y) {
     const su = getUnit(selectedUnitId);
     const suStats = getUnitStats(su);
     const range = suStats.attackRange || 1;
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range) {
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y) && !isConcealedBySmoke(clickedUnit)) {
       executePrecisionShot(su, clickedUnit);
+      return;
+    }
+    if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
+      addLog(`🎯 ${getDisplayName(su)} takes a precision shot at the Explosive Barrel at (${x},${y})!`);
+      triggerBarrelExplosion(x, y);
+      su.hasAttacked = true;
+      interactionMode = 'idle';
+      renderAll();
       return;
     }
     interactionMode = 'idle';
@@ -4361,7 +5195,7 @@ function onCellClick(x, y) {
     const su = getUnit(selectedUnitId);
     if (clickedUnit && clickedUnit.id !== su.id && clickedUnit.hp > 0) {
       const dist = chebyshevDist(su.x, su.y, clickedUnit.x, clickedUnit.y);
-      if (dist >= 2 && dist <= 5) {
+      if (dist >= 2 && dist <= 5 && hasLineOfSight(su.x, su.y, clickedUnit.x, clickedUnit.y)) {
         executeGrapple(su, clickedUnit);
         return;
       }
@@ -4372,7 +5206,7 @@ function onCellClick(x, y) {
   // ENSNARE MODE
   if (interactionMode === 'ensnare' && selectedUnitId !== null) {
     const su = getUnit(selectedUnitId);
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, clickedUnit.x, clickedUnit.y) <= 3) {
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, clickedUnit.x, clickedUnit.y) <= 3 && hasLineOfSight(su.x, su.y, clickedUnit.x, clickedUnit.y)) {
       executeEnsnare(su, clickedUnit);
       return;
     }
@@ -4421,7 +5255,7 @@ function onCellClick(x, y) {
   // SOUL SIPHON MODE (Skeleton Lich - target within 3)
   if (interactionMode === 'soul_siphon' && selectedUnitId !== null) {
     const su = getUnit(selectedUnitId);
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3) {
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3 && hasLineOfSight(su.x, su.y, x, y)) {
       executeSoulSiphon(su, clickedUnit);
       return;
     }
@@ -4520,11 +5354,165 @@ function onCellClick(x, y) {
     interactionMode = 'idle';
   }
 
+  // POISONOUS SHIV MODE (Nomad Bandit King - target adjacent enemy)
+  if (interactionMode === 'poisonous_shiv' && selectedUnitId !== null) {
+    const su = getUnit(selectedUnitId);
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && clickedUnit.hp > 0 && isAdjacent(su.x, su.y, x, y)) {
+      executePoisonousShiv(su, clickedUnit);
+      return;
+    }
+    interactionMode = 'idle';
+  }
+
+  // RESCUE MODE (Nomad Seer - click any ally on the map)
+  if (interactionMode === 'rescue' && selectedUnitId !== null) {
+    const su = getUnit(selectedUnitId);
+    if (clickedUnit && clickedUnit.id !== su.id && clickedUnit.playerId === su.playerId && clickedUnit.hp > 0) {
+      executeRescue(su, clickedUnit);
+      return;
+    }
+    interactionMode = 'idle';
+  }
+
+  // PLACE BARREL MODE (place explosive barrel on adjacent empty tile)
+  if (interactionMode === 'place_barrel' && selectedUnitId !== null) {
+    const su = getUnit(selectedUnitId);
+    if (isAdjacent(su.x, su.y, x, y) && !clickedUnit &&
+        x >= 0 && x < G.boardSize && y >= 0 && y < G.boardSize) {
+      const res = G.board[y] && G.board[y][x];
+      const hasBarrelAlready = G.barrels && G.barrels.some(b => b.x === x && b.y === y);
+      if ((!res || !res.type || res.amount <= 0) && !hasBarrelAlready) {
+        executePlaceBarrel(su, x, y);
+        return;
+      }
+    }
+    interactionMode = 'idle';
+  }
+
   // BOOMERANG THROW MODE (hit all enemies in a line)
   if (interactionMode === 'boomerang_throw' && selectedUnitId !== null) {
     const su = getUnit(selectedUnitId);
-    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 4 && isOnStraightLine(su.x, su.y, x, y)) {
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 4 && isOnStraightLine(su.x, su.y, x, y) && hasLineOfSight(su.x, su.y, x, y)) {
       executeBoomerangThrow(su, x, y);
+      return;
+    }
+    interactionMode = 'idle';
+  }
+
+  // BOUNTY MARK MODE (mark any enemy on the map — unlimited range, no LoS)
+  if (interactionMode === 'bounty_mark' && selectedUnitId !== null) {
+    const su = getUnit(selectedUnitId);
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && clickedUnit.hp > 0) {
+      executeBountyMark(su, clickedUnit);
+      return;
+    }
+    interactionMode = 'idle';
+  }
+
+  // PISTOL SHOT MODE (Duellist's Pistol — 3 damage, 3 range, no CD)
+  if (interactionMode === 'pistol_shot' && selectedUnitId !== null) {
+    const su = getUnit(selectedUnitId);
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= 3 && hasLineOfSight(su.x, su.y, x, y) && !isConcealedBySmoke(clickedUnit)) {
+      executePistolShot(su, clickedUnit);
+      return;
+    }
+    if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= 3 && hasLineOfSight(su.x, su.y, x, y)) {
+      addLog(`🔫 ${getDisplayName(su)} shoots the Explosive Barrel at (${x},${y})!`);
+      triggerBarrelExplosion(x, y);
+      su.hasAttacked = true;
+      interactionMode = 'idle';
+      renderAll();
+      return;
+    }
+    interactionMode = 'idle';
+  }
+
+  // GIANT SHOT MODE (Bow of Giants — STR damage, weapon range)
+  if (interactionMode === 'giant_shot' && selectedUnitId !== null) {
+    const su = getUnit(selectedUnitId);
+    const suStats = getUnitStats(su);
+    const range = suStats.attackRange || 4;
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y) && !isConcealedBySmoke(clickedUnit)) {
+      executeGiantShot(su, clickedUnit);
+      return;
+    }
+    if (G.barrels && G.barrels.some(b => b.x === x && b.y === y) && chebyshevDist(su.x, su.y, x, y) <= range && hasLineOfSight(su.x, su.y, x, y)) {
+      addLog(`💥 ${getDisplayName(su)} fires a giant shot at the Explosive Barrel at (${x},${y})!`);
+      triggerBarrelExplosion(x, y);
+      su.hasAttacked = true;
+      interactionMode = 'idle';
+      renderAll();
+      return;
+    }
+    interactionMode = 'idle';
+  }
+
+  // BLINK MODE (Blinking Amulet — teleport up to 3 tiles)
+  if (interactionMode === 'blink' && selectedUnitId !== null) {
+    const su = getUnit(selectedUnitId);
+    const dist = chebyshevDist(su.x, su.y, x, y);
+    if (dist >= 1 && dist <= 3) {
+      const isOccupied = G.units.some(o => o.hp > 0 && o.x === x && o.y === y);
+      const hasBarrel = G.barrels && G.barrels.some(b => b.x === x && b.y === y);
+      if (!isOccupied && !hasBarrel) {
+        executeBlink(su, x, y);
+        return;
+      }
+    }
+    interactionMode = 'idle';
+  }
+
+  // CORRUPTED CHALICE MODE (sacrifice HP to heal adjacent ally)
+  if (interactionMode === 'corrupted_chalice' && selectedUnitId !== null) {
+    const su = getUnit(selectedUnitId);
+    if (clickedUnit && clickedUnit.id !== su.id && clickedUnit.playerId === su.playerId && clickedUnit.hp > 0 && isAdjacent(su.x, su.y, x, y)) {
+      executeCorruptedChalice(su, clickedUnit);
+      return;
+    }
+    interactionMode = 'idle';
+  }
+
+  // OGRE THROW – PHASE 1: select adjacent unit to grab
+  if (interactionMode === 'ogre_throw_select' && selectedUnitId !== null) {
+    const su = getUnit(selectedUnitId);
+    if (clickedUnit && clickedUnit.id !== su.id && clickedUnit.hp > 0 && isAdjacent(su.x, su.y, x, y)) {
+      G._throwTarget = clickedUnit;
+      interactionMode = 'ogre_throw_dest';
+      addLog(`👹 ${getDisplayName(su)} grabs ${getDisplayName(clickedUnit)}! Select where to throw them.`);
+      renderBoard();
+      return;
+    }
+    interactionMode = 'idle';
+    renderBoard();
+  }
+
+  // OGRE THROW – PHASE 2: select landing tile
+  if (interactionMode === 'ogre_throw_dest' && selectedUnitId !== null && G._throwTarget) {
+    const su = getUnit(selectedUnitId);
+    const throwTarget = G._throwTarget;
+    const dist = chebyshevDist(su.x, su.y, x, y);
+    if (dist >= 2 && dist <= 4) {
+      const hasBarrel = G.barrels && G.barrels.some(b => b.x === x && b.y === y);
+      const hasResource = G.board[y] && G.board[y][x] && G.board[y][x].type && G.board[y][x].amount > 0;
+      const landOnUnit = G.units.find(o => o.hp > 0 && o.x === x && o.y === y && o.id !== throwTarget.id && o.id !== su.id);
+      const isOccupiedByOther = G.units.some(o => o.hp > 0 && o.x === x && o.y === y && o.id !== throwTarget.id);
+      if (!hasBarrel && !hasResource && (!isOccupiedByOther || landOnUnit)) {
+        executeOgreThrow(su, throwTarget, x, y, landOnUnit);
+        G._throwTarget = null;
+        return;
+      }
+    }
+    // Cancel throw on invalid click
+    G._throwTarget = null;
+    interactionMode = 'idle';
+    renderBoard();
+  }
+
+  // STATIC DISCHARGE MODE (consume charges, blast enemy)
+  if (interactionMode === 'static_discharge' && selectedUnitId !== null) {
+    const su = getUnit(selectedUnitId);
+    if (clickedUnit && clickedUnit.playerId !== su.playerId && clickedUnit.hp > 0 && chebyshevDist(su.x, su.y, x, y) <= 3) {
+      executeStaticDischarge(su, clickedUnit);
       return;
     }
     interactionMode = 'idle';
@@ -4539,6 +5527,7 @@ function onCellClick(x, y) {
     selectedBazaar = null;
     selectedStructure = null;
     selectedTunnel = null;
+    selectedBarrel = null;
     interactionMode = 'idle';
     reachableTiles = [];
   } else {
@@ -4550,6 +5539,8 @@ function onCellClick(x, y) {
     const clickedBazaar = G.bazaars && G.bazaars.find(b => b.x === x && b.y === y);
     // Check for structure tile
     const clickedStructure = G.structures && G.structures.find(s => s.x === x && s.y === y);
+    // Check for barrel tile
+    const clickedBarrel = G.barrels && G.barrels.find(b => b.x === x && b.y === y);
     // Check for ground items
     const hasGroundItem = (G.groundItems || []).some(gi => gi.x === x && gi.y === y);
     if (clickedShop) {
@@ -4560,6 +5551,7 @@ function onCellClick(x, y) {
       selectedBazaar = null;
       selectedStructure = null;
       selectedTunnel = null;
+      selectedBarrel = null;
       interactionMode = 'idle';
       reachableTiles = [];
     } else if (clickedVendor) {
@@ -4570,6 +5562,7 @@ function onCellClick(x, y) {
       selectedBazaar = null;
       selectedStructure = null;
       selectedTunnel = null;
+      selectedBarrel = null;
       interactionMode = 'idle';
       reachableTiles = [];
     } else if (clickedBazaar) {
@@ -4580,6 +5573,7 @@ function onCellClick(x, y) {
       selectedBazaar = clickedBazaar;
       selectedStructure = null;
       selectedTunnel = null;
+      selectedBarrel = null;
       interactionMode = 'idle';
       reachableTiles = [];
     } else if (clickedStructure) {
@@ -4590,6 +5584,7 @@ function onCellClick(x, y) {
       selectedBazaar = null;
       selectedStructure = clickedStructure;
       selectedTunnel = null;
+      selectedBarrel = null;
       interactionMode = 'idle';
       reachableTiles = [];
     } else if (G.tunnels && G.tunnels.find(t => t.x === x && t.y === y)) {
@@ -4600,6 +5595,18 @@ function onCellClick(x, y) {
       selectedBazaar = null;
       selectedStructure = null;
       selectedTunnel = G.tunnels.find(t => t.x === x && t.y === y);
+      selectedBarrel = null;
+      interactionMode = 'idle';
+      reachableTiles = [];
+    } else if (clickedBarrel) {
+      selectedUnitId = null;
+      selectedGroundTile = null;
+      selectedShop = null;
+      selectedVendor = null;
+      selectedBazaar = null;
+      selectedStructure = null;
+      selectedTunnel = null;
+      selectedBarrel = clickedBarrel;
       interactionMode = 'idle';
       reachableTiles = [];
     } else if (hasGroundItem) {
@@ -4610,6 +5617,7 @@ function onCellClick(x, y) {
       selectedBazaar = null;
       selectedStructure = null;
       selectedTunnel = null;
+      selectedBarrel = null;
       interactionMode = 'idle';
       reachableTiles = [];
     } else {
@@ -4628,7 +5636,9 @@ function deselectUnit() {
   selectedBazaar = null;
   selectedStructure = null;
   selectedTunnel = null;
+  selectedBarrel = null;
   mirrorPending = null;
+  scrollPending = null;
   interactionMode = 'idle';
   reachableTiles = [];
   renderAll();
@@ -4639,10 +5649,12 @@ function deselectUnit() {
 // ============================================================
 function isTileBlockedForUnit(nx, ny, unit) {
   const cell = G.board[ny][nx];
+  // Barrels block movement
+  if (G.barrels && G.barrels.some(b => b.x === nx && b.y === ny)) return true;
   if (!cell) return false; // empty tile, not blocked
   const type = cell.type;
   if (type === 'stone' && hasPassive(unit, 'climbing')) return false;
-  if (type === 'water' && hasPassive(unit, 'water_walking')) return false;
+  if (type === 'water' && (hasPassive(unit, 'water_walking') || hasPassive(unit, 'swimming'))) return false;
   return true; // blocked by resource tile
 }
 
@@ -4682,13 +5694,13 @@ function moveUnit(unit, x, y) {
   const adjacentEnemies = unit.disengaged ? [] : G.units.filter(u =>
     u.hp > 0 && u.playerId !== unit.playerId && u.canFight &&
     !hasStatusEffect(u, 'beguiled') &&
+    !hasStatusEffect(u, 'frozen') &&
     isAdjacent(unit.x, unit.y, u.x, u.y) &&
     !isAdjacent(x, y, u.x, u.y)
   );
   let aooStopped = false;
   for (const enemy of adjacentEnemies) {
     addLog(`⚡ ${getDisplayName(enemy)} gets an Attack of Opportunity against ${getDisplayName(unit)}!`);
-    const hpBefore = unit.hp;
     performAttack(enemy, unit, { isAoO: true });
     if (unit.hp <= 0) {
       interactionMode = 'idle';
@@ -4697,16 +5709,12 @@ function moveUnit(unit, x, y) {
       renderAll();
       return;
     }
-    // If the AoO dealt damage, stop movement
-    if (unit.hp < hpBefore) {
+    // AoO can trigger combat lock — if locked, stop movement
+    if (hasStatusEffect(unit, 'combat_locked')) {
       unit.movementLeft = 0;
-      addLog(`${getDisplayName(unit)} is stopped in their tracks!`);
+      addLog(`🔒 ${getDisplayName(unit)} is locked in place and cannot continue moving!`);
       aooStopped = true;
       break;
-    }
-    // If the unit dodged, they can continue moving freely
-    if (unit.hp >= hpBefore) {
-      addLog(`💨 ${getDisplayName(unit)} dodges and keeps moving!`);
     }
   }
   if (aooStopped) {
@@ -4723,6 +5731,29 @@ function moveUnit(unit, x, y) {
   // Track tiles moved this turn for Momentum passive
   unit.tilesMoved = (unit.tilesMoved || 0) + path;
 
+  // Harpoon drag: if this unit has a hooked target, drag them to trail right behind
+  if (unit.harpoonDragTargetId && unit.harpoonDragTurn === G.turn) {
+    const dragTarget = G.units.find(u => u.id === unit.harpoonDragTargetId && u.hp > 0);
+    if (dragTarget) {
+      // Place enemy one tile behind the Tidewarden (opposite of movement direction)
+      const dx = Math.sign(x - oldX);
+      const dy = Math.sign(y - oldY);
+      let dragX = x - dx;
+      let dragY = y - dy;
+      // If that tile is blocked, fall back to the vacated tile
+      const tileBlocked = G.units.some(u => u.hp > 0 && u.id !== dragTarget.id && u.x === dragX && u.y === dragY) ||
+        (G.map && G.map[dragY] && G.map[dragY][dragX] === 'wall');
+      if (tileBlocked) { dragX = oldX; dragY = oldY; }
+      dragTarget.x = dragX;
+      dragTarget.y = dragY;
+      addLog(`🔱 ${getDisplayName(unit)} drags ${getDisplayName(dragTarget)} to (${dragX},${dragY})!`);
+    } else {
+      // Target died or disappeared — clear hook
+      delete unit.harpoonDragTargetId;
+      delete unit.harpoonDragTurn;
+    }
+  }
+
   addLog(`${getDisplayName(unit)} moved from (${oldX},${oldY}) to (${x},${y})`);
 
   // Overwatch: ranged enemies with overwatch passive fire when unit enters their range
@@ -4730,6 +5761,7 @@ function moveUnit(unit, x, y) {
     const overwatchers = G.units.filter(u =>
       u.hp > 0 && u.playerId !== unit.playerId && u.canFight &&
       !hasStatusEffect(u, 'beguiled') &&
+      !hasStatusEffect(u, 'frozen') &&
       hasPassive(u, 'overwatch') &&
       !u.overwatchFired
     );
@@ -4737,7 +5769,7 @@ function moveUnit(unit, x, y) {
       const owStats = getUnitStats(ow);
       if (owStats.attackRange > 1) {
         const dist = chebyshevDist(ow.x, ow.y, x, y);
-        if (dist <= owStats.attackRange && dist > 1) {
+        if (dist <= owStats.attackRange && dist > 1 && hasLineOfSight(ow.x, ow.y, x, y) && !isConcealedBySmoke(unit)) {
           addLog(`🎯 ${getDisplayName(ow)} fires an Overwatch shot at ${getDisplayName(unit)}!`);
           ow.overwatchFired = true;
           performAttack(ow, unit, { isAoO: true });
@@ -4814,6 +5846,7 @@ function performAttack(attacker, defender, { isAoO = false, isDoubleStrike = fal
   // Dodge check (AGI-based)
   if (Math.random() * 100 < dStats.dodgeChance) {
     addLog(`${prefix}${getDisplayName(attacker)} ${isAoO ? 'swings at' : 'attacks'} ${getDisplayName(defender)} — 🌀 DODGED! (${dStats.dodgeChance}% chance)`);
+    attacker._lastDamageDealt = 0;
     return false;
   }
 
@@ -4824,8 +5857,9 @@ function performAttack(attacker, defender, { isAoO = false, isDoubleStrike = fal
   }
 
   const atkRoll = rollD6() + aStats.attack + momentumBonus + 2; // +2 attacker advantage (hit only)
-  // Piercing passive: ignore 2 DEF
-  const piercingReduction = hasPassive(attacker, 'piercing') ? 2 : 0;
+  // Piercing passive: ignore 2 DEF per stack (stacks)
+  const piercingStacks = countPassive(attacker, 'piercing');
+  const piercingReduction = piercingStacks * 2;
   const defRoll = rollD6() + Math.max(0, dStats.defense - piercingReduction);
   const atkRollDmg = atkRoll - 2; // +2 helps hit, not damage
   let damage = Math.max(0, atkRollDmg - defRoll);
@@ -4833,7 +5867,12 @@ function performAttack(attacker, defender, { isAoO = false, isDoubleStrike = fal
 
   // Critical hit (INT-based) — tactical precision
   let isCrit = false;
-  if (damage > 0 && Math.random() * 100 < aStats.critChance) {
+  if (damage > 0 && hasStatusEffect(attacker, 'deadly_focus')) {
+    damage = Math.ceil(damage * 1.5);
+    isCrit = true;
+    removeStatusEffect(attacker, 'deadly_focus');
+    addLog(`🎯 ${getDisplayName(attacker)}'s Deadly Focus guarantees a critical strike!`);
+  } else if (damage > 0 && Math.random() * 100 < aStats.critChance) {
     damage = Math.ceil(damage * 1.5);
     isCrit = true;
   }
@@ -4855,7 +5894,20 @@ function performAttack(attacker, defender, { isAoO = false, isDoubleStrike = fal
     }
   }
 
+  // Bounty Marked: +3 damage from all sources
+  let bountyBonusApplied = false;
+  if (damage > 0 && hasStatusEffect(defender, 'bounty_marked')) {
+    damage += 3;
+    bountyBonusApplied = true;
+  }
+
   if (damage > 0) {
+    // Magic Resistance: reduce magic weapon basic attack damage by 2
+    const attackerWeapon = attacker.equipment && attacker.equipment.mainhand;
+    if (attackerWeapon && attackerWeapon !== '_two_handed_' && attackerWeapon.magicDamage && hasPassive(defender, 'magic_resistance') && damage > 0) {
+      damage = Math.max(0, damage - 2);
+      addLog(`✨ ${getDisplayName(defender)}'s Magic Resistance reduces the magic damage!`);
+    }
     // Bulwark passive: reduce all incoming damage by stack count (min 1)
     const bulwarkStacks = countPassive(defender, 'bulwark');
     if (bulwarkStacks > 0 && damage > 1) {
@@ -4881,8 +5933,13 @@ function performAttack(attacker, defender, { isAoO = false, isDoubleStrike = fal
     }
     if (momentumBonus > 0) addLog(`🏃 Momentum: +${momentumBonus} ATK from ${attacker.tilesMoved} tiles moved!`);
     const procTag = isExecute ? ' 🪓EXECUTE!' : isCrit ? ' 💥CRIT!' : isCrush ? ' 🔨CRUSH!' : '';
+    const bountyTag = bountyBonusApplied ? ' 💰+3 Bounty' : '';
     defender.hp -= damage;
-    addLog(`${prefix}${getDisplayName(attacker)} ${isAoO ? 'hits' : 'attacks'} ${getDisplayName(defender)} — ${atkRoll} vs ${defRoll} → ${damage} damage!${procTag} (${defender.hp > 0 ? defender.hp + ' HP left' : 'DEFEATED!'})`);
+    attacker._lastDamageDealt = damage;
+    addLog(`${prefix}${getDisplayName(attacker)} ${isAoO ? 'hits' : 'attacks'} ${getDisplayName(defender)} — ${atkRoll} vs ${defRoll} → ${damage} damage!${procTag}${bountyTag} (${defender.hp > 0 ? defender.hp + ' HP left' : 'DEFEATED!'})`);
+
+    // Static Conduit: grant charges to nearby Ogre Magi
+    if (damage > 0) triggerStaticConduit(defender, damage);
 
     // Vampirism passive: heal 1-3 HP on successful hit
     if (hasPassive(attacker, 'vampirism') && attacker.hp > 0) {
@@ -4897,17 +5954,28 @@ function performAttack(attacker, defender, { isAoO = false, isDoubleStrike = fal
 
     // Apply weapon on-hit status effects (requires defender alive)
     if (defender.hp > 0 && attacker.equipment) {
-      for (const slot of ['mainhand', 'offhand']) {
+      for (const slot of ['mainhand', 'offhand', 'head', 'accessory']) {
         const weapon = attacker.equipment[slot];
         if (weapon && weapon !== '_two_handed_' && weapon.onHit) {
           if (Math.random() * 100 < weapon.onHit.chance) {
             const eff = STATUS_EFFECTS[weapon.onHit.effect];
             if (eff) {
               applyStatusEffect(defender, weapon.onHit.effect, eff.duration);
-              addLog(`${eff.icon} ${getDisplayName(defender)} is ${eff.name}! (${eff.duration} turns)`);
+              if (hasStatusEffect(defender, weapon.onHit.effect)) {
+                addLog(`${eff.icon} ${getDisplayName(defender)} is ${eff.name}! (${eff.duration} turns)`);
+              }
             }
           }
         }
+      }
+    }
+
+    // Sanguine Feast: guaranteed bleeding on every hit
+    if (defender.hp > 0 && hasPassive(attacker, 'sanguine_feast') && !hasStatusEffect(defender, 'bleeding')) {
+      const bleedEff = STATUS_EFFECTS['bleeding'];
+      if (bleedEff) {
+        applyStatusEffect(defender, 'bleeding', bleedEff.duration);
+        addLog(`🩸 ${getDisplayName(attacker)}'s Sanguine Feast causes ${getDisplayName(defender)} to bleed!`);
       }
     }
 
@@ -4921,6 +5989,73 @@ function performAttack(attacker, defender, { isAoO = false, isDoubleStrike = fal
             if (eff) {
               applyStatusEffect(attacker, weapon.selfBuffOnHit.effect, eff.duration);
               addLog(`${eff.icon} ${getDisplayName(attacker)} is ${eff.name}! (${eff.duration} turns)`);
+            }
+          }
+        }
+      }
+    }
+
+    // Elemental Glaive cycling on-hit: phase 0 = Freeze, 1 = Burning, 2 = Chain Lightning
+    if (attacker.equipment) {
+      for (const slot of ['mainhand', 'offhand']) {
+        const weapon = attacker.equipment[slot];
+        if (weapon && weapon !== '_two_handed_' && weapon.elementalCycle) {
+          const phase = weapon.elementalPhase || 0;
+          if (phase === 0 && defender.hp > 0) {
+            // Freeze phase — 80% chance
+            if (Math.random() < 0.80) {
+              const eff = STATUS_EFFECTS['frozen'];
+              applyStatusEffect(defender, 'frozen', eff.duration);
+              if (hasStatusEffect(defender, 'frozen')) {
+                addLog(`❄️ ${getDisplayName(attacker)}'s Elemental Glaive freezes ${getDisplayName(defender)}! (${eff.duration} turns)`);
+              }
+            }
+          } else if (phase === 1 && defender.hp > 0) {
+            // Burning phase — 100% chance
+            const eff = STATUS_EFFECTS['burning'];
+            applyStatusEffect(defender, 'burning', eff.duration);
+            if (hasStatusEffect(defender, 'burning')) {
+              addLog(`🔥 ${getDisplayName(attacker)}'s Elemental Glaive ignites ${getDisplayName(defender)}! (${eff.duration} turns)`);
+            }
+          } else if (phase === 2) {
+            // Chain Lightning phase — guaranteed, 2 damage to target + adjacent enemies
+            const chainDmg = 2;
+            // Direct hit on defender
+            let directDmg = chainDmg;
+            const defBulwark = countPassive(defender, 'bulwark');
+            if (defBulwark > 0 && directDmg > 1) directDmg = Math.max(1, directDmg - defBulwark);
+            defender.hp -= directDmg;
+            addLog(`⚡ ${getDisplayName(attacker)}'s Elemental Glaive shocks ${getDisplayName(defender)} for ${directDmg} lightning damage! (${defender.hp > 0 ? defender.hp + ' HP left' : 'DEFEATED!'})`);
+            if (defender.hp <= 0) {
+              defender.hp = 0;
+              dropAllItems(defender);
+              addLog(`☠ ${getDisplayName(defender)} has been defeated by chain lightning!`);
+            }
+            // Chain to adjacent enemies
+            const chainTargets = G.units.filter(u =>
+              u.hp > 0 && u.id !== defender.id && u.id !== attacker.id &&
+              u.playerId !== attacker.playerId &&
+              isAdjacent(defender.x, defender.y, u.x, u.y)
+            );
+            if (chainTargets.length > 0) {
+              addLog(`⚡ Lightning arcs from ${getDisplayName(defender)}!`);
+              for (const ct of chainTargets) {
+                let cDmg = chainDmg;
+                const ctBulwark = countPassive(ct, 'bulwark');
+                if (ctBulwark > 0 && cDmg > 1) cDmg = Math.max(1, cDmg - ctBulwark);
+                ct.hp -= cDmg;
+                addLog(`⚡ Lightning strikes ${getDisplayName(ct)} for ${cDmg} damage! (${ct.hp > 0 ? ct.hp + ' HP left' : 'DEFEATED!'})`);
+                if (ct.hp <= 0) {
+                  ct.hp = 0;
+                  dropAllItems(ct);
+                  addLog(`☠ ${getDisplayName(ct)} has been defeated by chain lightning!`);
+                }
+              }
+            }
+            G.units = G.units.filter(u => u.hp > 0);
+            if (defender.hp <= 0) checkPlayerElimination(defender.playerId);
+            for (const ct of chainTargets) {
+              if (ct.hp <= 0) checkPlayerElimination(ct.playerId);
             }
           }
         }
@@ -4981,6 +6116,15 @@ function performAttack(attacker, defender, { isAoO = false, isDoubleStrike = fal
         defender.equipment[slot] = null;
       }
     }
+    // Also drop items from extra slots
+    for (const slot of getUnitEquipSlots(defender)) {
+      if (!EQUIP_SLOTS.includes(slot) && defender.equipment && defender.equipment[slot] && defender.equipment[slot] !== '_two_handed_') {
+        const item = defender.equipment[slot];
+        G.groundItems.push({ x: defender.x, y: defender.y, item: item });
+        addLog(`💎 ${getDisplayName(defender)} dropped ${item.name}!`);
+        defender.equipment[slot] = null;
+      }
+    }
     for (const item of (defender.inventory || [])) {
       G.groundItems.push({ x: defender.x, y: defender.y, item: item });
       addLog(`💎 ${getDisplayName(defender)} dropped ${item.name}!`);
@@ -5018,21 +6162,92 @@ function performAttack(attacker, defender, { isAoO = false, isDoubleStrike = fal
       attacker.hp = aFullStats.maxHp;
       addLog(`🩸 ${getDisplayName(attacker)}'s Blood Frenzy triggers! Healed to full HP (${attacker.hp})!`);
     }
+    // Midas Touch: 40% chance to turn the dead enemy's tile into a gold deposit
+    if (hasPassive(attacker, 'midas_touch') && Math.random() < 0.4) {
+      const dx = defender.x, dy = defender.y;
+      if (G.board[dy] && (!G.board[dy][dx] || !G.board[dy][dx].type || G.board[dy][dx].amount <= 0)) {
+        G.board[dy][dx] = { type: 'gold', amount: 2 + Math.floor(Math.random() * 3) };
+        addLog(`✨ ${getDisplayName(attacker)}'s Midas Touch turns the ground to gold!`);
+      }
+    }
+    // Bounty Marked: killer's player gets 3 gold
+    if (hasStatusEffect(defender, 'bounty_marked') && attacker.playerId !== undefined && G.players[attacker.playerId]) {
+      G.players[attacker.playerId].resources.gold += 3;
+      addLog(`💰 Bounty collected! ${G.players[attacker.playerId].name} receives 3 gold for killing the marked target!`);
+    }
+    // Potent Formula: spread remaining poison stacks to nearby enemies on kill
+    if (hasPassive(attacker, 'potent_formula')) {
+      const poisonEffect = defender.statusEffects ? defender.statusEffects.find(se => se.id === 'poison') : null;
+      if (poisonEffect && poisonEffect.stacks > 0) {
+        const totalStacks = poisonEffect.stacks;
+        const nearbyEnemies = G.units.filter(u =>
+          u.hp > 0 && u.id !== defender.id && u.id !== attacker.id &&
+          u.playerId !== attacker.playerId &&
+          chebyshevDist(defender.x, defender.y, u.x, u.y) <= 2 &&
+          !hasPassive(u, 'poison_resistance') && !hasPassive(u, 'stone_skin_passive')
+        );
+        if (nearbyEnemies.length > 0) {
+          addLog(`☠ ${getDisplayName(attacker)}'s Potent Formula spreads ${totalStacks} poison stack${totalStacks > 1 ? 's' : ''} from the fallen ${getDisplayName(defender)}!`);
+          let remaining = totalStacks;
+          let idx = 0;
+          while (remaining > 0 && nearbyEnemies.length > 0) {
+            const target = nearbyEnemies[idx % nearbyEnemies.length];
+            if (!target.statusEffects) target.statusEffects = [];
+            const existing = target.statusEffects.find(se => se.id === 'poison');
+            if (existing) {
+              if (existing.stacks < 5) {
+                existing.stacks = Math.min(5, existing.stacks + 1);
+                existing.turnsLeft = Math.max(existing.turnsLeft, 3);
+                remaining--;
+                idx++;
+              } else {
+                // This target is full, remove from pool
+                nearbyEnemies.splice(idx % nearbyEnemies.length, 1);
+                if (nearbyEnemies.length === 0) break;
+                if (idx >= nearbyEnemies.length) idx = 0;
+              }
+            } else {
+              target.statusEffects.push({ id: 'poison', turnsLeft: 3, stacks: 1 });
+              remaining--;
+              idx++;
+            }
+          }
+          for (const e of G.units.filter(u => u.hp > 0 && u.statusEffects && u.statusEffects.find(se => se.id === 'poison'))) {
+            const pEff = e.statusEffects.find(se => se.id === 'poison');
+            if (pEff) addLog(`  ☠ ${getDisplayName(e)}: ${pEff.stacks} poison stack${pEff.stacks > 1 ? 's' : ''}`);
+          }
+        }
+      }
+    }
+    // Gravecall: spawn a lesser zombie on the dead enemy's tile
+    if (hasPassive(attacker, 'gravecall') && Math.random() <= 0.25) {
+      const rdx = defender.x, rdy = defender.y;
+      if (!G.board[rdy][rdx] || !G.board[rdy][rdx].type || G.board[rdy][rdx].amount <= 0) {
+        const rdPlayer = G.players[attacker.playerId];
+        const rdPrefix = rdPlayer.faction && FACTIONS[rdPlayer.faction] ? FACTIONS[rdPlayer.faction].prefix : '';
+        const raisedZombie = createUnit('lesser_zombie', attacker.playerId, rdx, rdy, rdPrefix, rdPlayer.faction);
+        raisedZombie.id = G.nextUnitId++;
+        nextUnitId = G.nextUnitId;
+        raisedZombie.movementLeft = 0;
+        raisedZombie.hasAttacked = true;
+        G.units.push(raisedZombie);
+        addLog(`🧟 ${getDisplayName(attacker)}'s Gravecall raises a lesser zombie from the fallen!`);
+      }
+    }
     G.units = G.units.filter(u => u.hp > 0);
     checkPlayerElimination(defender.playerId);
     return true; // defender died
   }
 
   // Retaliate passive: 50% chance to counter-attack when hit by adjacent unit (not during AoO)
-  // Thorns passive: deal 1 damage back to melee attackers
-  if (defender.hp > 0 && attacker.hp > 0 && isAdjacent(attacker.x, attacker.y, defender.x, defender.y) && hasPassive(defender, 'thorns')) {
-    attacker.hp -= 1;
-    addLog(`🌿 ${getDisplayName(defender)}'s thorns deal 1 damage to ${getDisplayName(attacker)}! (${attacker.hp > 0 ? attacker.hp + ' HP left' : 'DEFEATED!'})`);
+  // Thorns passive: deal 1 damage per stack back to melee attackers (stacks)
+  const thornsStacks = countPassive(defender, 'thorns');
+  if (defender.hp > 0 && attacker.hp > 0 && isAdjacent(attacker.x, attacker.y, defender.x, defender.y) && thornsStacks > 0) {
+    attacker.hp -= thornsStacks;
+    addLog(`🌿 ${getDisplayName(defender)}'s thorns deal ${thornsStacks} damage to ${getDisplayName(attacker)}! (${attacker.hp > 0 ? attacker.hp + ' HP left' : 'DEFEATED!'})`);
     if (attacker.hp <= 0) {
-      attacker.hp = 0;
       addLog(`☠ ${getDisplayName(attacker)} has been defeated by thorns!`);
-      G.units = G.units.filter(u => u.hp > 0);
-      checkPlayerElimination(attacker.playerId);
+      finalizeUnitDeath(attacker);
     }
   }
 
@@ -5061,10 +6276,8 @@ function performAttack(attacker, defender, { isAoO = false, isDoubleStrike = fal
     attacker.hp -= finalShock;
     addLog(`⚡ ${getDisplayName(defender)}'s Static Armor shocks ${getDisplayName(attacker)} for ${finalShock} damage! (${attacker.hp > 0 ? attacker.hp + ' HP left' : 'DEFEATED!'})`);
     if (attacker.hp <= 0) {
-      attacker.hp = 0;
       addLog(`☠ ${getDisplayName(attacker)} has been defeated by static shock!`);
-      G.units = G.units.filter(u => u.hp > 0);
-      checkPlayerElimination(attacker.playerId);
+      finalizeUnitDeath(attacker);
     }
   }
 
@@ -5087,7 +6300,7 @@ function performAttack(attacker, defender, { isAoO = false, isDoubleStrike = fal
   if (damage > 0 && defender.hp > 0 && isAdjacent(attacker.x, attacker.y, defender.x, defender.y)) {
     let lockChance = 20;
     if (attacker.equipment) {
-      for (const slot of EQUIP_SLOTS) {
+      for (const slot of getUnitEquipSlots(attacker)) {
         const item = attacker.equipment[slot];
         if (item && item !== '_two_handed_' && item.combatLockBonus) {
           lockChance += item.combatLockBonus;
@@ -5104,6 +6317,7 @@ function performAttack(attacker, defender, { isAoO = false, isDoubleStrike = fal
 
   } else {
     addLog(`${prefix}${getDisplayName(attacker)} ${isAoO ? 'swings at' : 'attacks'} ${getDisplayName(defender)} — ${atkRoll} vs ${defRoll} → MISS!`);
+    attacker._lastDamageDealt = 0;
   }
 }
 
@@ -5140,9 +6354,11 @@ function beastRetaliate(beast, attacker) {
 }
 
 function resolveAttack(attacker, defender) {
-  // Reflect passive: 30% chance to reflect ranged attacks back
+  // Reflect passive: 30% chance to reflect ranged projectile attacks back (not magic weapons)
   const dist = chebyshevDist(attacker.x, attacker.y, defender.x, defender.y);
-  if (dist > 1 && hasPassive(defender, 'reflect') && Math.random() < 0.3) {
+  const attackerWeapon = attacker.equipment && attacker.equipment.mainhand;
+  const isMagicWeapon = attackerWeapon && attackerWeapon !== '_two_handed_' && attackerWeapon.magicDamage;
+  if (dist > 1 && !isMagicWeapon && hasPassive(defender, 'reflect') && Math.random() < REFLECT_CHANCE) {
     addLog(`🔃 ${getDisplayName(defender)} reflects the projectile back at ${getDisplayName(attacker)}!`);
     performAttack(defender, attacker);
     attacker.hasAttacked = true;
@@ -5151,11 +6367,42 @@ function resolveAttack(attacker, defender) {
     return;
   }
 
+  const defenderX = defender.x, defenderY = defender.y;
   const defenderDied = performAttack(attacker, defender);
+
+  // Sweeping Strikes: when you hit an enemy, roll a full attack against one other adjacent enemy
+  if (attacker.hp > 0 && hasPassive(attacker, 'sweeping_strikes') && attacker._lastDamageDealt > 0) {
+    const sweepTargets = G.units.filter(e =>
+      e.hp > 0 && e.id !== defender.id && e.id !== attacker.id &&
+      e.playerId !== attacker.playerId &&
+      isAdjacent(defenderX, defenderY, e.x, e.y)
+    );
+    if (sweepTargets.length > 0) {
+      const sweepTarget = sweepTargets[Math.floor(Math.random() * sweepTargets.length)];
+      addLog(`🌀 ${getDisplayName(attacker)}'s Sweeping Strikes cleaves into ${getDisplayName(sweepTarget)}!`);
+      performAttack(attacker, sweepTarget);
+    }
+  }
+
+  // Twinshot: fire a second arrow when attacking with a bow
+  const BOW_IDS = ['shortbow', 'longbow', 'elven_greatbow', 'compound_bow', 'barbed_shortbow', 'bow_of_giants'];
+  if (!defenderDied && attacker.hp > 0 && defender.hp > 0 && hasPassive(attacker, 'twinshot') &&
+      attacker.equipment && attacker.equipment.mainhand && BOW_IDS.includes(attacker.equipment.mainhand.id)) {
+    addLog(`🏹 ${getDisplayName(attacker)}'s Twinshot fires a second arrow!`);
+    performAttack(attacker, defender);
+  }
 
   // Double Edged Sword: second hit if mainhand has selfBleed
   if (!defenderDied && attacker.hp > 0 && defender.hp > 0 && attacker.equipment && attacker.equipment.mainhand && attacker.equipment.mainhand.selfBleed) {
     addLog(`⚔️ ${getDisplayName(attacker)}'s Double Edged Sword swings again!`);
+    performAttack(attacker, defender);
+  }
+
+  // Dual Wield: swing with offhand weapon
+  if (!defenderDied && attacker.hp > 0 && defender.hp > 0 && hasPassive(attacker, 'dual_wield') &&
+      attacker.equipment && attacker.equipment.offhand && attacker.equipment.offhand !== '_two_handed_' &&
+      attacker.equipment.offhand.slot === 'mainhand') {
+    addLog(`⚔️ ${getDisplayName(attacker)} swings with their offhand ${attacker.equipment.offhand.name}!`);
     performAttack(attacker, defender);
   }
 
@@ -5267,6 +6514,7 @@ function getLeapTiles(unit) {
     const farBlocked = (farCell && farCell.type && farCell.amount > 0);
     if (farBlocked) continue;
     if (G.units.some(u => u.hp > 0 && u.x === farX && u.y === farY)) continue;
+    if (G.barrels && G.barrels.some(b => b.x === farX && b.y === farY)) continue;
     tiles.push({ x: farX, y: farY });
   }
   return tiles;
@@ -5289,7 +6537,9 @@ function executeRally(unit) {
 const MAGIC_WEAPON_ACTIONS = ['fireball', 'frost_ray', 'lightning_bolt', 'life_drain', 'poison_cloud', 'runic_conjure', 'curse_hex', 'lethargy', 'flash_freeze', 'enfeeble', 'gore_curse'];
 
 function isMagicWeapon(item) {
-  return item && item !== '_two_handed_' && item.action && MAGIC_WEAPON_ACTIONS.includes(item.action);
+  if (!item || item === '_two_handed_') return false;
+  if (item.magicDamage) return true;
+  return item.action && MAGIC_WEAPON_ACTIONS.includes(item.action);
 }
 
 function triggerMirrorNormalAttack(attacker, defender) {
@@ -5318,7 +6568,7 @@ function triggerMirrorDuplicate(caster, abilityId, target) {
     const baseDmg = 4 + Math.floor(cStats.int / 3);
     let dmg = baseDmg;
     if (countPassive(target, 'bulwark') > 0 && dmg > 1) dmg = Math.max(1, dmg - countPassive(target, 'bulwark'));
-    if (hasPassive(target, 'magic_resistance')) dmg = Math.max(0, dmg - 2);
+    if (hasPassive(target, 'magic_resistance')) { dmg = Math.max(0, dmg - 2); addLog(`✨ ${getDisplayName(target)}'s Magic Resistance reduces the damage!`); }
     target.hp -= dmg;
     addLog(`🪞🔥 Mirror Fireball hits ${getDisplayName(target)} for ${dmg} damage! (${target.hp > 0 ? target.hp + ' HP' : 'DEFEATED!'})`);
     if (target.hp > 0) applyStatusEffect(target, 'burning', 2);
@@ -5330,7 +6580,7 @@ function triggerMirrorDuplicate(caster, abilityId, target) {
     for (const st of splashTargets) {
       let sDmg = 2;
       if (countPassive(st, 'bulwark') > 0 && sDmg > 1) sDmg = Math.max(1, sDmg - countPassive(st, 'bulwark'));
-      if (hasPassive(st, 'magic_resistance')) sDmg = Math.max(0, sDmg - 2);
+      if (hasPassive(st, 'magic_resistance')) { sDmg = Math.max(0, sDmg - 2); addLog(`✨ ${getDisplayName(st)}'s Magic Resistance reduces the damage!`); }
       st.hp -= sDmg;
       addLog(`🪞🔥 Mirror splash hits ${getDisplayName(st)} for ${sDmg}! (${st.hp > 0 ? st.hp + ' HP' : 'DEFEATED!'})`);
       if (st.hp > 0) applyStatusEffect(st, 'burning', 2);
@@ -5346,7 +6596,7 @@ function triggerMirrorDuplicate(caster, abilityId, target) {
     const baseDmg = 3 + Math.floor(cStats.int / 3);
     let dmg = baseDmg;
     if (countPassive(target, 'bulwark') > 0 && dmg > 1) dmg = Math.max(1, dmg - countPassive(target, 'bulwark'));
-    if (hasPassive(target, 'magic_resistance')) dmg = Math.max(0, dmg - 2);
+    if (hasPassive(target, 'magic_resistance')) { dmg = Math.max(0, dmg - 2); addLog(`✨ ${getDisplayName(target)}'s Magic Resistance reduces the damage!`); }
     target.hp -= dmg;
     addLog(`🪞❄️ Mirror Frost Ray hits ${getDisplayName(target)} for ${dmg} damage! (${target.hp > 0 ? target.hp + ' HP' : 'DEFEATED!'})`);
     if (target.hp > 0) applyStatusEffect(target, 'frozen', 1);
@@ -5358,7 +6608,7 @@ function triggerMirrorDuplicate(caster, abilityId, target) {
     const baseDmg = 5 + Math.floor(cStats.int / 3);
     let dmg = baseDmg;
     if (countPassive(target, 'bulwark') > 0 && dmg > 1) dmg = Math.max(1, dmg - countPassive(target, 'bulwark'));
-    if (hasPassive(target, 'magic_resistance')) dmg = Math.max(0, dmg - 2);
+    if (hasPassive(target, 'magic_resistance')) { dmg = Math.max(0, dmg - 2); addLog(`✨ ${getDisplayName(target)}'s Magic Resistance reduces the damage!`); }
     target.hp -= dmg;
     addLog(`🪞⚡ Mirror Lightning Bolt hits ${getDisplayName(target)} for ${dmg} damage! (${target.hp > 0 ? target.hp + ' HP' : 'DEFEATED!'})`);
     if (target.hp > 0) applyStatusEffect(target, 'slowed', 2);
@@ -5370,7 +6620,7 @@ function triggerMirrorDuplicate(caster, abilityId, target) {
     const baseDmg = 3 + Math.floor(cStats.int / 4);
     let dmg = baseDmg;
     if (countPassive(target, 'bulwark') > 0 && dmg > 1) dmg = Math.max(1, dmg - countPassive(target, 'bulwark'));
-    if (hasPassive(target, 'magic_resistance')) dmg = Math.max(0, dmg - 2);
+    if (hasPassive(target, 'magic_resistance')) { dmg = Math.max(0, dmg - 2); addLog(`✨ ${getDisplayName(target)}'s Magic Resistance reduces the damage!`); }
     target.hp -= dmg;
     const healAmt = Math.min(dmg, cStats.maxHp - caster.hp);
     if (healAmt > 0) caster.hp += healAmt;
@@ -5390,7 +6640,7 @@ function triggerMirrorDuplicate(caster, abilityId, target) {
       }
       enemy.hp -= 1;
       applyStatusEffect(enemy, 'poison', 3);
-      addLog(`🪞☠ Mirror Poison Cloud hits ${getDisplayName(enemy)}! (${enemy.hp > 0 ? enemy.hp + ' HP' : 'DEFEATED!'})`);
+      addLog(`🪞☠ Mirror Poison Cloud hits ${getDisplayName(enemy)}!${hasStatusEffect(enemy, 'poison') ? ' Poisoned!' : ''} (${enemy.hp > 0 ? enemy.hp + ' HP' : 'DEFEATED!'})`);
       if (enemy.hp <= 0) { enemy.hp = 0; dropAllItems(enemy); }
     }
     G.units = G.units.filter(u => u.hp > 0);
@@ -5410,9 +6660,6 @@ function triggerMirrorDuplicate(caster, abilityId, target) {
   if (UTILITY_HEX_MAP[abilityId] && target && target.hp > 0) {
     if (hasPassive(target, 'magic_resistance')) {
       addLog(`🪞${UTILITY_HEX_ICONS[abilityId]} Mirror's spell fizzles — ${getDisplayName(target)} resists with Magic Resistance!`);
-    } else if (hasPassive(target, 'reflect') && Math.random() < 0.3) {
-      addLog(`🪞🔃 ${getDisplayName(target)} reflects the Mirror's spell back at ${getDisplayName(caster)}!`);
-      applyStatusEffect(caster, UTILITY_HEX_MAP[abilityId], 2);
     } else {
       applyStatusEffect(target, UTILITY_HEX_MAP[abilityId], 2);
       addLog(`🪞${UTILITY_HEX_ICONS[abilityId]} Mirror echoes the hex on ${getDisplayName(target)}!`);
@@ -5435,6 +6682,7 @@ function executeMirrorImage(unit) {
     const nx = unit.x + dx, ny = unit.y + dy;
     if (nx < 0 || nx >= G.boardSize || ny < 0 || ny >= G.boardSize) continue;
     if (G.units.some(o => o.hp > 0 && o.x === nx && o.y === ny)) continue;
+    if (G.barrels && G.barrels.some(b => b.x === nx && b.y === ny)) continue;
     const cell = G.board[ny][nx];
     if (cell && cell.type && cell.amount > 0) continue;
     candidates.push({ x: nx, y: ny });
@@ -5464,7 +6712,7 @@ function executeMirrorImage(unit) {
     hasUsedItemAction: true,
     specialActionsUsed: [],
     rallyBonus: 0, stoneSkinBonus: 0, divineShieldBonus: 0,
-    berserkBonus: 0, berserkPenalty: 0, battleCryBonus: 0,
+    berserkBonus: 0, berserkPenalty: 0, berserkTurns: 0, battleCryBonus: 0,
     battleCryTurns: 0, trollBlessingTurns: 0,
     regenPotionTurns: 0, combatRegenTurns: 0,
     stunned: false,
@@ -5538,9 +6786,11 @@ function executeBloodrend(caster, target) {
     renderAll();
     return;
   }
-  const dmg = 5;
+  let dmg = 5;
+  const bountyBR = hasStatusEffect(target, 'bounty_marked');
+  if (bountyBR) dmg += 3;
   target.hp -= dmg;
-  addLog(`🩸 ${getDisplayName(caster)} rends ${getDisplayName(target)}'s bleeding wounds for ${dmg} damage! (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
+  addLog(`🩸 ${getDisplayName(caster)} rends ${getDisplayName(target)}'s bleeding wounds for ${dmg} damage!${bountyBR ? ' 💰+3 Bounty' : ''} (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
   if (target.hp <= 0) {
     target.hp = 0;
     dropAllItems(target);
@@ -5550,6 +6800,43 @@ function executeBloodrend(caster, target) {
   }
   if (target.hp > 0 && target.playerId === NPC_PLAYER_ID) beastRetaliate(target, caster);
   startAbilityCooldown(caster, 'bloodrend');
+  interactionMode = 'idle';
+  renderAll();
+}
+
+function executeSmokeBomb(unit) {
+  unit.smokeBombTurns = 3;
+  startAbilityCooldown(unit, 'smoke_bomb');
+  addLog(`💨 ${getDisplayName(unit)} deploys a Smoke Bomb! Concealed by smoke for 3 turns.`);
+  renderAll();
+}
+
+function executeBlink(unit, tx, ty) {
+  const oldX = unit.x, oldY = unit.y;
+  unit.x = tx;
+  unit.y = ty;
+  startAbilityCooldown(unit, 'blink');
+  addLog(`✨ ${getDisplayName(unit)} blinks from (${oldX},${oldY}) to (${tx},${ty})!`);
+  interactionMode = 'idle';
+  renderAll();
+}
+
+function executeCorruptedChalice(caster, target) {
+  const sacrificeHp = 5;
+  const healHp = 5;
+  caster.hp -= sacrificeHp;
+  addLog(`🍷 ${getDisplayName(caster)} sacrifices ${sacrificeHp} HP! (${caster.hp > 0 ? caster.hp + ' HP left' : 'DEFEATED!'})`);
+  if (caster.hp <= 0) {
+    caster.hp = 0;
+    dropAllItems(caster);
+    addLog(`☠ ${getDisplayName(caster)} has been defeated by the Corrupted Chalice!`);
+  }
+  const tStats = getUnitStats(target);
+  const before = target.hp;
+  target.hp = Math.min(tStats.maxHp, target.hp + healHp);
+  const healed = target.hp - before;
+  addLog(`💚 ${getDisplayName(target)} heals for ${healed} HP from the Corrupted Chalice! (${target.hp}/${tStats.maxHp})`);
+  startAbilityCooldown(caster, 'corrupted_chalice');
   interactionMode = 'idle';
   renderAll();
 }
@@ -5569,6 +6856,7 @@ function executeTeleportHome(unit) {
       if (nx < 0 || nx >= G.boardSize || ny < 0 || ny >= G.boardSize) continue;
       if (getUnitAt(nx, ny)) continue;
       if (G.board[ny][nx]) continue;
+      if (G.barrels && G.barrels.some(b => b.x === nx && b.y === ny)) continue;
       const dist = Math.abs(dx) + Math.abs(dy);
       if (dist < bestDist) {
         bestDist = dist;
@@ -5607,7 +6895,7 @@ function executeWarStomp(unit) {
     const nx = enemy.x + dx;
     const ny = enemy.y + dy;
     if (nx >= 0 && nx < G.boardSize && ny >= 0 && ny < G.boardSize &&
-        !getUnitAt(nx, ny) && !(G.board[ny][nx] && G.board[ny][nx].type && G.board[ny][nx].amount > 0)) {
+        !getUnitAt(nx, ny) && !(G.barrels && G.barrels.some(b => b.x === nx && b.y === ny)) && !(G.board[ny][nx] && G.board[ny][nx].type && G.board[ny][nx].amount > 0)) {
       enemy.x = nx;
       enemy.y = ny;
       pushed++;
@@ -5641,11 +6929,12 @@ function executeHealAllies(unit) {
 }
 
 function executeBerserk(unit) {
-  // Berserk: +5 ATK, -3 DEF this turn
+  // Berserk: +5 ATK, -3 DEF for 2 turns (this turn + next turn)
   unit.berserkBonus = 5;
   unit.berserkPenalty = 3;
+  unit.berserkTurns = 2;
   startAbilityCooldown(unit, 'berserk');
-  addLog(`🔥 ${getDisplayName(unit)} goes berserk! (+5 ATK, -3 DEF this turn)`);
+  addLog(`🔥 ${getDisplayName(unit)} goes berserk! (+5 ATK, -3 DEF for 2 turns)`);
   renderAll();
 }
 
@@ -5658,26 +6947,16 @@ function executeFireball(caster, target) {
   const splashDmg = 2;
   
   // Main target
-  if (hasPassive(target, 'reflect') && Math.random() < 0.3) {
-    addLog(`🔃 ${getDisplayName(target)} reflects the Fireball back at ${getDisplayName(caster)}!`);
-    caster.hp -= baseDmg;
-    applyStatusEffect(caster, 'burning', 2);
-    addLog(`🔥 ${getDisplayName(caster)} takes ${baseDmg} fire damage and is Burning! (${caster.hp > 0 ? caster.hp + ' HP left' : 'DEFEATED!'})`);
-    if (caster.hp <= 0) {
-      caster.hp = 0;
-      dropAllItems(caster);
-      addLog(`☠ ${getDisplayName(caster)} has been defeated!`);
-      G.units = G.units.filter(u => u.hp > 0);
-      checkPlayerElimination(caster.playerId);
-    }
-  } else {
+  {
     // Bulwark reduces damage (stacks)
     let dmg = baseDmg;
+    const bountyFB = hasStatusEffect(target, 'bounty_marked');
+    if (bountyFB) dmg += 3;
     const tgtBulwark = countPassive(target, 'bulwark');
     if (tgtBulwark > 0 && dmg > 1) dmg = Math.max(1, dmg - tgtBulwark);
-    if (hasPassive(target, 'magic_resistance')) dmg = Math.max(0, dmg - 2);
+    if (hasPassive(target, 'magic_resistance')) { dmg = Math.max(0, dmg - 2); addLog(`✨ ${getDisplayName(target)}'s Magic Resistance reduces the damage!`); }
     target.hp -= dmg;
-    addLog(`🔥 ${getDisplayName(caster)}'s Fireball hits ${getDisplayName(target)} for ${dmg} fire damage! (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
+    addLog(`🔥 ${getDisplayName(caster)}'s Fireball hits ${getDisplayName(target)} for ${dmg} fire damage!${bountyFB ? ' 💰+3 Bounty' : ''} (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
     if (target.hp > 0) applyStatusEffect(target, 'burning', 2);
     if (target.hp <= 0) {
       target.hp = 0;
@@ -5693,11 +6972,13 @@ function executeFireball(caster, target) {
   );
   for (const st of splashTargets) {
     let sDmg = splashDmg;
+    const bountySP = hasStatusEffect(st, 'bounty_marked');
+    if (bountySP) sDmg += 3;
     const stBulwark = countPassive(st, 'bulwark');
     if (stBulwark > 0 && sDmg > 1) sDmg = Math.max(1, sDmg - stBulwark);
-    if (hasPassive(st, 'magic_resistance')) sDmg = Math.max(0, sDmg - 2);
+    if (hasPassive(st, 'magic_resistance')) { sDmg = Math.max(0, sDmg - 2); addLog(`✨ ${getDisplayName(st)}'s Magic Resistance reduces the damage!`); }
     st.hp -= sDmg;
-    addLog(`🔥 Fireball splash hits ${getDisplayName(st)} for ${sDmg} damage! (${st.hp > 0 ? st.hp + ' HP left' : 'DEFEATED!'})`);
+    addLog(`🔥 Fireball splash hits ${getDisplayName(st)} for ${sDmg} damage!${bountySP ? ' 💰+3 Bounty' : ''} (${st.hp > 0 ? st.hp + ' HP left' : 'DEFEATED!'})`);
     if (st.hp > 0) applyStatusEffect(st, 'burning', 2);
     if (st.hp <= 0) {
       st.hp = 0;
@@ -5727,24 +7008,14 @@ function executeFrostRay(caster, target) {
   const cStats = getUnitStats(caster);
   const baseDmg = 3 + Math.floor(cStats.int / 3);
   
-  if (hasPassive(target, 'reflect') && Math.random() < 0.3) {
-    addLog(`🔃 ${getDisplayName(target)} reflects the Frost Ray back at ${getDisplayName(caster)}!`);
-    caster.hp -= baseDmg;
-    applyStatusEffect(caster, 'frozen', 2);
-    addLog(`🧊 ${getDisplayName(caster)} takes ${baseDmg} frost damage and is Frozen! (${caster.hp > 0 ? caster.hp + ' HP left' : 'DEFEATED!'})`);
-    if (caster.hp <= 0) {
-      caster.hp = 0;
-      dropAllItems(caster);
-      addLog(`☠ ${getDisplayName(caster)} has been defeated!`);
-      G.units = G.units.filter(u => u.hp > 0);
-      checkPlayerElimination(caster.playerId);
-    }
-  } else {
+  {
     let dmg = baseDmg;
+    const bountyFR = hasStatusEffect(target, 'bounty_marked');
+    if (bountyFR) dmg += 3;
     if (hasPassive(target, 'bulwark') && dmg > 1) dmg = Math.max(1, dmg - 1);
-    if (hasPassive(target, 'magic_resistance')) dmg = Math.max(0, dmg - 2);
+    if (hasPassive(target, 'magic_resistance')) { dmg = Math.max(0, dmg - 2); addLog(`✨ ${getDisplayName(target)}'s Magic Resistance reduces the damage!`); }
     target.hp -= dmg;
-    addLog(`🧊 ${getDisplayName(caster)}'s Frost Ray hits ${getDisplayName(target)} for ${dmg} frost damage! (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
+    addLog(`🧊 ${getDisplayName(caster)}'s Frost Ray hits ${getDisplayName(target)} for ${dmg} frost damage!${bountyFR ? ' 💰+3 Bounty' : ''} (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
     if (target.hp > 0) applyStatusEffect(target, 'frozen', 2);
     if (target.hp <= 0) {
       target.hp = 0;
@@ -5767,24 +7038,14 @@ function executeLightningBolt(caster, target) {
   const cStats = getUnitStats(caster);
   const baseDmg = 5 + Math.floor(cStats.int / 3);
   
-  if (hasPassive(target, 'reflect') && Math.random() < 0.3) {
-    addLog(`🔃 ${getDisplayName(target)} reflects the Lightning Bolt at ${getDisplayName(caster)}!`);
-    caster.hp -= baseDmg;
-    applyStatusEffect(caster, 'slowed', 2);
-    addLog(`⚡ ${getDisplayName(caster)} takes ${baseDmg} lightning damage and is Slowed! (${caster.hp > 0 ? caster.hp + ' HP left' : 'DEFEATED!'})`);
-    if (caster.hp <= 0) {
-      caster.hp = 0;
-      dropAllItems(caster);
-      addLog(`☠ ${getDisplayName(caster)} has been defeated!`);
-      G.units = G.units.filter(u => u.hp > 0);
-      checkPlayerElimination(caster.playerId);
-    }
-  } else {
+  {
     let dmg = baseDmg;
+    const bountyLB = hasStatusEffect(target, 'bounty_marked');
+    if (bountyLB) dmg += 3;
     if (hasPassive(target, 'bulwark') && dmg > 1) dmg = Math.max(1, dmg - 1);
-    if (hasPassive(target, 'magic_resistance')) dmg = Math.max(0, dmg - 2);
+    if (hasPassive(target, 'magic_resistance')) { dmg = Math.max(0, dmg - 2); addLog(`✨ ${getDisplayName(target)}'s Magic Resistance reduces the damage!`); }
     target.hp -= dmg;
-    addLog(`⚡ ${getDisplayName(caster)}'s Lightning Bolt hits ${getDisplayName(target)} for ${dmg} damage! (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
+    addLog(`⚡ ${getDisplayName(caster)}'s Lightning Bolt hits ${getDisplayName(target)} for ${dmg} damage!${bountyLB ? ' 💰+3 Bounty' : ''} (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
     if (target.hp > 0) applyStatusEffect(target, 'slowed', 2);
     if (target.hp <= 0) {
       target.hp = 0;
@@ -5806,27 +7067,16 @@ function executeLifeDrain(caster, target) {
   const cStats = getUnitStats(caster);
   const baseDmg = 3 + Math.floor(cStats.int / 4);
   
-  if (hasPassive(target, 'reflect') && Math.random() < 0.3) {
-    addLog(`🔃 ${getDisplayName(target)} reflects the Life Drain back at ${getDisplayName(caster)}!`);
-    const selfDmg = baseDmg;
-    caster.hp -= selfDmg;
-    target.hp = Math.min(getUnitStats(target).maxHp, target.hp + selfDmg);
-    addLog(`💜 ${getDisplayName(target)} drains ${selfDmg} HP from ${getDisplayName(caster)}!`);
-    if (caster.hp <= 0) {
-      caster.hp = 0;
-      dropAllItems(caster);
-      addLog(`☠ ${getDisplayName(caster)} has been defeated!`);
-      G.units = G.units.filter(u => u.hp > 0);
-      checkPlayerElimination(caster.playerId);
-    }
-  } else {
+  {
     let dmg = baseDmg;
+    const bountyLD = hasStatusEffect(target, 'bounty_marked');
+    if (bountyLD) dmg += 3;
     if (hasPassive(target, 'bulwark') && dmg > 1) dmg = Math.max(1, dmg - 1);
-    if (hasPassive(target, 'magic_resistance')) dmg = Math.max(0, dmg - 2);
+    if (hasPassive(target, 'magic_resistance')) { dmg = Math.max(0, dmg - 2); addLog(`✨ ${getDisplayName(target)}'s Magic Resistance reduces the damage!`); }
     target.hp -= dmg;
     const healAmt = Math.min(dmg, cStats.maxHp - caster.hp);
     if (healAmt > 0) caster.hp += healAmt;
-    addLog(`💜 ${getDisplayName(caster)}'s Life Drain hits ${getDisplayName(target)} for ${dmg} damage and heals ${healAmt} HP! (Target: ${target.hp > 0 ? target.hp + ' HP' : 'DEFEATED!'})`);
+    addLog(`💜 ${getDisplayName(caster)}'s Life Drain hits ${getDisplayName(target)} for ${dmg} damage${bountyLD ? ' 💰+3 Bounty' : ''} and heals ${healAmt} HP! (Target: ${target.hp > 0 ? target.hp + ' HP' : 'DEFEATED!'})`);
     if (target.hp <= 0) {
       target.hp = 0;
       dropAllItems(target);
@@ -5857,7 +7107,8 @@ function executePoisonCloud(caster) {
     if (hasPassive(enemy, 'bulwark') && dmg > 1) dmg = Math.max(1, dmg - 1);
     enemy.hp -= dmg;
     applyStatusEffect(enemy, 'poison', 3);
-    addLog(`☠ Poison Cloud hits ${getDisplayName(enemy)} for ${dmg} damage and poisons for 3 turns! (${enemy.hp > 0 ? enemy.hp + ' HP left' : 'DEFEATED!'})`);
+    const poisoned = hasStatusEffect(enemy, 'poison');
+    addLog(`☠ Poison Cloud hits ${getDisplayName(enemy)} for ${dmg} damage${poisoned ? ' and poisons for 3 turns' : ''}! (${enemy.hp > 0 ? enemy.hp + ' HP left' : 'DEFEATED!'})`);
     if (enemy.hp <= 0) {
       enemy.hp = 0;
       dropAllItems(enemy);
@@ -5927,7 +7178,7 @@ function executeDetonate(unit) {
 }
 
 function executePrecisionShot(attacker, target) {
-  if (hasPassive(target, 'reflect') && Math.random() < 0.3) {
+  if (hasPassive(target, 'reflect') && Math.random() < REFLECT_CHANCE) {
     const aStats = getUnitStats(attacker);
     const reflectDmg = Math.max(1, aStats.attack);
     addLog(`🔃 ${getDisplayName(target)} reflects the precision shot back at ${getDisplayName(attacker)}!`);
@@ -5941,9 +7192,11 @@ function executePrecisionShot(attacker, target) {
     return;
   }
   const aStats = getUnitStats(attacker);
-  const damage = Math.max(1, aStats.attack);
+  let damage = Math.max(1, aStats.attack);
+  const bountyPS = hasStatusEffect(target, 'bounty_marked');
+  if (bountyPS) damage += 3;
   target.hp -= damage;
-  addLog(`🔭 ${getDisplayName(attacker)} fires a precision shot at ${getDisplayName(target)} for ${damage} damage! (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
+  addLog(`🔭 ${getDisplayName(attacker)} fires a precision shot at ${getDisplayName(target)} for ${damage} damage!${bountyPS ? ' 💰+3 Bounty' : ''} (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
   if (target.hp <= 0) {
     target.hp = 0;
     dropAllItems(target);
@@ -5966,6 +7219,7 @@ function executeGrapple(unit, target) {
       const nx = unit.x + dx, ny = unit.y + dy;
       if (nx < 0 || nx >= G.boardSize || ny < 0 || ny >= G.boardSize) continue;
       if (G.units.some(u => u.hp > 0 && u.x === nx && u.y === ny)) continue;
+      if (G.barrels && G.barrels.some(b => b.x === nx && b.y === ny)) continue;
       adj.push({ x: nx, y: ny });
     }
   }
@@ -6023,7 +7277,8 @@ function executeSummonPooka(unit) {
       const nx = unit.x + dx, ny = unit.y + dy;
       if (nx >= 0 && nx < G.boardSize && ny >= 0 && ny < G.boardSize &&
           !G.board[ny][nx] &&
-          !G.units.some(u => u.x === nx && u.y === ny && u.hp > 0)) {
+          !G.units.some(u => u.x === nx && u.y === ny && u.hp > 0) &&
+          !(G.barrels && G.barrels.some(b => b.x === nx && b.y === ny))) {
         emptyAdj.push({ x: nx, y: ny });
       }
     }
@@ -6054,7 +7309,8 @@ function executeSummonZombie(unit) {
       const nx = unit.x + dx, ny = unit.y + dy;
       if (nx >= 0 && nx < G.boardSize && ny >= 0 && ny < G.boardSize &&
           !G.board[ny][nx] &&
-          !G.units.some(u => u.x === nx && u.y === ny && u.hp > 0)) {
+          !G.units.some(u => u.x === nx && u.y === ny && u.hp > 0) &&
+          !(G.barrels && G.barrels.some(b => b.x === nx && b.y === ny))) {
         emptyAdj.push({ x: nx, y: ny });
       }
     }
@@ -6102,9 +7358,11 @@ function executeBoomerangThrow(unit, tx, ty) {
     for (const t of hitTargets) {
       const dmg = Math.max(1, baseDmg - (getUnitStats(t).defense || 0) + 2);
       let finalDmg = dmg;
+      const bountyBM = hasStatusEffect(t, 'bounty_marked');
+      if (bountyBM) finalDmg += 3;
       if (hasPassive(t, 'bulwark') && finalDmg > 1) finalDmg = Math.max(1, finalDmg - 1);
       t.hp -= finalDmg;
-      addLog(`🪃 Boomerang hits ${getDisplayName(t)} for ${finalDmg} damage! (${t.hp > 0 ? t.hp + ' HP left' : 'DEFEATED!'})`);
+      addLog(`🪃 Boomerang hits ${getDisplayName(t)} for ${finalDmg} damage!${bountyBM ? ' 💰+3 Bounty' : ''} (${t.hp > 0 ? t.hp + ' HP left' : 'DEFEATED!'})`);
       if (t.hp <= 0) {
         t.hp = 0;
         dropAllItems(t);
@@ -6117,6 +7375,119 @@ function executeBoomerangThrow(unit, tx, ty) {
     }
   }
   unit.hasAttacked = true;
+  interactionMode = 'idle';
+  renderAll();
+}
+
+function executePistolShot(attacker, target) {
+  // Duellist's Pistol: 3 damage, range 3, no cooldown, uses attack action
+  // Reflect passive: 30% chance to reflect
+  if (hasPassive(target, 'reflect') && Math.random() < REFLECT_CHANCE) {
+    addLog(`🔃 ${getDisplayName(target)} reflects the pistol shot back at ${getDisplayName(attacker)}!`);
+    attacker.hp -= 3;
+    addLog(`🔫 ${getDisplayName(attacker)} takes 3 reflected damage! (${attacker.hp > 0 ? attacker.hp + ' HP left' : 'DEFEATED!'})`);
+    if (attacker.hp <= 0) { attacker.hp = 0; dropAllItems(attacker); G.units = G.units.filter(u => u.hp > 0); checkPlayerElimination(attacker.playerId); selectedUnitId = null; }
+    attacker.hasAttacked = true;
+    interactionMode = 'idle';
+    renderAll();
+    return;
+  }
+  let damage = 3;
+  const bountyPT = hasStatusEffect(target, 'bounty_marked');
+  if (bountyPT) damage += 3;
+  const bulwarkStacks = countPassive(target, 'bulwark');
+  if (bulwarkStacks > 0 && damage > 1) damage = Math.max(1, damage - bulwarkStacks);
+  target.hp -= damage;
+  addLog(`🔫 ${getDisplayName(attacker)} fires a pistol shot at ${getDisplayName(target)} for ${damage} damage!${bountyPT ? ' 💰+3 Bounty' : ''} (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
+  if (target.hp <= 0) {
+    target.hp = 0;
+    // Midas Touch on kill
+    if (hasPassive(attacker, 'midas_touch') && Math.random() < 0.4) {
+      if (G.board[target.y] && (!G.board[target.y][target.x] || !G.board[target.y][target.x].type || G.board[target.y][target.x].amount <= 0)) {
+        G.board[target.y][target.x] = { type: 'gold', amount: 2 + Math.floor(Math.random() * 3) };
+        addLog(`✨ ${getDisplayName(attacker)}'s Midas Touch turns the ground to gold!`);
+      }
+    }
+    // Gravecall on kill
+    if (hasPassive(attacker, 'gravecall') && Math.random() < 1.0) {
+      if (!G.board[target.y][target.x] || !G.board[target.y][target.x].type || G.board[target.y][target.x].amount <= 0) {
+        const rdPlayer = G.players[attacker.playerId];
+        const rdPrefix = rdPlayer.faction && FACTIONS[rdPlayer.faction] ? FACTIONS[rdPlayer.faction].prefix : '';
+        const raisedZombie = createUnit('lesser_zombie', attacker.playerId, target.x, target.y, rdPrefix, rdPlayer.faction);
+        raisedZombie.id = G.nextUnitId++;
+        nextUnitId = G.nextUnitId;
+        raisedZombie.movementLeft = 0;
+        raisedZombie.hasAttacked = true;
+        G.units.push(raisedZombie);
+        addLog(`🧟 ${getDisplayName(attacker)}'s Gravecall raises a lesser zombie from the fallen!`);
+      }
+    }
+    dropAllItems(target);
+    addLog(`☠ ${getDisplayName(target)} has been slain!`);
+    G.units = G.units.filter(u => u.hp > 0);
+    checkPlayerElimination(target.playerId);
+  }
+  if (target.hp > 0 && target.playerId === NPC_PLAYER_ID) beastRetaliate(target, attacker);
+  attacker.hasAttacked = true;
+  interactionMode = 'idle';
+  renderAll();
+}
+
+function executeGiantShot(attacker, target) {
+  // Bow of Giants: deals STR damage (guaranteed hit), no normal attack
+  const aStats = getUnitStats(attacker);
+  // Reflect passive: 30% chance to reflect
+  if (hasPassive(target, 'reflect') && Math.random() < REFLECT_CHANCE) {
+    const reflectDmg = Math.max(1, aStats.str);
+    addLog(`🔃 ${getDisplayName(target)} reflects the giant arrow back at ${getDisplayName(attacker)}!`);
+    attacker.hp -= reflectDmg;
+    addLog(`🏹 ${getDisplayName(attacker)} takes ${reflectDmg} reflected damage! (${attacker.hp > 0 ? attacker.hp + ' HP left' : 'DEFEATED!'})`);
+    if (attacker.hp <= 0) { attacker.hp = 0; dropAllItems(attacker); G.units = G.units.filter(u => u.hp > 0); checkPlayerElimination(attacker.playerId); selectedUnitId = null; }
+    startAbilityCooldown(attacker, 'giant_shot');
+    attacker.hasAttacked = true;
+    interactionMode = 'idle';
+    renderAll();
+    return;
+  }
+  const damage = Math.max(1, aStats.str);
+  let finalDmg = damage;
+  const bountyGA = hasStatusEffect(target, 'bounty_marked');
+  if (bountyGA) finalDmg += 3;
+  const bulwarkStacks = countPassive(target, 'bulwark');
+  if (bulwarkStacks > 0 && finalDmg > 1) finalDmg = Math.max(1, finalDmg - bulwarkStacks);
+  target.hp -= finalDmg;
+  addLog(`🏹 ${getDisplayName(attacker)} fires a giant arrow at ${getDisplayName(target)} for ${finalDmg} damage!${bountyGA ? ' 💰+3 Bounty' : ''} (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
+  if (target.hp <= 0) {
+    target.hp = 0;
+    // Midas Touch on kill
+    if (hasPassive(attacker, 'midas_touch') && Math.random() < 0.4) {
+      if (G.board[target.y] && (!G.board[target.y][target.x] || !G.board[target.y][target.x].type || G.board[target.y][target.x].amount <= 0)) {
+        G.board[target.y][target.x] = { type: 'gold', amount: 2 + Math.floor(Math.random() * 3) };
+        addLog(`✨ ${getDisplayName(attacker)}'s Midas Touch turns the ground to gold!`);
+      }
+    }
+    // Gravecall on kill
+    if (hasPassive(attacker, 'gravecall') && Math.random() < 1.0) {
+      if (!G.board[target.y][target.x] || !G.board[target.y][target.x].type || G.board[target.y][target.x].amount <= 0) {
+        const rdPlayer = G.players[attacker.playerId];
+        const rdPrefix = rdPlayer.faction && FACTIONS[rdPlayer.faction] ? FACTIONS[rdPlayer.faction].prefix : '';
+        const raisedZombie = createUnit('lesser_zombie', attacker.playerId, target.x, target.y, rdPrefix, rdPlayer.faction);
+        raisedZombie.id = G.nextUnitId++;
+        nextUnitId = G.nextUnitId;
+        raisedZombie.movementLeft = 0;
+        raisedZombie.hasAttacked = true;
+        G.units.push(raisedZombie);
+        addLog(`🧟 ${getDisplayName(attacker)}'s Gravecall raises a lesser zombie from the fallen!`);
+      }
+    }
+    dropAllItems(target);
+    addLog(`☠ ${getDisplayName(target)} has been slain!`);
+    G.units = G.units.filter(u => u.hp > 0);
+    checkPlayerElimination(target.playerId);
+  }
+  if (target.hp > 0 && target.playerId === NPC_PLAYER_ID) beastRetaliate(target, attacker);
+  startAbilityCooldown(attacker, 'giant_shot');
+  attacker.hasAttacked = true;
   interactionMode = 'idle';
   renderAll();
 }
@@ -6153,7 +7524,9 @@ function executeSummonSwarm(unit) {
       kills++;
     } else {
       applyStatusEffect(enemy, 'poison', 2);
-      addLog(`☠ ${getDisplayName(enemy)} is poisoned by the swarm! (2 turns)`);
+      if (hasStatusEffect(enemy, 'poison')) {
+        addLog(`☠ ${getDisplayName(enemy)} is poisoned by the swarm! (2 turns)`);
+      }
     }
   }
   if (kills > 0) {
@@ -6189,7 +7562,7 @@ function executeDivineShield(unit) {
 function executeAimedShot(attacker, target) {
   // Aimed Shot: guaranteed hit, deals ATK damage ignoring defense
   // Reflect passive: 30% chance to reflect
-  if (hasPassive(target, 'reflect') && Math.random() < 0.3) {
+  if (hasPassive(target, 'reflect') && Math.random() < REFLECT_CHANCE) {
     const aStats = getUnitStats(attacker);
     const reflectDmg = Math.max(1, aStats.attack);
     addLog(`🔃 ${getDisplayName(target)} reflects the aimed shot back at ${getDisplayName(attacker)}!`);
@@ -6203,9 +7576,11 @@ function executeAimedShot(attacker, target) {
     return;
   }
   const aStats = getUnitStats(attacker);
-  const damage = Math.max(1, aStats.attack);
+  let damage = Math.max(1, aStats.attack);
+  const bountyAS = hasStatusEffect(target, 'bounty_marked');
+  if (bountyAS) damage += 3;
   target.hp -= damage;
-  addLog(`🎯 ${getDisplayName(attacker)} fires an aimed shot at ${getDisplayName(target)} for ${damage} damage! (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
+  addLog(`🎯 ${getDisplayName(attacker)} fires an aimed shot at ${getDisplayName(target)} for ${damage} damage!${bountyAS ? ' 💰+3 Bounty' : ''} (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
   if (target.hp <= 0) {
     target.hp = 0;
     dropAllItems(target);
@@ -6221,20 +7596,18 @@ function executeAimedShot(attacker, target) {
   renderAll();
 }
 
+function executeHarpoonShot(attacker, target) {
+  // Harpoon Shot: hook an enemy within 5 tiles, drag them when you move for the rest of this turn
+  attacker.harpoonDragTargetId = target.id;
+  attacker.harpoonDragTurn = G.turn;
+  addLog(`🔱 ${getDisplayName(attacker)} fires a harpoon at ${getDisplayName(target)} and hooks them! ${getDisplayName(target)} will be dragged when ${getDisplayName(attacker)} moves.`);
+  startAbilityCooldown(attacker, 'harpoon_shot');
+  interactionMode = 'idle';
+  renderAll();
+}
+
 function executeArcaneBlast(caster, target) {
   // Arcane Blast: flat 4 damage + Burning, hit chance = INT * 8% (cap 80%)
-  // Reflect passive: 30% chance to reflect the blast back
-  if (hasPassive(target, 'reflect') && Math.random() < 0.3) {
-    addLog(`🔃 ${getDisplayName(target)} reflects the arcane blast back at ${getDisplayName(caster)}!`);
-    const reflectDmg = Math.max(1, 4 - (hasPassive(caster, 'magic_resistance') ? 2 : 0));
-    caster.hp -= reflectDmg;
-    addLog(`✨ ${getDisplayName(caster)} takes ${reflectDmg} reflected damage! (${caster.hp > 0 ? caster.hp + ' HP left' : 'DEFEATED!'})`);
-    if (caster.hp <= 0) { caster.hp = 0; dropAllItems(caster); G.units = G.units.filter(u => u.hp > 0); checkPlayerElimination(caster.playerId); }
-    startAbilityCooldown(caster, 'arcane_blast');
-    interactionMode = 'idle';
-    renderAll();
-    return;
-  }
   const cStats = getUnitStats(caster);
   const hitChance = Math.min(80, cStats.int * 8);
   if (Math.random() * 100 >= hitChance) {
@@ -6246,13 +7619,15 @@ function executeArcaneBlast(caster, target) {
     return;
   }
   let damage = 4;
+  const bountyAB = hasStatusEffect(target, 'bounty_marked');
+  if (bountyAB) damage += 3;
   // Magic resistance reduces magic damage by 2
   if (hasPassive(target, 'magic_resistance')) {
     damage = Math.max(1, damage - 2);
     addLog(`✨ ${getDisplayName(target)}'s Magic Resistance reduces the damage!`);
   }
   target.hp -= damage;
-  addLog(`✨ ${getDisplayName(caster)} blasts ${getDisplayName(target)} with arcane energy for ${damage} damage! (${hitChance}% hit) (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
+  addLog(`✨ ${getDisplayName(caster)} blasts ${getDisplayName(target)} with arcane energy for ${damage} damage!${bountyAB ? ' 💰+3 Bounty' : ''} (${hitChance}% hit) (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
   if (target.hp <= 0) {
     target.hp = 0;
     dropAllItems(target);
@@ -6324,9 +7699,11 @@ function executeTameBeast(unit, beast) {
 function executeShieldBash(unit, target) {
   // Shield Bash: deal DEF damage, push 2 tiles, stun 1 turn
   const stats = getUnitStats(unit);
-  const damage = Math.max(1, stats.defense);
+  let damage = Math.max(1, stats.defense);
+  const bountySB = hasStatusEffect(target, 'bounty_marked');
+  if (bountySB) damage += 3;
   target.hp -= damage;
-  addLog(`🛡 ${getDisplayName(unit)} shield bashes ${getDisplayName(target)} for ${damage} damage! (DEF-based)`);
+  addLog(`🛡 ${getDisplayName(unit)} shield bashes ${getDisplayName(target)} for ${damage} damage!${bountySB ? ' 💰+3 Bounty' : ''} (DEF-based)`);
 
   // Push target 2 tiles in the direction away from unit
   if (target.hp > 0) {
@@ -6337,6 +7714,7 @@ function executeShieldBash(unit, target) {
       const nx = pushX + dx, ny = pushY + dy;
       if (nx >= 0 && nx < G.boardSize && ny >= 0 && ny < G.boardSize &&
           !G.units.some(u => u.x === nx && u.y === ny && u.hp > 0) &&
+          !(G.barrels && G.barrels.some(b => b.x === nx && b.y === ny)) &&
           !(G.board[ny][nx] && G.board[ny][nx].type && G.board[ny][nx].amount > 0)) {
         pushX = nx;
         pushY = ny;
@@ -6399,7 +7777,8 @@ function executeRaiseDead(unit) {
       if (dx === 0 && dy === 0) continue;
       const nx = unit.x + dx, ny = unit.y + dy;
       if (nx >= 0 && nx < G.boardSize && ny >= 0 && ny < G.boardSize &&
-          !G.units.some(u => u.x === nx && u.y === ny && u.hp > 0)) {
+          !G.units.some(u => u.x === nx && u.y === ny && u.hp > 0) &&
+          !(G.barrels && G.barrels.some(b => b.x === nx && b.y === ny))) {
         emptyAdj.push({ x: nx, y: ny });
       }
     }
@@ -6424,24 +7803,16 @@ function executeRaiseDead(unit) {
 
 function executeSoulSiphon(caster, target) {
   // Soul Siphon: drain 4 HP from target, heal self
-  // Reflect passive: 30% chance to reflect
-  if (hasPassive(target, 'reflect') && Math.random() < 0.3) {
-    addLog(`🔃 ${getDisplayName(target)} reflects the soul siphon back at ${getDisplayName(caster)}!`);
-    const reflectDmg = Math.max(1, 4 - (hasPassive(caster, 'magic_resistance') ? 2 : 0));
-    caster.hp -= reflectDmg;
-    addLog(`👻 ${getDisplayName(caster)} takes ${reflectDmg} reflected damage! (${caster.hp > 0 ? caster.hp + ' HP left' : 'DEFEATED!'})`);
-    if (caster.hp <= 0) { caster.hp = 0; dropAllItems(caster); G.units = G.units.filter(u => u.hp > 0); checkPlayerElimination(caster.playerId); selectedUnitId = null; }
-    startAbilityCooldown(caster, 'soul_siphon');
-    interactionMode = 'idle';
-    renderAll();
-    return;
-  }
-  const dmg = Math.max(1, 4 - (hasPassive(target, 'magic_resistance') ? 2 : 0));
+  const hasMR = hasPassive(target, 'magic_resistance');
+  let dmg = Math.max(1, 4 - (hasMR ? 2 : 0));
+  const bountySS = hasStatusEffect(target, 'bounty_marked');
+  if (bountySS) dmg += 3;
+  if (hasMR) addLog(`✨ ${getDisplayName(target)}'s Magic Resistance reduces the damage!`);
   target.hp -= dmg;
   const casterStats = getUnitStats(caster);
   const healAmt = Math.min(dmg, casterStats.maxHp - caster.hp);
   caster.hp += healAmt;
-  addLog(`👻 ${getDisplayName(caster)} siphons ${dmg} HP from ${getDisplayName(target)}! (healed ${healAmt} HP)`);
+  addLog(`👻 ${getDisplayName(caster)} siphons ${dmg} HP from ${getDisplayName(target)}!${bountySS ? ' 💰+3 Bounty' : ''} (healed ${healAmt} HP)`);
   if (target.hp <= 0) {
     target.hp = 0;
     dropAllItems(target);
@@ -6516,6 +7887,7 @@ function executeTrollRampage(unit, dx, dy) {
     const ny = unit.y + dy * i;
     if (nx < 0 || nx >= G.boardSize || ny < 0 || ny >= G.boardSize) break;
     if (G.board[ny][nx]) break; // Hit a wall/obstacle
+    if (G.barrels && G.barrels.some(b => b.x === nx && b.y === ny)) break;
     const target = G.units.find(u => u.x === nx && u.y === ny && u.hp > 0);
     if (target) {
       hitTarget = target;
@@ -6532,14 +7904,16 @@ function executeTrollRampage(unit, dx, dy) {
   unit.movementLeft = 0;
   if (hitTarget) {
     const stats = getUnitStats(unit);
-    const damage = Math.max(1, stats.attack - getUnitStats(hitTarget).defense);
+    let damage = Math.max(1, stats.attack - getUnitStats(hitTarget).defense);
+    const bountyRP = hasStatusEffect(hitTarget, 'bounty_marked');
+    if (bountyRP) damage += 3;
     hitTarget.hp -= damage;
-    addLog(`🧌 ${getDisplayName(unit)} rampages into ${getDisplayName(hitTarget)} for ${damage} damage!`);
+    addLog(`🧌 ${getDisplayName(unit)} rampages into ${getDisplayName(hitTarget)} for ${damage} damage!${bountyRP ? ' 💰+3 Bounty' : ''}`);
     // Push target 1 tile
     const pushX = hitTarget.x + dx;
     const pushY = hitTarget.y + dy;
     if (pushX >= 0 && pushX < G.boardSize && pushY >= 0 && pushY < G.boardSize &&
-        !G.board[pushY][pushX] && !G.units.some(u => u.x === pushX && u.y === pushY && u.hp > 0)) {
+        !G.board[pushY][pushX] && !(G.barrels && G.barrels.some(b => b.x === pushX && b.y === pushY)) && !G.units.some(u => u.x === pushX && u.y === pushY && u.hp > 0)) {
       hitTarget.x = pushX;
       hitTarget.y = pushY;
       addLog(`💨 ${getDisplayName(hitTarget)} is pushed back to (${pushX},${pushY})!`);
@@ -6574,6 +7948,112 @@ function executeTrollsBlessing(unit) {
   startAbilityCooldown(unit, 'trolls_blessing');
   addLog(`🌿 ${getDisplayName(unit)} blesses the group with combat regeneration! (self + ${allies.length} ${allies.length === 1 ? 'ally' : 'allies'}, 3 turns)`);
   renderAll();
+}
+
+// ============================================================
+// OGRE ABILITIES
+// ============================================================
+function executeOgreThrow(unit, target, destX, destY, landOnUnit) {
+  const isAlly = target.playerId === unit.playerId;
+  const oldX = target.x, oldY = target.y;
+
+  if (landOnUnit) {
+    // Thrown unit lands on another unit — both take 3 damage
+    // Place the thrown unit on an adjacent free tile to the landing spot
+    target.x = destX;
+    target.y = destY;
+    let collisionDmg = 3;
+    // Bounty bonus
+    if (hasStatusEffect(landOnUnit, 'bounty_marked')) collisionDmg += 3;
+    landOnUnit.hp -= collisionDmg;
+    addLog(`👹 ${getDisplayName(unit)} hurls ${getDisplayName(target)} into ${getDisplayName(landOnUnit)}! Both take 3 damage!`);
+    addLog(`💥 ${getDisplayName(landOnUnit)}: ${landOnUnit.hp > 0 ? landOnUnit.hp + ' HP left' : 'DEFEATED!'}`);
+    let thrownCollisionDmg = 3;
+    target.hp -= thrownCollisionDmg;
+    addLog(`💥 ${getDisplayName(target)}: ${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'}`);
+
+    // Push the target that was landed on 1 tile away from the landing spot
+    if (landOnUnit.hp > 0) {
+      const dx = Math.sign(destX - unit.x) || 0;
+      const dy = Math.sign(destY - unit.y) || 0;
+      const pushX = landOnUnit.x + dx;
+      const pushY = landOnUnit.y + dy;
+      if (pushX >= 0 && pushX < G.boardSize && pushY >= 0 && pushY < G.boardSize &&
+          !G.units.some(u => u.x === pushX && u.y === pushY && u.hp > 0 && u.id !== target.id) &&
+          !(G.barrels && G.barrels.some(b => b.x === pushX && b.y === pushY)) &&
+          !(G.board[pushY][pushX] && G.board[pushY][pushX].type && G.board[pushY][pushX].amount > 0)) {
+        landOnUnit.x = pushX;
+        landOnUnit.y = pushY;
+        addLog(`💨 ${getDisplayName(landOnUnit)} is knocked to (${pushX},${pushY})!`);
+      }
+    }
+
+    // Finalize deaths
+    if (landOnUnit.hp <= 0) { landOnUnit.hp = 0; dropAllItems(landOnUnit); G.units = G.units.filter(u => u.hp > 0); checkPlayerElimination(landOnUnit.playerId); }
+    if (target.hp <= 0) { target.hp = 0; dropAllItems(target); G.units = G.units.filter(u => u.hp > 0); checkPlayerElimination(target.playerId); }
+  } else {
+    // Normal landing on empty tile
+    target.x = destX;
+    target.y = destY;
+    if (!isAlly) {
+      // Thrown enemies take 4 damage on landing
+      let landDmg = 4;
+      if (hasStatusEffect(target, 'bounty_marked')) landDmg += 3;
+      target.hp -= landDmg;
+      addLog(`👹 ${getDisplayName(unit)} hurls ${getDisplayName(target)} to (${destX},${destY}) for ${landDmg} damage! (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
+      if (target.hp <= 0) { target.hp = 0; dropAllItems(target); G.units = G.units.filter(u => u.hp > 0); checkPlayerElimination(target.playerId); }
+      else if (target.playerId === NPC_PLAYER_ID) { beastRetaliate(target, unit); }
+    } else {
+      addLog(`👹 ${getDisplayName(unit)} hurls ${getDisplayName(target)} to (${destX},${destY})! Safe landing.`);
+    }
+  }
+
+  unit.hasAttacked = true;
+  startAbilityCooldown(unit, 'ogre_throw');
+  interactionMode = 'idle';
+  renderAll();
+}
+
+function executeStaticDischarge(caster, target) {
+  const charges = caster.staticCharges || 0;
+  if (charges <= 0) return;
+  const cStats = getUnitStats(caster);
+  let damage = charges;
+  // Magic resistance
+  if (hasPassive(target, 'magic_resistance')) {
+    damage = Math.max(0, damage - 2);
+    addLog(`✨ ${getDisplayName(target)}'s Magic Resistance reduces the discharge!`);
+  }
+  // Bulwark
+  const bulwarkStacks = countPassive(target, 'bulwark');
+  if (bulwarkStacks > 0 && damage > 1) damage = Math.max(1, damage - bulwarkStacks);
+  // Bounty
+  if (hasStatusEffect(target, 'bounty_marked')) damage += 3;
+  target.hp -= damage;
+  caster.staticCharges = 0;
+  addLog(`⚡ ${getDisplayName(caster)} discharges ${charges} Static Charge${charges > 1 ? 's' : ''} into ${getDisplayName(target)} for ${damage} damage! (${target.hp > 0 ? target.hp + ' HP left' : 'DEFEATED!'})`);
+  if (target.hp > 0) {
+    applyStatusEffect(target, 'slowed', 1);
+    addLog(`🐌 ${getDisplayName(target)} is slowed by the shock!`);
+  }
+  if (target.hp <= 0) { target.hp = 0; dropAllItems(target); G.units = G.units.filter(u => u.hp > 0); checkPlayerElimination(target.playerId); }
+  else if (target.playerId === NPC_PLAYER_ID) { beastRetaliate(target, caster); }
+  caster.hasAttacked = true;
+  startAbilityCooldown(caster, 'static_discharge');
+  interactionMode = 'idle';
+  renderAll();
+}
+
+// Static Conduit: grant charges to Ogre Magi when enemies take damage nearby
+function triggerStaticConduit(damagedUnit, damageAmount) {
+  if (!damagedUnit || damagedUnit.hp <= 0) return;
+  for (const magi of G.units) {
+    if (magi.hp > 0 && magi.id !== damagedUnit.id && magi.playerId !== damagedUnit.playerId &&
+        hasPassive(magi, 'static_conduit') && chebyshevDist(magi.x, magi.y, damagedUnit.x, damagedUnit.y) <= 3) {
+      magi.staticCharges = (magi.staticCharges || 0) + 1;
+      addLog(`⚡ ${getDisplayName(magi)} absorbs a Static Charge! (${magi.staticCharges} total)`);
+    }
+  }
 }
 
 // ============================================================
@@ -6669,6 +8149,7 @@ function executeMimickedAbility(unit) {
     hex_curse: () => { interactionMode = 'hex_curse'; renderBoard(); return 'deferred'; },
     arcane_blast: () => { interactionMode = 'arcane_blast'; renderBoard(); return 'deferred'; },
     aimed_shot: () => { interactionMode = 'aimed_shot'; renderBoard(); return 'deferred'; },
+    harpoon_shot: () => { interactionMode = 'harpoon_shot'; renderBoard(); return 'deferred'; },
     soul_siphon: () => { interactionMode = 'soul_siphon'; renderBoard(); return 'deferred'; },
     bone_explosion: () => { interactionMode = 'bone_explosion'; renderBoard(); return 'deferred'; },
     troll_rampage: () => { interactionMode = 'troll_rampage'; renderBoard(); return 'deferred'; },
@@ -6684,6 +8165,14 @@ function executeMimickedAbility(unit) {
     tunnel_a: () => { interactionMode = 'tunnel_a'; renderBoard(); return 'deferred'; },
     tunnel_b: () => { interactionMode = 'tunnel_b'; renderBoard(); return 'deferred'; },
     booby_trap: () => { interactionMode = 'booby_trap'; renderBoard(); return 'deferred'; },
+    forge_barrel: () => executeForgeBarrel(unit),
+    poisonous_shiv: () => { interactionMode = 'poisonous_shiv'; renderBoard(); return 'deferred'; },
+    rescue: () => { interactionMode = 'rescue'; renderBoard(); return 'deferred'; },
+    bounty_mark: () => { interactionMode = 'bounty_mark'; renderBoard(); return 'deferred'; },
+    appraise_destroy: () => { interactionMode = 'appraise_destroy'; renderAll(); return 'deferred'; },
+    blink: () => { interactionMode = 'blink'; renderBoard(); return 'deferred'; },
+    corrupted_chalice: () => { interactionMode = 'corrupted_chalice'; renderBoard(); return 'deferred'; },
+    smoke_bomb: () => { executeSmokeBomb(unit); },
     // Special
     gather: () => {
       unit.mimicGather = true;
@@ -6763,6 +8252,130 @@ function executeScavenge(unit) {
   renderAll();
 }
 
+// --- Nomad abilities ---
+function executeForgeBarrel(unit) {
+  // Craft Explosive Barrel: generate an explosive barrel consumable in inventory
+  const barrel = JSON.parse(JSON.stringify(CONSUMABLES.explosive_barrel));
+  unit.inventory.push(barrel);
+  startAbilityCooldown(unit, 'forge_barrel');
+  addLog(`🛢 ${getDisplayName(unit)} crafts an Explosive Barrel!`);
+  renderAll();
+}
+
+function executePoisonousShiv(caster, target) {
+  // Poisonous Shiv: instantly apply 5 stacks of poison
+  if (hasPassive(target, 'poison_resistance')) {
+    addLog(`🛡 ${getDisplayName(target)} resists the Poisonous Shiv!`);
+  } else if (hasPassive(target, 'stone_skin_passive')) {
+    addLog(`🪨 ${getDisplayName(target)}'s Stone Skin blocks the Poisonous Shiv!`);
+  } else {
+    // Apply poison, force to 5 stacks
+    if (!target.statusEffects) target.statusEffects = [];
+    const existing = target.statusEffects.find(se => se.id === 'poison');
+    if (existing) {
+      existing.stacks = 5;
+      existing.turnsLeft = 3;
+    } else {
+      target.statusEffects.push({ id: 'poison', turnsLeft: 3, stacks: 5 });
+    }
+    addLog(`🗡️ ${getDisplayName(caster)} drives a poisonous shiv into ${getDisplayName(target)}! MAX POISON (5/5 stacks)!`);
+  }
+  startAbilityCooldown(caster, 'poisonous_shiv');
+  if (target.hp > 0 && target.playerId === NPC_PLAYER_ID) beastRetaliate(target, caster);
+  interactionMode = 'idle';
+  renderAll();
+}
+
+function executeRescue(caster, ally) {
+  // Rescue: teleport to ally and heal them for 10 HP
+  // Find an empty tile adjacent to the ally
+  const dirs = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+  let bestTile = null;
+  for (const [dx, dy] of dirs) {
+    const nx = ally.x + dx, ny = ally.y + dy;
+    if (nx >= 0 && nx < G.boardSize && ny >= 0 && ny < G.boardSize &&
+        !G.units.some(u => u.hp > 0 && u.x === nx && u.y === ny) &&
+        !(G.barrels && G.barrels.some(b => b.x === nx && b.y === ny)) &&
+        (!G.board[ny][nx] || !G.board[ny][nx].type || G.board[ny][nx].amount <= 0)) {
+      bestTile = { x: nx, y: ny };
+      break;
+    }
+  }
+  if (!bestTile) {
+    addLog(`👁 ${getDisplayName(caster)} tries to rescue ${getDisplayName(ally)}, but there's no space nearby!`);
+    interactionMode = 'idle';
+    renderAll();
+    return;
+  }
+  const oldX = caster.x, oldY = caster.y;
+  caster.x = bestTile.x;
+  caster.y = bestTile.y;
+  const allyStats = getUnitStats(ally);
+  const oldHp = ally.hp;
+  ally.hp = Math.min(allyStats.maxHp, ally.hp + 10);
+  const healed = ally.hp - oldHp;
+  caster.movementLeft = 0;
+  caster.hasAttacked = true;
+  startAbilityCooldown(caster, 'rescue');
+  addLog(`👁 ${getDisplayName(caster)} teleports from (${oldX},${oldY}) to rescue ${getDisplayName(ally)}! Healed ${healed} HP (${ally.hp}/${allyStats.maxHp})!`);
+  interactionMode = 'idle';
+  renderAll();
+}
+
+function executeBountyMark(caster, target) {
+  applyStatusEffect(target, 'bounty_marked', 99);
+  startAbilityCooldown(caster, 'bounty_mark');
+  addLog(`🎯 ${getDisplayName(caster)} marks ${getDisplayName(target)} for death! (+3 damage from all sources, 3 gold bounty on kill)`);
+  interactionMode = 'idle';
+  renderAll();
+}
+
+function executePlaceBarrel(unit, x, y) {
+  // Place an explosive barrel on the ground
+  if (!G.barrels) G.barrels = [];
+  G.barrels.push({ x, y, playerId: unit.playerId, damage: 8, radius: 2 });
+  // Consume the barrel from inventory
+  if (scrollPending && scrollPending.type === 'barrel') {
+    unit.inventory.splice(scrollPending.idx, 1);
+    scrollPending = null;
+  }
+  addLog(`🛢 ${getDisplayName(unit)} places an Explosive Barrel at (${x},${y})!`);
+  interactionMode = 'idle';
+  renderAll();
+}
+
+function triggerBarrelExplosion(bx, by) {
+  if (!G.barrels) return;
+  const barrelIdx = G.barrels.findIndex(b => b.x === bx && b.y === by);
+  if (barrelIdx === -1) return;
+  const barrel = G.barrels[barrelIdx];
+  G.barrels.splice(barrelIdx, 1);
+  addLog(`💥 The Explosive Barrel at (${bx},${by}) detonates!`);
+  // Deal damage to all units within radius
+  const targets = G.units.filter(u => u.hp > 0 && chebyshevDist(bx, by, u.x, u.y) <= barrel.radius);
+  for (const t of targets) {
+    let dmg = barrel.damage;
+    const bulwarkStacks = countPassive(t, 'bulwark');
+    if (bulwarkStacks > 0 && dmg > 1) dmg = Math.max(1, dmg - bulwarkStacks);
+    t.hp -= dmg;
+    addLog(`💥 ${getDisplayName(t)} takes ${dmg} barrel explosion damage! (${t.hp > 0 ? t.hp + ' HP left' : 'DEFEATED!'})`);
+    if (t.hp <= 0) {
+      t.hp = 0;
+      dropAllItems(t);
+      addLog(`☠ ${getDisplayName(t)} has been slain by the explosion!`);
+    }
+  }
+  // Chain reaction: check if other barrels are in range
+  const chainBarrels = (G.barrels || []).filter(b => chebyshevDist(bx, by, b.x, b.y) <= barrel.radius);
+  for (const cb of chainBarrels) {
+    triggerBarrelExplosion(cb.x, cb.y);
+  }
+  G.units = G.units.filter(u => u.hp > 0);
+  for (const pid of [...new Set(targets.filter(t => t.hp <= 0).map(t => t.playerId))]) {
+    checkPlayerElimination(pid);
+  }
+}
+
 function executeRunicConjure(unit) {
   // Runic Conjure: generate a random consumable
   const consumableId = CONSUMABLE_IDS[Math.floor(Math.random() * CONSUMABLE_IDS.length)];
@@ -6783,11 +8396,7 @@ function executeUtilityHex(caster, target, hexType) {
   const name = HEX_NAMES[hexType];
   const icon = HEX_ICONS[hexType];
 
-  if (hasPassive(target, 'reflect') && Math.random() < 0.3) {
-    addLog(`🔃 ${getDisplayName(target)} reflects ${name} back at ${getDisplayName(caster)}!`);
-    applyStatusEffect(caster, effect, 2);
-    addLog(`${icon} ${getDisplayName(caster)} is ${effect}!`);
-  } else if (hasPassive(target, 'magic_resistance')) {
+  if (hasPassive(target, 'magic_resistance')) {
     addLog(`✨ ${getDisplayName(target)}'s Magic Resistance blocks the ${name}!`);
   } else {
     applyStatusEffect(target, effect, 2);
@@ -6819,7 +8428,7 @@ function dropAllItems(unit) {
     mirror.hp = 0;
     addLog(`🪞 ${getDisplayName(unit)}'s mirror image shatters!`);
   }
-  for (const slot of EQUIP_SLOTS) {
+  for (const slot of getUnitEquipSlots(unit)) {
     if (unit.equipment && unit.equipment[slot] && unit.equipment[slot] !== '_two_handed_') {
       G.groundItems.push({ x: unit.x, y: unit.y, item: unit.equipment[slot] });
       unit.equipment[slot] = null;
@@ -6843,6 +8452,15 @@ function checkPlayerElimination(playerId) {
       addLog(`🏆 ${alivePlayers[0].name} WINS THE GAME!`);
     }
   }
+}
+
+function finalizeUnitDeath(unit, { dropItems = true, clearSelection = false } = {}) {
+  if (!unit) return;
+  unit.hp = 0;
+  if (dropItems) dropAllItems(unit);
+  G.units = G.units.filter(u => u.hp > 0);
+  checkPlayerElimination(unit.playerId);
+  if (clearSelection && selectedUnitId === unit.id) selectedUnitId = null;
 }
 
 // ============================================================
@@ -6895,6 +8513,25 @@ function equipItem(unitId, inventoryIndex) {
 
   const slot = item.slot;
 
+  // Block equipping in restricted slots (e.g. Magnate can't wear armor)
+  if (isSlotBlocked(u, slot)) {
+    addLog(`${getDisplayName(u)} cannot equip items in the ${SLOT_LABELS[slot] || slot} slot!`);
+    renderAll();
+    return;
+  }
+
+  // Dual Wield: if equipping a 1H weapon and mainhand occupied, put in offhand
+  if (slot === 'mainhand' && !item.twoHanded && hasPassive(u, 'dual_wield') &&
+      u.equipment.mainhand && u.equipment.mainhand !== '_two_handed_') {
+    const oldOff = u.equipment.offhand;
+    u.inventory.splice(inventoryIndex, 1);
+    if (oldOff && oldOff !== '_two_handed_') u.inventory.push(oldOff);
+    u.equipment.offhand = item;
+    addLog(`${getDisplayName(u)} equips ${item.name} in their off hand!`);
+    renderAll();
+    return;
+  }
+
   // If equipping a two-handed weapon, also clear offhand (unless unit has dual_grip)
   if (item.twoHanded) {
     const hasDualGrip = hasPassive(u, 'dual_grip');
@@ -6916,6 +8553,21 @@ function equipItem(unitId, inventoryIndex) {
     u.equipment.mainhand = null;
     u.equipment.offhand = item;
   }
+  // Extra slot equipping: items can go into extra slots if primary is full (offhand, accessory, head, etc.)
+  else if (u.equipment[slot] && u.equipment[slot] !== '_two_handed_') {
+    const unitSlots = getUnitEquipSlots(u);
+    const extraSlot = unitSlots.find(s => s !== slot && s.startsWith(slot) && (!u.equipment[s] || u.equipment[s] === null));
+    if (extraSlot) {
+      u.inventory.splice(inventoryIndex, 1);
+      u.equipment[extraSlot] = item;
+    } else {
+      // All extra slots full — swap with primary slot
+      const oldItem = u.equipment[slot];
+      u.inventory.splice(inventoryIndex, 1);
+      if (oldItem && oldItem !== '_two_handed_') u.inventory.push(oldItem);
+      u.equipment[slot] = item;
+    }
+  }
   // Normal equip
   else {
     const oldItem = u.equipment[slot];
@@ -6929,6 +8581,14 @@ function equipItem(unitId, inventoryIndex) {
   if (u.hp > stats.maxHp) u.hp = stats.maxHp;
   // Update movementLeft if movement decreased
   if (u.movementLeft > stats.movement) u.movementLeft = stats.movement;
+
+  // Newly equipped items with actions can't be used the same turn
+  if (item.action) {
+    if (!u.cooldowns) u.cooldowns = {};
+    if (!u.cooldowns[item.action] || u.cooldowns[item.action] < 1) {
+      u.cooldowns[item.action] = 1;
+    }
+  }
 
   addLog(`${getDisplayName(u)} equipped ${item.name}`);
   renderAll();
@@ -6964,6 +8624,61 @@ function unequipItem(unitId, slot) {
   if (u.movementLeft > stats.movement) u.movementLeft = stats.movement;
 
   addLog(`${getDisplayName(u)} unequipped ${item.name}`);
+  renderAll();
+}
+
+function appraiseDestroyEquip(unitId, slot) {
+  const u = getUnit(unitId);
+  if (!u || u.playerId !== G.currentPlayer) return;
+  const item = u.equipment[slot];
+  if (!item || item === '_two_handed_' || !item.passives || item.passives.length === 0) return;
+  // Absorb passives permanently (always adds a stack, even if already owned)
+  if (!u.passives) u.passives = [];
+  const absorbed = [];
+  for (const p of item.passives) {
+    u.passives.push(p);
+    absorbed.push(p);
+  }
+  // Destroy the item (not dropped)
+  if (item.twoHanded && slot === 'mainhand') {
+    u.equipment.mainhand = null;
+    if (!hasPassive(u, 'dual_grip')) u.equipment.offhand = null;
+  } else {
+    u.equipment[slot] = null;
+  }
+  const passiveNames = absorbed.map(p => {
+    const pd = PASSIVES[p];
+    return pd ? pd.name : p;
+  });
+  startAbilityCooldown(u, 'appraise_destroy');
+  addLog(`🔍 ${getDisplayName(u)} appraises and destroys ${item.name}! Absorbed: ${passiveNames.join(', ') || 'no new passives'}.`);
+  interactionMode = 'idle';
+  const stats = getUnitStats(u);
+  if (u.hp > stats.maxHp) u.hp = stats.maxHp;
+  renderAll();
+}
+
+function appraiseDestroyInv(unitId, inventoryIndex) {
+  const u = getUnit(unitId);
+  if (!u || u.playerId !== G.currentPlayer) return;
+  const item = u.inventory[inventoryIndex];
+  if (!item || !item.passives || item.passives.length === 0) return;
+  // Absorb passives permanently (always adds a stack, even if already owned)
+  if (!u.passives) u.passives = [];
+  const absorbed = [];
+  for (const p of item.passives) {
+    u.passives.push(p);
+    absorbed.push(p);
+  }
+  // Destroy the item
+  u.inventory.splice(inventoryIndex, 1);
+  const passiveNames = absorbed.map(p => {
+    const pd = PASSIVES[p];
+    return pd ? pd.name : p;
+  });
+  startAbilityCooldown(u, 'appraise_destroy');
+  addLog(`🔍 ${getDisplayName(u)} appraises and destroys ${item.name}! Absorbed: ${passiveNames.join(', ') || 'no new passives'}.`);
+  interactionMode = 'idle';
   renderAll();
 }
 
@@ -7084,7 +8799,8 @@ function useConsumable(unitId, inventoryIndex) {
         const nx = u.x + dx, ny = u.y + dy;
         if (nx >= 0 && nx < G.boardSize && ny >= 0 && ny < G.boardSize &&
             !G.board[ny][nx] &&
-            !G.units.some(un => un.x === nx && un.y === ny && un.hp > 0)) {
+            !G.units.some(un => un.x === nx && un.y === ny && un.hp > 0) &&
+            !(G.barrels && G.barrels.some(b => b.x === nx && b.y === ny))) {
           emptyAdj.push({ x: nx, y: ny });
         }
       }
@@ -7156,6 +8872,40 @@ function useConsumable(unitId, inventoryIndex) {
       addLog(`⚠ ${getDisplayName(u)} already has Fire Resistance — the asbestos has no effect!`);
       return;
     }
+  } else if (item.id === 'loaded_die') {
+    if (hasStatusEffect(u, 'deadly_focus')) {
+      addLog(`⚠ ${getDisplayName(u)} already has Deadly Focus!`);
+      return;
+    }
+    applyStatusEffect(u, 'deadly_focus', 99);
+    addLog(`🎲 ${getDisplayName(u)} rolls a loaded die — Deadly Focus! Next attack is a guaranteed crit!`);
+  } else if (item.id === 'scroll_of_retrieve') {
+    // Check if there are any other friendly units on the map
+    const allies = G.units.filter(t => t.hp > 0 && t.id !== u.id && t.playerId === u.playerId);
+    if (allies.length === 0) {
+      addLog(`📜 ${getDisplayName(u)} unrolls a Scroll of Retrieve, but has no allies to summon!`);
+      return;
+    }
+    scrollPending = { unitId: u.id, idx: inventoryIndex, type: 'retrieve' };
+    interactionMode = 'scroll_retrieve';
+    renderAll();
+    return; // Don't consume yet — wait for target selection
+  } else if (item.id === 'scroll_of_swap') {
+    const targets = G.units.filter(t => t.hp > 0 && t.id !== u.id);
+    if (targets.length === 0) {
+      addLog(`📜 ${getDisplayName(u)} unrolls a Scroll of Swap, but there's nobody to swap with!`);
+      return;
+    }
+    scrollPending = { unitId: u.id, idx: inventoryIndex, type: 'swap' };
+    interactionMode = 'scroll_swap';
+    renderAll();
+    return; // Don't consume yet — wait for target selection
+  } else if (item.id === 'explosive_barrel') {
+    // Enter place_barrel interaction mode
+    scrollPending = { unitId: u.id, idx: inventoryIndex, type: 'barrel' };
+    interactionMode = 'place_barrel';
+    renderAll();
+    return; // Don't consume yet — wait for tile selection
   }
 
   // Lucky Rune: 50% chance to keep the consumable
@@ -7201,8 +8951,135 @@ function cancelMirror() {
   renderAll();
 }
 
+function executeScrollRetrieve(caster, target) {
+  // Find an empty adjacent tile next to the caster to place the target
+  const emptyAdj = [];
+  for (let dy = -1; dy <= 1; dy++) {
+    for (let dx = -1; dx <= 1; dx++) {
+      if (dx === 0 && dy === 0) continue;
+      const nx = caster.x + dx, ny = caster.y + dy;
+      if (nx >= 0 && nx < G.boardSize && ny >= 0 && ny < G.boardSize &&
+          !G.board[ny][nx] &&
+          !G.units.some(un => un.x === nx && un.y === ny && un.hp > 0) &&
+          !(G.structures && G.structures.some(s => s.x === nx && s.y === ny)) &&
+          !(G.barrels && G.barrels.some(b => b.x === nx && b.y === ny))) {
+        emptyAdj.push({ x: nx, y: ny });
+      }
+    }
+  }
+  if (emptyAdj.length === 0) {
+    addLog(`📜 ${getDisplayName(caster)} tries to retrieve ${getDisplayName(target)}, but there's no space nearby!`);
+    interactionMode = 'idle';
+    scrollPending = null;
+    renderAll();
+    return;
+  }
+  // Pick the closest empty tile to the caster
+  const spot = emptyAdj[Math.floor(Math.random() * emptyAdj.length)];
+  target.x = spot.x;
+  target.y = spot.y;
+
+  // Consume the scroll
+  const u = getUnit(scrollPending.unitId);
+  const idx = scrollPending.idx;
+  if (hasPassive(u, 'lucky_rune') && Math.random() < 0.5) {
+    addLog(`🍀 ${getDisplayName(u)}'s Lucky Rune activates! The Scroll of Retrieve was not consumed!`);
+  } else {
+    u.inventory.splice(idx, 1);
+  }
+
+  addLog(`📜 ${getDisplayName(caster)} uses a Scroll of Retrieve! ${getDisplayName(target)} is teleported to their side!`);
+  interactionMode = 'idle';
+  scrollPending = null;
+  renderAll();
+}
+
+function executeScrollSwap(caster, target) {
+  // Swap positions
+  const oldX = caster.x, oldY = caster.y;
+  caster.x = target.x;
+  caster.y = target.y;
+  target.x = oldX;
+  target.y = oldY;
+
+  // Consume the scroll
+  const u = getUnit(scrollPending.unitId);
+  const idx = scrollPending.idx;
+  if (hasPassive(u, 'lucky_rune') && Math.random() < 0.5) {
+    addLog(`🍀 ${getDisplayName(u)}'s Lucky Rune activates! The Scroll of Swap was not consumed!`);
+  } else {
+    u.inventory.splice(idx, 1);
+  }
+
+  addLog(`📜 ${getDisplayName(caster)} uses a Scroll of Swap! Swapped places with ${getDisplayName(target)}!`);
+  interactionMode = 'idle';
+  scrollPending = null;
+  renderAll();
+}
+
 function getAdjacentGroundItems(unit) {
   return (G.groundItems || []).filter(gi => chebyshevDist(gi.x, gi.y, unit.x, unit.y) <= 1);
+}
+
+let _pickupOverlayUnit = null;
+
+function openPickupOverlay(unit) {
+  _pickupOverlayUnit = unit;
+  refreshPickupOverlay();
+  document.getElementById('pickup-overlay').classList.add('active');
+}
+
+function closePickupOverlay() {
+  document.getElementById('pickup-overlay').classList.remove('active');
+  _pickupOverlayUnit = null;
+  interactionMode = 'idle';
+  renderAll();
+}
+
+function refreshPickupOverlay() {
+  const unit = _pickupOverlayUnit;
+  if (!unit) return;
+  const listEl = document.getElementById('pickup-item-list');
+  const allWrap = document.getElementById('pickup-all-wrap');
+  listEl.innerHTML = '';
+  allWrap.innerHTML = '';
+  const adjItems = getAdjacentGroundItems(unit);
+  if (adjItems.length === 0) {
+    closePickupOverlay();
+    return;
+  }
+  adjItems.forEach(gi => {
+    const idx = G.groundItems.indexOf(gi);
+    const row = document.createElement('div');
+    row.className = 'pickup-item-row';
+    const nameSpan = document.createElement('span');
+    const icon = gi.item.icon || (gi.item.consumable ? '🧪' : '⚔');
+    nameSpan.textContent = `${icon} ${gi.item.name}`;
+    const pickBtn = document.createElement('button');
+    pickBtn.className = 'btn btn-small';
+    pickBtn.textContent = 'Pick Up';
+    pickBtn.onclick = () => {
+      pickupGroundItem(unit, idx);
+      refreshPickupOverlay();
+    };
+    row.appendChild(nameSpan);
+    row.appendChild(pickBtn);
+    listEl.appendChild(row);
+  });
+  if (adjItems.length > 1) {
+    const pickAllBtn = document.createElement('button');
+    pickAllBtn.className = 'btn';
+    pickAllBtn.textContent = 'Pick Up All';
+    pickAllBtn.onclick = () => {
+      const items = getAdjacentGroundItems(unit).slice();
+      items.forEach(gi => {
+        const idx = G.groundItems.indexOf(gi);
+        if (idx !== -1) pickupGroundItem(unit, idx);
+      });
+      refreshPickupOverlay();
+    };
+    allWrap.appendChild(pickAllBtn);
+  }
 }
 
 function pickupGroundItem(unit, groundIndex) {
@@ -7214,7 +9091,6 @@ function pickupGroundItem(unit, groundIndex) {
     const stats = getUnitStats(unit);
     if (stats.str < 5) {
       addLog(`⚔️ ${getDisplayName(unit)} tries to pick up ${gi.item.name} but isn't strong enough! (Need 5 STR, have ${stats.str})`);
-      interactionMode = 'idle';
       renderAll();
       return;
     }
@@ -7224,6 +9100,37 @@ function pickupGroundItem(unit, groundIndex) {
   G.groundItems.splice(groundIndex, 1);
 
   addLog(`${getDisplayName(unit)} picked up ${gi.item.name}`);
+  renderAll();
+}
+
+function pickupAllGroundItems(unit, tx, ty) {
+  const items = (G.groundItems || []).filter(gi => gi.x === tx && gi.y === ty);
+  if (items.length === 0) return;
+
+  const picked = [];
+  const failed = [];
+  for (const gi of items) {
+    // Excalibur in the Stone requires 5+ STR to pick up
+    if (gi.item.id === 'excalibur_stone') {
+      const stats = getUnitStats(unit);
+      if (stats.str < 5) {
+        failed.push(gi.item.name);
+        continue;
+      }
+    }
+    unit.inventory.push(gi.item);
+    picked.push(gi.item.name);
+  }
+
+  // Remove picked items from ground (filter instead of splice to handle multiple)
+  G.groundItems = G.groundItems.filter(gi => !(gi.x === tx && gi.y === ty && picked.includes(gi.item.name)));
+
+  if (picked.length > 0) {
+    addLog(`${getDisplayName(unit)} picked up: ${picked.join(', ')}`);
+  }
+  for (const name of failed) {
+    addLog(`⚔️ ${getDisplayName(unit)} tries to pick up ${name} but isn't strong enough! (Need 5 STR)`);
+  }
   interactionMode = 'idle';
   renderAll();
 }
@@ -7255,6 +9162,7 @@ function addSpawnTilesAround(cx, cy, radius, tiles, checked) {
       if (G.structures && G.structures.some(s => s.x === nx && s.y === ny)) continue;
       if (G.shops && G.shops.some(s => s.x === nx && s.y === ny)) continue;
       if (G.vendors && G.vendors.some(v => v.x === nx && v.y === ny)) continue;
+      if (G.barrels && G.barrels.some(b => b.x === nx && b.y === ny)) continue;
       tiles.push({ x: nx, y: ny });
     }
   }
@@ -7299,6 +9207,7 @@ function startPlacement(type) {
           if (nx < 0 || nx >= G.boardSize || ny < 0 || ny >= G.boardSize) continue;
           if (getUnitAt(nx, ny)) continue;
           if (G.board[ny][nx]) continue;
+          if (G.barrels && G.barrels.some(b => b.x === nx && b.y === ny)) continue;
           tiles.push({ x: nx, y: ny });
         }
       }
@@ -7491,6 +9400,20 @@ function confirmEndTurn() {
     }
   }
 
+  // Advance Elemental Glaive phase for the current player's units
+  for (const u of G.units) {
+    if (u.playerId === G.currentPlayer && u.hp > 0 && u.equipment) {
+      for (const slot of ['mainhand', 'offhand']) {
+        const weapon = u.equipment[slot];
+        if (weapon && weapon !== '_two_handed_' && weapon.elementalCycle) {
+          weapon.elementalPhase = ((weapon.elementalPhase || 0) + 1) % 3;
+          const phaseNames = ['❄️ Freeze', '🔥 Burning', '⚡ Chain Lightning'];
+          addLog(`${phaseNames[weapon.elementalPhase]} — ${getDisplayName(u)}'s Elemental Glaive shifts element!`);
+        }
+      }
+    }
+  }
+
   for (const u of G.units) {
     if (u.playerId === G.currentPlayer && u.hp > 0) {
       const stats = getUnitStats(u);
@@ -7513,14 +9436,24 @@ function confirmEndTurn() {
       u.rallyBonus = 0;
       u.stoneSkinBonus = 0;
       u.divineShieldBonus = 0;
-      u.berserkBonus = 0;
-      u.berserkPenalty = 0;
+      // Decay berserk bonus over turns
+      if (u.berserkTurns && u.berserkTurns > 0) {
+        u.berserkTurns--;
+        if (u.berserkTurns <= 0) {
+          u.berserkBonus = 0;
+          u.berserkPenalty = 0;
+          u.berserkTurns = 0;
+        }
+      }
       u.bloodFrenzyActive = false;
       u.disengaged = false;
       u.musterActive = false;
       u.tilesMoved = 0;
       u.overwatchFired = false;
       u.stunned = false;
+      // Clear harpoon drag (only lasts one turn)
+      delete u.harpoonDragTargetId;
+      delete u.harpoonDragTurn;
       // Lullaby: if lullabied, apply beguiled status this turn
       if (u.lullabied) {
         applyStatusEffect(u, 'beguiled', 1);
@@ -7543,6 +9476,14 @@ function confirmEndTurn() {
         if (u.trollBlessingTurns <= 0) {
           u.trollBlessingTurns = 0;
           addLog(`🌿 ${getDisplayName(u)}'s troll blessing fades.`);
+        }
+      }
+      // Decay smoke bomb
+      if (u.smokeBombTurns && u.smokeBombTurns > 0) {
+        u.smokeBombTurns--;
+        if (u.smokeBombTurns <= 0) {
+          u.smokeBombTurns = 0;
+          addLog(`💨 ${getDisplayName(u)}'s smoke dissipates.`);
         }
       }
       // Decay regeneration potion
@@ -7613,10 +9554,10 @@ function confirmEndTurn() {
           if (u.cooldowns[key] > 0) u.cooldowns[key]--;
         }
       }
-      // Potion Pouch: generate a Healing Potion every 2 of this player's turns
+      // Potion Pouch: generate a Healing Potion every 4 of this player's turns
       if (u.inventory.some(it => it.id === 'potion_pouch')) {
         u.potionPouchCD = (u.potionPouchCD || 0) + 1;
-        if (u.potionPouchCD >= 2) {
+        if (u.potionPouchCD >= 4) {
           u.potionPouchCD = 0;
           u.inventory.push(JSON.parse(JSON.stringify(CONSUMABLES.healing_potion)));
           addLog(`🎒 ${getDisplayName(u)}'s Potion Pouch produces a Healing Potion!`);
@@ -7674,7 +9615,7 @@ function showFactionPick() {
   // Populate faction dropdown
   const select = document.getElementById('faction-pick-select');
   const takenFactions = G.players.filter(p => p.faction).map(p => p.faction);
-  const factionOrder = ['humans', 'orcs', 'elves', 'dwarves', 'goblins', 'bards', 'trolls', 'skeletons', 'kobolds'];
+  const factionOrder = ['humans', 'orcs', 'elves', 'dwarves', 'goblins', 'bards', 'trolls', 'skeletons', 'kobolds', 'nomads', 'trade_guild', 'ogres', 'merfolk'];
   select.innerHTML = factionOrder
     .filter(key => FACTIONS[key] && !takenFactions.includes(key))
     .map(key => `<option value="${key}">${FACTIONS[key].name}</option>`)
@@ -7708,7 +9649,8 @@ function updateFactionPickHeroes() {
   for (let h = 0; h < heroKeys.length; h++) {
     const hKey = heroKeys[h];
     const hero = heroes[hKey];
-    const cd = ABILITY_COOLDOWNS[hero.ability.id] || 1;
+    const hasAbility = hero.ability && hero.ability.id;
+    const cd = hasAbility ? (ABILITY_COOLDOWNS[hero.ability.id] || 1) : 0;
     const cdText = cd === 0 ? 'No cooldown' : `Cooldown: ${cd} turn${cd > 1 ? 's' : ''}`;
 
     // Build passives HTML
@@ -7747,9 +9689,9 @@ function updateFactionPickHeroes() {
       <div class="hero-card-inner">
         <div class="hero-card-char">${hero.char}</div>
         <div class="hero-card-name">${hero.name}</div>
-        <div class="hero-card-ability">★ ${hero.ability.name}
+        ${hasAbility ? `<div class="hero-card-ability">★ ${hero.ability.name}
           <span class="hero-tooltip"><span class="tt-label">★ ${hero.ability.name}</span><br>${hero.ability.desc}<br><span class="tt-cd">${cdText}</span></span>
-        </div>
+        </div>` : '<div class="hero-card-ability" style="color:#888;">No active ability</div>'}
         ${ability2Html}
         ${passivesHtml}
         <div class="hero-card-desc">${hero.description}</div>
@@ -7913,17 +9855,27 @@ function sendChat() {
             u.rallyBonus = 0;
             u.stoneSkinBonus = 0;
             u.divineShieldBonus = 0;
-            u.berserkBonus = 0;
-            u.berserkPenalty = 0;
+            // Decay berserk bonus over turns
+            if (u.berserkTurns && u.berserkTurns > 0) {
+              u.berserkTurns--;
+              if (u.berserkTurns <= 0) {
+                u.berserkBonus = 0;
+                u.berserkPenalty = 0;
+                u.berserkTurns = 0;
+              }
+            }
             u.bloodFrenzyActive = false;
             u.disengaged = false;
             u.musterActive = false;
             u.tilesMoved = 0;
             u.overwatchFired = false;
             u.stunned = false;
+            delete u.harpoonDragTargetId;
+            delete u.harpoonDragTurn;
             if (u.lullabied) { u.lullabied = false; }
             if (u.battleCryTurns && u.battleCryTurns > 0) { u.battleCryTurns--; if (u.battleCryTurns <= 0) { u.battleCryBonus = 0; u.battleCryTurns = 0; } }
             if (u.trollBlessingTurns && u.trollBlessingTurns > 0) { u.trollBlessingTurns--; if (u.trollBlessingTurns <= 0) u.trollBlessingTurns = 0; }
+            if (u.smokeBombTurns && u.smokeBombTurns > 0) { u.smokeBombTurns--; if (u.smokeBombTurns <= 0) u.smokeBombTurns = 0; }
             if (u.regenPotionTurns && u.regenPotionTurns > 0) { u.regenPotionTurns--; if (u.regenPotionTurns <= 0) u.regenPotionTurns = 0; }
             if (u.combatRegenTurns && u.combatRegenTurns > 0) { u.combatRegenTurns--; if (u.combatRegenTurns <= 0) u.combatRegenTurns = 0; }
             if (u.consecrateTurns && u.consecrateTurns > 0) {
@@ -8040,7 +9992,7 @@ function saveGame() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `${G.players[G.currentPlayer].name.replace(/\s+/g, '_')}_turn-${G.turn}-BETA.json`;
+  a.download = `${G.players[G.currentPlayer].name.replace(/\s+/g, '_')}_turn-${G.turn}.json`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -8061,6 +10013,7 @@ function handleFileLoad(event) {
       G.chatMessages = G.chatMessages || [];
       G.traps = G.traps || [];
       G.tunnels = G.tunnels || [];
+      G.barrels = G.barrels || [];
       // Migrate units if needed
       for (const u of G.units) {
         u.str = u.str || 0;
@@ -8074,6 +10027,7 @@ function handleFileLoad(event) {
         u.divineShieldBonus = u.divineShieldBonus || 0;
         u.berserkBonus = u.berserkBonus || 0;
         u.berserkPenalty = u.berserkPenalty || 0;
+        u.berserkTurns = u.berserkTurns || 0;
         u.ragePotionBonus = u.ragePotionBonus || 0;
         u.speedPotionBonus = u.speedPotionBonus || 0;
         u.stoneskinPotionBonus = u.stoneskinPotionBonus || 0;
@@ -8083,6 +10037,7 @@ function handleFileLoad(event) {
         u.trollBlessingTurns = u.trollBlessingTurns || 0;
         u.regenPotionTurns = u.regenPotionTurns || 0;
         u.consecrateTurns = u.consecrateTurns || 0;
+        u.smokeBombTurns = u.smokeBombTurns || 0;
         u.tempHp = u.tempHp || 0;
         u.tempHpTurns = u.tempHpTurns || 0;
         u.bloodFrenzyActive = u.bloodFrenzyActive || false;
@@ -8126,6 +10081,7 @@ function handleFileLoad(event) {
       selectedVendor = null;
       selectedBazaar = null;
       selectedStructure = null;
+      selectedBarrel = null;
       interactionMode = 'idle';
       reachableTiles = [];
       // Migrate shop/vendor to arrays if needed
@@ -8203,6 +10159,30 @@ function chebyshevDist(x1, y1, x2, y2) {
   return Math.max(Math.abs(x1 - x2), Math.abs(y1 - y2));
 }
 
+function hasLineOfSight(x1, y1, x2, y2) {
+  // Adjacent or same tiles always have line of sight
+  if (chebyshevDist(x1, y1, x2, y2) <= 1) return true;
+
+  // Trace a line from (x1,y1) to (x2,y2), checking intermediate tiles
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const steps = Math.max(Math.abs(dx), Math.abs(dy));
+
+  for (let i = 1; i < steps; i++) {
+    const t = i / steps;
+    const cx = Math.round(x1 + dx * t);
+    const cy = Math.round(y1 + dy * t);
+
+    if (cx >= 0 && cx < G.boardSize && cy >= 0 && cy < G.boardSize) {
+      const cell = G.board[cy][cx];
+      // Non-water resources (stone, wood, gold) block line of sight
+      if (cell && cell.type && cell.amount > 0 && cell.type !== 'water') return false;
+    }
+  }
+
+  return true;
+}
+
 function isOnStraightLine(x1, y1, x2, y2) {
   const dx = Math.abs(x2 - x1);
   const dy = Math.abs(y2 - y1);
@@ -8224,14 +10204,24 @@ function hasAdjacentAlly(unit) {
 function hasEnemyInRange(unit) {
   const stats = getUnitStats(unit);
   const range = stats.attackRange || 1;
-  const hasUnit = G.units.some(u =>
-    u.hp > 0 && u.playerId !== unit.playerId && chebyshevDist(unit.x, unit.y, u.x, u.y) <= range
-  );
+  const hasUnit = G.units.some(u => {
+    if (u.hp <= 0 || u.playerId === unit.playerId) return false;
+    const dist = chebyshevDist(unit.x, unit.y, u.x, u.y);
+    if (dist > range || !hasLineOfSight(unit.x, unit.y, u.x, u.y)) return false;
+    // Smoke concealment blocks ranged targeting (distance > 1)
+    if (dist > 1 && isConcealedBySmoke(u)) return false;
+    return true;
+  });
   if (hasUnit) return true;
   const hasStruct = G.structures && G.structures.some(s =>
-    s.playerId !== unit.playerId && chebyshevDist(unit.x, unit.y, s.x, s.y) <= range
+    s.playerId !== unit.playerId && chebyshevDist(unit.x, unit.y, s.x, s.y) <= range && hasLineOfSight(unit.x, unit.y, s.x, s.y)
   );
-  return !!hasStruct;
+  if (hasStruct) return true;
+  // Any barrel in range is attackable (even your own)
+  const hasBarrel = G.barrels && G.barrels.some(b =>
+    chebyshevDist(unit.x, unit.y, b.x, b.y) <= range && hasLineOfSight(unit.x, unit.y, b.x, b.y)
+  );
+  return !!hasBarrel;
 }
 
 function beastChaseToward(beast, target) {
@@ -8248,6 +10238,8 @@ function beastChaseToward(beast, target) {
     if (cell && cell.type && cell.amount > 0) break;
     // Can't move onto occupied tiles
     if (G.units.some(u => u.hp > 0 && u.x === nx && u.y === ny)) break;
+    // Can't move onto barrel tiles
+    if (G.barrels && G.barrels.some(b => b.x === nx && b.y === ny)) break;
     beast.x = nx;
     beast.y = ny;
     moved++;
